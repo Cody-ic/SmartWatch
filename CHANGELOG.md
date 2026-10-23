@@ -19,4 +19,4 @@
 
 验证：STM32/CH582M 构建通过，Flutter analyze 无问题，18 项 App 测试、11 组生产 C 回归及双向协议 fixture 通过，Debug APK 构建完成。
 
-硬件核验是随后新增的检查，没有修改原始 EDA/网表/Gerber，结论见 [PCB 报告](pcb-review.md)。软件修复通过不代表这些硬件问题已经关闭。
+PCB 设计的待核对项见 [检查记录](hardware/PCB_REVIEW.md)，尚未完成完整实板验证。

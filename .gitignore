@@ -33,6 +33,7 @@
 *.zip
 *.rar
 *.epro2
+!hardware/pcb/*.epro2
 *.epru
 *.net
 **/local.properties
