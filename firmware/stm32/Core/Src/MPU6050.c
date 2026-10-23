@@ -1,6 +1,6 @@
 /*
- * Legacy MPU6050 driver, retained for reference and tutorial examples.
- * The current watch uses LSM6DSOX. Keep this driver excluded from the build.
+ * MPU6050 旧版驱动已弃用，保留供参考与教学使用。
+ * 当前手表已改用 LSM6DSOX；本文件继续通过 #if 0 排除编译。
  */
 #if 0
 #include "MPU6050.h"
@@ -150,4 +150,4 @@ uint8_t MPU6050_isReady(void)
 {
     return isready;
 }
-#endif /* Legacy driver: excluded from the current firmware build. */
+#endif /* 已弃用：不参与当前固件编译。 */
