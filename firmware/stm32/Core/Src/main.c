@@ -88,6 +88,10 @@ int16_t MovingAverage_gy[25 * 3];
 uint32_t PPG_red_buf[25];
 uint32_t PPG_ir_buf[25];
 
+/* ST wrist decision tree: OTHER=1, WALKING=4, RUNNING=8, UNKNOWN=255.
+ * Updated only by Sensor_Task; inspect with the debugger during device tests. */
+volatile uint8_t g_mlc_activity = MLC_UNKNOWN;
+
 /* [2026-07-07 Fix]: spo2_state_t (3280B, 含 800 float 环缓) 原是 Sensor_Task 局部变量,
  *   占任务栈空间的 53% (3280/6144)。最深调用链 Sensor_Task(4480) → sleep_features_get(1176)
  *   → compute_epoch(232) → extract_ibi(872) = 6760B > 6144B, 溢出 632B。
@@ -236,7 +240,8 @@ void Sensor_Task(void *argument)
             ble_uart_send_sleep_stage(g_sleep_prob, g_sleep_prob > 0.5f);
         }
 
-        /* [2026-07-04]: MLC 静止暗屏 + 抬腕亮屏 (省电)
+        /* Wake-up 超阈值事件控制空闲暗屏，MLC 走跑分类可恢复亮度。
+         * MLC_OTHER 包含其他动作，不能用它认定静止；这也不是抬腕姿态识别。
          * [2026-07-11 Fix]: 移除 MLC 动态 ODR 降频 (原静止 10s → IMU 26Hz / PPG 50Hz)。
          *   根因: 降频改采样率, 但 sleep_features(硬编码 ACC_FS=104/PPG_FS=100)与 HAR 均按固定
          *   采样率处理、无自适应; 而降频触发条件(静止)恰是睡眠主场景 → 睡眠时 sleep_features 收到
@@ -246,23 +251,26 @@ void Sensor_Task(void *argument)
          *   hr_detector_set_sample_rate 随之无调用者(保留为备用 API)。暗屏/亮屏保留。
          *   见 memory driver-verify-20260711。手改勿重生成。 */
         {
-            static uint8_t  mlc_tick = 0;
+            static uint32_t last_motion_check = 0;
             static uint32_t stationary_since = 0;
             static uint8_t  display_dimmed = 0;   /* 屏幕是否已变暗 */
             static lv_obj_t *dim_overlay = NULL;  /* 暗屏覆盖层 */
-            #define MLC_CHECK_INTERVAL   2000   /* 每 2s 检查一次 MLC */
-            #define DISPLAY_DIM_TIMEOUT 60000   /* 静止 1min 后暗屏 */
+            #define MOTION_CHECK_INTERVAL 2000  /* 每 2s 读取分类和运动事件 */
+            #define DISPLAY_DIM_TIMEOUT 60000   /* 无运动事件 1min 后暗屏 */
 
-            if (mlc_tick++ >= (MLC_CHECK_INTERVAL / 30)) {
-                mlc_tick = 0;
-                uint8_t mlc = LSM6DSOX_MLC_GetResult();
-                uint32_t now = xTaskGetTickCount() * portTICK_PERIOD_MS;
+            uint32_t now = xTaskGetTickCount() * portTICK_PERIOD_MS;
+            if ((uint32_t)(now - last_motion_check) >= MOTION_CHECK_INTERVAL) {
+                last_motion_check = now;
+                g_mlc_activity = LSM6DSOX_MLC_GetResult();
+                uint8_t motion = LSM6DSOX_WakeUp_GetResult();
+                if (g_mlc_activity == MLC_WALKING || g_mlc_activity == MLC_RUNNING)
+                    motion = 1;
 
-                if (mlc == MLC_STATIONARY) {
+                if (motion == 0 && g_mlc_activity != MLC_UNKNOWN) {
                     if (stationary_since == 0)
                         stationary_since = now;
 
-                    /* 静止 60s → 暗屏省电 (GC9A01 无背光引脚, 软件覆盖层模拟) */
+                    /* 60s 无超阈值事件 → 暗屏 (软件覆盖层模拟) */
                     if (!display_dimmed && (now - stationary_since > DISPLAY_DIM_TIMEOUT)) {
                         display_dimmed = 1;
                         dim_overlay = lv_obj_create(lv_scr_act());
@@ -272,7 +280,7 @@ void Sensor_Task(void *argument)
                         lv_obj_clear_flag(dim_overlay, LV_OBJ_FLAG_CLICKABLE);
                     }
                 } else {
-                    /* 运动检测 → 抬腕亮屏 */
+                    /* 有运动、无有效分类或通信失败时恢复亮度并重计时。 */
                     if (display_dimmed) {
                         display_dimmed = 0;
                         if (dim_overlay) { lv_obj_del(dim_overlay); dim_overlay = NULL; }
@@ -370,9 +378,11 @@ int main(void)
     if (xSensorSemaphore == NULL) Error_Handler();
 
     // 2. 初始化传感器（I2C1 已就绪）
-    if (MAX30102_Init(&hi2c1) != 0) Error_Handler();
     if (LSM6DSOX_Init(&hi2c1) != 0) Error_Handler();
-    if (LSM6DSOX_MLC_Init() != 0) Error_Handler();   /* MLC 硬件静止/运动检测 */
+    if (LSM6DSOX_MLC_Init() != 0) Error_Handler();  /* 加载真实 MLC 腕戴决策树 */
+    if (LSM6DSOX_WakeUp_Init() != 0) Error_Handler(); /* 独立的运动事件检测 */
+    /* Start PPG after the tree upload, so its FIFO does not fill during upload. */
+    if (MAX30102_Init(&hi2c1) != 0) Error_Handler();
 
     // 3. 初始化电池监测（须在 mic_init 之前: ADC1 注入通道 IN7 的采样时间/PCSEL
     //    在 ADC 运行时硬件跳过, 需 ADC 已 init 但未启动 DMA 时配置）

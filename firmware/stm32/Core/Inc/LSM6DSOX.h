@@ -25,38 +25,41 @@
  *   长期有微漂移; 若日后要严格对齐需时间戳配对。手改勿重生成。 */
 #define FIFO_WATERMARK 52
 
-/* ============================================================
- * MLC (Machine Learning Core) — 硬件决策树, 片内运行, 不唤醒 MCU
- *
- * 三级低功耗架构:
- *   L1: MLC 静止/运动粗筛 → 静止时不触发中断, MCU 继续睡
- *   L2: MCU tickless WFI idle (FreeRTOS 自动管理)
- *   L3: 检测到运动 → 唤醒 MCU → 全速 AI 推理
- *
- * MLC 输出: 0=静止, 1=运动, 由 MD1_CFG bit5 路由到 INT1
- * 静止时 MCU 通过 tickless idle 进入 SLEEP 模式, 电流 < 5mA
- * ============================================================ */
-
-/* MLC 输出枚举 */
+/* ST 官方腕戴活动决策树的 MLC0_SRC 原始输出。
+ * OTHER 包含静止以及其他非走跑动作，不能作为静止判据。
+ * MLC 以 26 Hz 处理 52 样本窗口；原始 IMU/FIFO 仍保持 104 Hz。
+ * 结果由 Sensor_Task 轮询，INT1 仅保留 FIFO 水位中断。 */
 typedef enum {
-    MLC_STATIONARY = 0,
-    MLC_MOTION     = 1
+    MLC_OTHER   = 0x01,
+    MLC_WALKING = 0x04,
+    MLC_RUNNING = 0x08,
+    MLC_UNKNOWN = 0xFF
 } mlc_result_t;
 
 uint8_t LSM6DSOX_Init(I2C_HandleTypeDef *handle);
 
 /**
- * 配置 MLC 静止/运动检测决策树, 路由输出到 INT1
- * 须在 LSM6DSOX_Init() 之后调用
- * 返回 0=成功, 非零=错误码
+ * 向片内配置存储器加载 ST 官方腕戴活动决策树。
+ * 须在 LSM6DSOX_Init() 成功之后、任务开始采集之前调用。
+ * 加载期间会停止 IMU 并清空 FIFO，不能在采集中调用。
+ * 返回 0=成功，非零=加载或通信失败；失败后须重新初始化。
  */
 uint8_t LSM6DSOX_MLC_Init(void);
 
 /**
- * 读取 MLC 决策树输出 (MLC0_SRC 寄存器, 地址 0x70)
- * 返回 MLC 分类结果: 0=静止, 1=运动
+ * 读取 embedded bank 的 MLC0_SRC (0x70)，随后恢复 user bank。
+ * 返回上述分类值；未加载、尚无有效分类或通信失败返回 MLC_UNKNOWN。
+ * 单个窗口为 2 秒，元分类器还会影响首次输出/切换的等待时间。
+ * 运行时与其他 LSM6DSOX 访问一样，仅由 Sensor_Task 调用。
  */
 uint8_t LSM6DSOX_MLC_GetResult(void);
+
+/* 独立的 wake-up 运动检测器，用于屏幕空闲计时，不属于 MLC。
+ * Init 在任务采集前调用，返回 0=成功、1=失败，不路由到 INT1。
+ * GetResult 返回 0=自上次读取以来无超阈值事件、1=有事件、0xFF=通信失败。
+ * 无事件不等于严格静止，也不能识别抬腕姿态。 */
+uint8_t LSM6DSOX_WakeUp_Init(void);
+uint8_t LSM6DSOX_WakeUp_GetResult(void);
 
 /**
  * [2026-07-04]: 动态 ODR 切换 — 静止降采样省电, 运动恢复全速。

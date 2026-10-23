@@ -1,8 +1,11 @@
 #include "LSM6DSOX.h"
+#include "mlc/lsm6dsox_wrist_mlc.h"
 
 #define TEST 0
 
 static I2C_HandleTypeDef *hi2c = NULL;
+static uint8_t sensor_initialized = 0;
+static uint8_t mlc_loaded = 0;
 
 
 /*
@@ -95,9 +98,14 @@ uint8_t LSM6DSOX_Init(I2C_HandleTypeDef *handle)
     uint8_t chip_id = 0;
     uint8_t reg_val = 0;
     hi2c = handle;
+    sensor_initialized = 0;
+    mlc_loaded = 0;  /* Reinitialization requires reloading the decision tree. */
 
     // 1. Validate I2C handle availability
     if(hi2c == NULL) return 1;
+
+    // Recover the user bank even if a previous MLC transfer lost the bus.
+    if (!reg_write(0x01, 0x00)) return 2;
 
     // 2. Verify chip ID (LSM6DSOX fixed WHO_AM_I register value is 0x6C)
     if(!reg_read(0x0F, &chip_id) || chip_id != 0x6C) return 2;
@@ -167,89 +175,114 @@ uint8_t LSM6DSOX_Init(I2C_HandleTypeDef *handle)
     reg_val |= 0x08; // INT1_FIFO_TH (bit3): fire when FIFO >= watermark (26 samples)
     if(!reg_write(0x0D, reg_val)) return 7;
 
+    sensor_initialized = 1;
     return 0;
 }
-
-/* ============================================================
- * MLC (Machine Learning Core) — 硬件决策树静止/运动检测
- *
- * 架构: LSM6DSOX 片内 WAKE_UP 检测器, 加速度超阈值→INT1, 不需要主控参与.
- * MLC0_SRC (0x70) 输出: 0=静止(无中断), 1=运动(INT1 触发).
- *
- * 三级低功耗:
- *   L1: 惯性传感器 WAKE_UP → 静止时零中断, MCU tickless idle 沉睡
- *   L2: 运动时 INT1 唤醒 Sensor_Task → 读 FIFO → 触发 HAR 推理
- *   L3: HAR 确认非误触发 → 全速 AI 推理 + 安全检测
- * ============================================================ */
 
 uint8_t LSM6DSOX_MLC_Init(void)
 {
-    uint8_t reg_val;
+    uint8_t bank = 0;
+    mlc_loaded = 0;
+    if (!sensor_initialized) return 1;
 
-    /* Wake-up 配置序列: 对照 ST 官方 lsm6dsox_wake_up.c 示例 + Linux st_lsm6dsx 驱动 */
+    /* Load only at startup. Bypass clears samples collected before upload. */
+    if (!reg_write(0x01, 0x00) || !reg_write(0x0A, 0x00)) goto load_failed;
 
-    /* 1. WAKE_UP_THS (0x5B) — 唤醒阈值
-     *    WK_THS[5:0] = 2 → 500mg @ WAKE_THS_W=0, ±8g FS
-     */
-    if(!reg_write(0x5B, 0x02)) return 1;
+    for (uint32_t i = 0; i < sizeof(lsm6dsox_wrist_mlc) / sizeof(lsm6dsox_wrist_mlc[0]); i++) {
+        uint8_t reg = lsm6dsox_wrist_mlc[i][0];
+        uint8_t value = lsm6dsox_wrist_mlc[i][1];
 
-    /* 2. WAKE_UP_DUR (0x5C) — 持续时间 + 阈值权重
-     *    WAKE_DUR=00(1 ODR), WAKE_THS_W=0(FS_XL/64), SLEEP_DUR=0000
-     */
-    if(!reg_write(0x5C, 0x00)) return 1;
+        /* Same addresses mean different registers in each bank. Keep every
+         * PAGE_VALUE write in order: they contain the features and tree nodes.
+         * Suppress the reference model's MLC interrupt routing before writing
+         * it, so INT1 remains the dedicated FIFO time base for IMU and PPG. */
+        if ((bank == 0x00 && reg == 0x5E) || (bank == 0x80 && reg == 0x0D))
+            value = 0x00;
+        /* PAGE_VALUE auto-increments its destination. On a bus error the chip
+         * may already have accepted the byte: retrying could shift the tree.
+         * Abort that upload instead of retrying an ambiguous page write. */
+        if (bank == 0x80 && reg == 0x09) {
+            if (HAL_I2C_Mem_Write(hi2c, LSM6DSOX_I2C_ADDR, reg,
+                    I2C_MEMADD_SIZE_8BIT, &value, 1, SENSOR_I2C_TIMEOUT) != HAL_OK)
+                goto load_failed;
+        } else if (!reg_write(reg, value)) goto load_failed;
+        if (reg == 0x01) bank = value;
+    }
 
-    /* 3. CTRL8_XL (0x17) — 使能唤醒滤波路径
-     *    bit2 = HP_SLOPE_XL_EN = 1 → 启用斜率/高通滤波器
-     *    DS13305 带宽表: HP_SLOPE_XL_EN=1+HPCF_XL=000 → SLOPE (ODR/4)
-     *    ST 官方: lsm6dsox_xl_hp_path_internal_set(LSM6DSOX_USE_SLOPE)
-     *    注意: LSM6DSOX_Init 将此寄存器写为 0x00, 此处需用 RMW 只改 bit2.
-     */
-    if(!reg_read(0x17, &reg_val)) return 1;
-    reg_val |= 0x04;  /* bit2 = HP_SLOPE_XL_EN = 1 */
-    if(!reg_write(0x17, reg_val)) return 1;
+    /* Reference model: accel 26 Hz / +/-8 g, gyro off, MLC 26 Hz.
+     * AN5259 allows sensor ODR >= MLC ODR. Keep the project's fixed 104 Hz
+     * accel/gyro and FIFO pairing; classification accuracy needs device tests. */
+    if (!reg_write(0x10, 0x4C) || !reg_write(0x11, 0x4C) ||
+        !reg_write(0x0A, 0x06)) goto load_failed;
 
-    /* 4. TAP_CFG0 (0x56) — 唤醒斜率选择 + 锁存
-     *    DS13305 Table 144: bit4=SLOPE_FDS=1 (斜率), bit0=LIR=1 (锁存)
-     *    ST 官方: 0x11
-     */
-    if(!reg_write(0x56, 0x11)) return 1;
+    mlc_loaded = 1;
+    return 0;
 
-    /* 5. FUNCTIONS_ENABLE (0x58) — 中断功能总开关
-     *    bit7 = INTERRUPTS_ENABLE → 0x80
-     *    来源: Linux st_lsm6dsx 驱动 "enable_reg = 0x58, mask = BIT(7)"
-     */
-    if(!reg_write(0x58, 0x80)) return 1;
+load_failed:
+    /* Best effort after an I2C failure: close page writes, disable the partial
+     * tree, restore user bank. The caller must not start acquisition on error. */
+    (void)reg_write(0x01, 0x80);
+    (void)reg_write(0x17, 0x00);
+    (void)reg_write(0x05, 0x00);
+    (void)reg_write(0x01, 0x00);
+    sensor_initialized = 0;
+    return 1;
+}
 
-    /* 6. MD1_CFG (0x5E) — 路由 WAKE_UP 到 INT1
-     *    bit5 = INT1_WU → 0x20
-     *    来源: Linux 驱动 "irq1_func = { 0x5E, BIT(5) }"
-     */
-    if(!reg_write(0x5E, 0x20)) return 1;
+uint8_t LSM6DSOX_MLC_GetResult(void)
+{
+    uint8_t result = MLC_UNKNOWN;
+    if (!mlc_loaded) return MLC_UNKNOWN;
 
+    if (!reg_write(0x01, 0x80)) {
+        (void)reg_write(0x01, 0x00);
+        return MLC_UNKNOWN;
+    }
+    uint8_t read_ok = reg_read(0x70, &result);  /* Embedded bank: MLC0_SRC. */
+    if (!reg_write(0x01, 0x00)) {
+        (void)reg_write(0x01, 0x00);
+        return MLC_UNKNOWN;
+    }
+    if (!read_ok) return MLC_UNKNOWN;
+
+    switch (result) {
+    case MLC_OTHER:
+    case MLC_WALKING:
+    case MLC_RUNNING:
+        return result;
+    default:
+        return MLC_UNKNOWN;  /* Includes power-on output 0 before classification. */
+    }
+}
+
+uint8_t LSM6DSOX_WakeUp_Init(void)
+{
+    uint8_t value;
+    if (!sensor_initialized) return 1;
+
+    /* Separate threshold detector, not a decision tree. WK_THS=2 with
+     * FS/64 at +/-8 g gives 250 mg; duration is one accelerometer period. */
+    if (!reg_read(0x5B, &value) || !reg_write(0x5B, (value & 0x80) | 0x02)) return 1;
+    if (!reg_read(0x5C, &value) || !reg_write(0x5C, value & 0x8F)) return 1;
+    if (!reg_read(0x56, &value)) return 1;
+    value = (value & ~0x10) | 0x41;  /* Slope path, LIR, INT_CLR_ON_READ. */
+    if (!reg_write(0x56, value)) return 1;
+    if (!reg_read(0x58, &value) || !reg_write(0x58, (value & ~0x60) | 0x80)) return 1;
+
+    /* Do not route wake-up onto either interrupt pin. Poll the latched source
+     * without changing CTRL8_XL, the raw acceleration or the MLC input path. */
+    if (!reg_read(0x5E, &value) || !reg_write(0x5E, value & ~0x20)) return 1;
+    if (!reg_read(0x5F, &value) || !reg_write(0x5F, value & ~0x20)) return 1;
+    if (!reg_read(0x1B, &value)) return 1;  /* Clear events from initialization. */
     return 0;
 }
 
-/**
- * 读取 MLC/嵌入式功能状态
- * 返回: 0=静止, 1=检测到运动
- */
-uint8_t LSM6DSOX_MLC_GetResult(void)
+uint8_t LSM6DSOX_WakeUp_GetResult(void)
 {
-    uint8_t wake_up_src = 0;
-
-    /* 读取 WAKE_UP_SRC 寄存器 (0x1B)
-     * Per DS13305 Register Map (Table 21): WAKE_UP_SRC at 0x1B
-     * bit3: WU_IA — 唤醒事件总标志 (运动时硬件置1, 读后自动清零)
-     * bit2-0: X_WU/Y_WU/Z_WU — 各轴唤醒标志
-     * [2026-07-02 FIX]: 原地址 0x39 错误, DS13305 Table 21 确认为 0x1B
-     */
-    if(reg_read(0x1B, &wake_up_src)) {
-        if(wake_up_src & 0x08) {    /* bit3 = WU_IA */
-            return MLC_MOTION;
-        }
-    }
-
-    return MLC_STATIONARY;
+    uint8_t value;
+    if (!sensor_initialized || !reg_write(0x01, 0x00) ||
+        !reg_read(0x1B, &value)) return 0xFF;
+    return (value & 0x08) ? 1 : 0;
 }
 
 /* [2026-07-04]: 动态 ODR 切换 — hi_rate=1→104Hz(0100), hi_rate=0→26Hz(0010).
@@ -276,6 +309,9 @@ uint8_t LSM6DSOX_SetODR(uint8_t hi_rate)
 	uint8_t LSM6DSOX_GetFifoBatch(int16_t *a_buf, int16_t *g_buf, int16_t *t_buf, uint8_t max_samples)
 	{
 	    if(hi2c == NULL || a_buf == NULL || g_buf == NULL) return 0;
+
+        /* A previous MLC read may have lost I2C while restoring the bank. */
+        if (!reg_write(0x01, 0x00)) return 0;
 
 	    uint8_t samples_read = 0;
 	    int16_t cur_acc[3] = {0};
@@ -451,19 +487,19 @@ uint8_t LSM6DSOX_Fall_Init(void)
 
     /* 2. MD1_CFG (0x5E): INT1_FF=1, RMW 保留已有 INT1_WU 等位
      *    [2026-07-06 Fix]: 原地址 0x5B 错误 (WAKE_UP_THS), 修正为 0x5E。
-     *    原代码写入 0x5B 将 WK_THS 从 0x02 污染为 0x12 (2.25g), MLC 唤醒失效。 */
+     *    原代码写入 0x5B 将 WK_THS 从 0x02 污染为 0x12 (2.25g), wake-up 阈值被改动。 */
     if (!reg_read(0x5E, &reg_val)) return 2;
     reg_val |= 0x10;  /* bit4 = INT1_FF */
     if (!reg_write(0x5E, reg_val)) return 2;
 
     /* 3. TAP_CFG0 (0x56): LIR=1 → latch FREE_FALL event until read
-     *    [2026-07-06 Fix]: 原硬写 0x01 覆盖 SLOPE_FDS, 改为 RMW 保留 MLC_Init 设置。 */
+     *    [2026-07-06 Fix]: 原硬写 0x01 覆盖 SLOPE_FDS，改为 RMW 保留已有设置。 */
     if (!reg_read(0x56, &reg_val)) return 3;
     reg_val |= 0x01;  /* bit0 = LIR */
     if (!reg_write(0x56, reg_val)) return 3;
 
     /* 4. FUNCTIONS_ENABLE (0x58): INTERRUPTS_ENABLE=1
-     *    [2026-07-06 Fix]: 原缺失此步骤, 依赖 MLC_Init 前置调用。显式使能更健壮。 */
+     *    显式使能基础事件，不依赖 wake-up 初始化。 */
     if (!reg_read(0x58, &reg_val)) return 4;
     reg_val |= 0x80;  /* bit7 = INTERRUPTS_ENABLE */
     if (!reg_write(0x58, reg_val)) return 4;

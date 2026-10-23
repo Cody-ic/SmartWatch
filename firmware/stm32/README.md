@@ -55,6 +55,12 @@ flowchart TD
 
 HAR 使用重采样后的数据；睡眠使用原始 26 点，避免把 100 Hz 数据按 104 Hz 解释。含缺失 PPG 的 epoch 不用于睡眠推理。五个窗口都有效后，约 150 秒积累才能得到第一份完整特征；推理就绪状态只消费一次。
 
+### LSM6DSOX 片内决策树
+
+启动时向 MLC 加载 ST 官方腕戴活动参考树，STM32 每 2 秒读取 `MLC0_SRC`，并在 `g_mlc_activity` 中保存其他/步行/跑步分类。MLC 使用 26 Hz、52 样本窗口；IMU 及 FIFO 仍为 104 Hz，保持现有 HAR、睡眠与 PPG 批次处理。分类和 wake-up 都采用轮询，INT1 仅用于 FIFO 水位。
+
+“其他”包含非走跑动作，不能当成静止。屏幕空闲计时继续使用独立 wake-up 超阈值事件，走跑分类可恢复亮度；无效分类或通信失败时恢复亮度并重计时。模型来源、许可、104 Hz 适配与设备验证步骤见 [MLC 配置说明](Core/Inc/mlc/README.md)。当前已接入参考树，分类效果尚未完成本机佩戴验证。
+
 
 ## 构建
 
@@ -67,7 +73,7 @@ make -C Debug clean
 make -C Debug -j8 all
 ```
 
-产物为 `Debug/SmartWatch.elf`。当前链接脚本 `STM32U575RITx_FLASH.ld` 配置 FLASH 2048 KiB、主 RAM 768 KiB，保留现有配置。PCB 标注型号差异不作为当前阻塞项。最近构建的 text/data/bss 为 900272/10292/623080 字节。
+产物为 `Debug/SmartWatch.elf`。当前链接脚本 `STM32U575RITx_FLASH.ld` 配置 FLASH 2048 KiB、主 RAM 768 KiB，保留现有配置。PCB 标注型号差异不作为当前阻塞项。
 
 ## 生成代码与模型维护
 
