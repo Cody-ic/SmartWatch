@@ -42,3 +42,6 @@
 *.jks
 .DS_Store
 Thumbs.db
+
+# Local contributor/agent instructions
+AGENTS.md

@@ -47,7 +47,6 @@ hardware/
   PCB_REVIEW.md        PCB 详细检查项
   pcb/                 嘉立创原生工程
 CHANGELOG.md           软件修复记录
-AGENTS.md              贡献与维护约定
 ```
 
 先阅读本页了解功能和状态，再进入对应模块 README。消息字段、传输时序及 PCB 接线检查保留为独立文件，便于专项查阅。
@@ -145,4 +144,4 @@ App 包名为 `com.example.smartwatch_app`，版本为 `1.4.0+101`。当前主�
 
 C 沿用相邻模块风格，Dart 使用 `dart format` 和 Flutter lint。协议变更同步两个固件、App、测试与 [协议规范](firmware/stm32/PROTOCOL.md)。模型改动记录真机数据条件及更新前后效果，避免仅凭编译结果判断有效性。
 
-提交说明改动目的、影响模块和验证结果；界面改动附截图，硬件改动同步原理图和 PCB。保留第三方许可声明，不提交构建缓存、临时备份和签名密钥。更多约定见 [AGENTS.md](AGENTS.md)，修复历史见 [CHANGELOG.md](CHANGELOG.md)。
+提交说明改动目的、影响模块和验证结果；界面改动附截图，硬件改动同步原理图和 PCB。保留第三方许可声明，不提交构建缓存、临时备份和签名密钥。修复历史见 [CHANGELOG.md](CHANGELOG.md)。
