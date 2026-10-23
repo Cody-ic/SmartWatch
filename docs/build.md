@@ -34,7 +34,7 @@ Set-Location "$repo\firmware\stm32\Debug"
 
 工具链随安装版本变化，迁移开发机时调整目录。需要全量构建时，先在 `Debug` 中执行 `& $make clean`，再执行 `all`。检查命令退出码与链接完成信息，不仅检查 ELF 文件是否存在。
 
-当前链接脚本为 `STM32U575RITx_FLASH.ld`，FLASH=2048 KiB、主 RAM=768 KiB；网表器件却为 RGT6 / 1024 KiB。最终硬件型号确认后再统一，不能把当前产物仍小于 1 MiB 当作已解决选型不一致。
+当前保留 `STM32U575RITx_FLASH.ld`，FLASH=2048 KiB、主 RAM=768 KiB。用户确认 PCB 标注与工程型号的差异不影响当前使用，此项不列为烧录或功能验收的阻塞项，也没有证据将既往烧录异常归因于该差异。
 
 ### 生成代码维护约束
 
@@ -91,7 +91,7 @@ flutter test --no-pub
 
 ## 6. 烧录前准备
 
-当前硬件存在 [整改项](pcb-review.md)，用户暂未安排烧录。整改并完成连接确认后，STM32 使用 ST-LINK SWD，CH582M 使用兼容的 WCH-LinkE 两线下载。CN1 缺少 NRST/VTREF，先解决参考电压和供电。
+用户确认实板供电正常，之前出现过烧录异常；本轮暂不重新烧录，异常原因尚未定位。STM32 使用 ST-LINK SWD，CH582M 使用兼容的 WCH-LinkE 两线下载。CN1 未引出 NRST/VTREF，具体下载器接线按实际连接确认；这项接口说明不代表已经发现供电故障。图纸检查项见 [PCB 报告](pcb-review.md)。
 
 每次烧录应记录设备标识、芯片实际型号、固件版本和写入结果，再复位运行。不要执行 Readout Unprotect、全片擦除或修改选项字节来盲目解决连接问题；应先明确这些操作对现有数据的影响。
 
