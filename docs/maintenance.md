@@ -29,27 +29,26 @@
 1. 固定三端源码版本和依赖，确认工程型号与目标板一致。
 2. 完成两个固件构建、Flutter analyze/test 和涉及模块的实际 C 回归。
 3. 重新生成并核对 C/Dart 双向 fixture，确认文档字段与实现对应。
-4. 记录产物名、SHA256、工具链和测试结果，避免旧文件被误当作本次构建。
+4. 记录版本、工具链和功能测试结果。
 5. 对目标设备执行写入与 verify，记录设备标识与安装版本。
 6. 按设备矩阵完成接口、传感器、空口、异常恢复、续航与告警验收。
 
-本轮处在第 4 步的软件产物就绪状态；硬件整改及用户暂缓烧录使后续设备验收尚未执行。
+软件构建与主机逻辑测试已完成，硬件整改与真机功能验收尚未执行。
 
 ## 5. PCB 新版本交付要求
 
-修改原理图后同步 PCB，关闭 H01/H02/H03 等问题；执行原生 ERC/DRC、更新铺铜、检查未布线，再统一导出工程、网表、全部四层 Gerber、钻孔与飞针表。用同一版本号标记设计资料，重新计算 SHA256。
+修改原理图后同步 PCB，关闭 H01/H02/H03 等问题；执行原生 ERC/DRC、更新铺铜、检查未布线，再统一导出工程、网表、全部四层 Gerber、钻孔与飞针表。用同一版本号标记设计资料。
 
-原始文件仅在满足核验条件后作为设计版本上传。当前仓库的硬件目录用于说明核验状态和文件指纹，不能直接用于下单制板。
+原始文件仅在满足核验条件后作为设计版本上传。当前仓库的硬件目录用于说明发现的问题与整改状态，不能直接用于下单制板。
 
-## 6. 本地资料索引
+## 6. 源码与文档索引
 
 | 所属工程 | 资料 |
 | --- | --- |
-| STM32 | `AGENTS.md`、`CLAUDE.md`、`PROTO_TRANSFER_V2.md`、`FIXES_2026-10-23.md` |
-| STM32 回归 | `tests/host/README.md`、`verification/2026-10-23/` |
-| CH582M | `.cproject`、`src/peripheral.c`、`src/ble_uart_service/`、`CLAUDE.md` |
+| STM32 | `firmware/stm32/`、`docs/protocol.md`、`docs/changelog.md` |
+| STM32 回归 | `firmware/stm32/tests/host/README.md` |
+| CH582M | `.cproject`、`src/peripheral.c`、`src/ble_uart_service/` |
 | Flutter | `pubspec.yaml`、`pubspec.lock`、`lib/`、`test/`、Android 原生桥接 |
-| 机械外壳 | `smartwatch_case.scad`、STL、`MEASUREMENT_CHECKLIST.md` |
 
 ## 7. 优先后续工作
 

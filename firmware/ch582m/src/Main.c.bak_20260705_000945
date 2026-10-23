@@ -1,0 +1,68 @@
+/**
+ * @file    Main.c
+ * @brief   BLE UART 透传固件 — CH582M 端
+ *
+ * 接收 STM32(UART2) 数据 → BLE Notify 发手机
+ * 接收手机 BLE Write → UART2 发 STM32
+ *
+ * BLE 名称: "SmartWatch"（在 peripheral.c 中配置）
+ * 硬件连接: PA6(UART2_RX) ← STM32 PA2(TX)
+ *           PA7(UART2_TX) → STM32 PA3(RX)
+ *
+ * 备份: Main.c.bak (原始 UART 回环例程)
+ */
+
+#include "CH58x_common.h"
+#include "HAL.h"
+#include "gattprofile.h"
+#include "peripheral.h"
+
+/* TMOS 内存池 */
+__attribute__((aligned(4))) uint32_t MEM_BUF[BLE_MEMHEAP_SIZE / 4];
+
+#if (BLE_MAC == FALSE)
+const uint8_t MacAddr[6] = {0};
+#endif
+
+extern void app_uart_process(void);
+
+/*********************************************************************
+ * @brief  TMOS 系统主循环
+ */
+__HIGH_CODE
+void Main_Circulation(void)
+{
+    while (1) {
+        TMOS_SystemProcess();
+        app_uart_process();
+    }
+}
+
+/*********************************************************************
+ * @brief  主函数
+ */
+int main(void)
+{
+    SetSysClock(CLK_SOURCE_PLL_60MHz);
+
+#ifdef DEBUG
+    GPIOA_SetBits(GPIO_Pin_9);
+    GPIOA_ModeCfg(GPIO_Pin_9, GPIO_ModeOut_PP_5mA);
+    UART1_DefInit();
+    UART1_SendString((uint8_t *)"SmartWatch BLE start\r\n", 21);
+#endif
+
+    CH58X_BLEInit();
+    HAL_Init();
+    GAPRole_PeripheralInit();
+    Peripheral_Init();
+    /* [2026-07-03 FIX]: 原缺失 app_uart_init() 调用, UART2 未初始化,
+     *   GPIO/中断/DMA 均未配置, BLE透传不通。Peripheral_Init 后立即初始化UART2。 */
+    app_uart_init();
+
+#ifdef DEBUG
+    UART1_SendString((uint8_t *)"Advertising...\r\n", 15);
+#endif
+
+    Main_Circulation();
+}

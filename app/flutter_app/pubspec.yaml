@@ -1,0 +1,21 @@
+name: smartwatch_app
+description: "SmartWatch BLE Companion - Real-time health & fitness monitoring"
+publish_to: 'none'
+version: 1.4.0+101  # [2026-07-10] 移除演示模式 (demo files → .backup_demo_20260710/)
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_blue_plus: ^1.32.0
+  shared_preferences: ^2.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
