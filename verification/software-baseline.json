@@ -1,0 +1,23 @@
+{
+  "as_of": "2026-10-23",
+  "stm32": {
+    "build": "passed",
+    "text_bytes": 900272,
+    "data_bytes": 10292,
+    "bss_bytes": 623080
+  },
+  "ch582m": {
+    "build": "passed",
+    "flash_used_bytes": 143864,
+    "ram_used_bytes": 22704
+  },
+  "flutter": {
+    "analyze": "No issues found",
+    "tests_passed": 18,
+    "debug_apk_build": "passed"
+  },
+  "production_c_host_regression_groups_passed": 11,
+  "bidirectional_c_dart_fixtures": "passed",
+  "physical_device_validation": "not_performed",
+  "hardware_review": "changes_required"
+}

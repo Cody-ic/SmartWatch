@@ -1,0 +1,11 @@
+PASS: short restore preserves model
+PASS: maximum frame, out-of-order restore, duplicate and final ACK retry
+PASS: CRC failure preserves previous model
+PASS: NaN payload with valid CRC is rejected
+PASS: conflicting duplicates, expiry and new transactions cannot mix data
+PASS: overflow resets damaged receive state
+PASS: SpO2 expires without new samples and across tick wrap
+PASS: 30-second raw-IMU epoch, consumed readiness and missing-PPG rejection
+PASS: production backup frames exported for Dart interoperability
+PASS: Dart-generated transaction accepted by production STM32 parser
+PASS: CH582M FIFO full/partial-space rejection and uint16 wrap preserve packets

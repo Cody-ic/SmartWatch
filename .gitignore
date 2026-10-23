@@ -1,0 +1,13 @@
+# This publication repository contains documentation and verification summaries.
+*.elf
+*.hex
+*.apk
+*.bin
+*.zip
+*.epro2
+*.epru
+*.net
+*.log
+__pycache__/
+.DS_Store
+Thumbs.db

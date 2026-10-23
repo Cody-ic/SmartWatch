@@ -1,0 +1,30 @@
+{
+  "review_date": "2026-10-23",
+  "status": "changes_required",
+  "raw_files_published": false,
+  "connected_pin_comparisons": 234,
+  "netlist_components": 68,
+  "netlist_nets": 55,
+  "netlist_to_native_pcb_mismatches": 0,
+  "netlist_to_flying_probe_mismatches": 0,
+  "copper_layers": 4,
+  "board_diameter_mm": 32,
+  "vias": 219,
+  "inputs": [
+    {
+      "filename": "Netlist_Schematic1_2026-07-09.net",
+      "size_bytes": 74642,
+      "sha256": "c6af39aa0f59ff0e521120ebd881b4edf4c02a23737672460443dbf507ce146e"
+    },
+    {
+      "filename": "Gerber_PCB1_2026-07-09 (6).zip",
+      "size_bytes": 204267,
+      "sha256": "4ce32de5912f41670df82ab890f82efbc05210350c053242b3e2f3f138864ad4"
+    },
+    {
+      "filename": "ProPrj_智能手表V1_2026-07-09 (1).epro2",
+      "size_bytes": 932213,
+      "sha256": "f1645861c5a5e6059ed78f88823b62304295049a475ea60ccc73a532ce0aa454"
+    }
+  ]
+}
