@@ -71,7 +71,7 @@ make -C Debug -j8 all
 
 ## 生成代码与模型维护
 
-`.ioc` 与手工迁移后的初始化存在差异，不要直接用 CubeMX Generate Code 覆盖。引脚修改同时核对 `main.h`、GPIO、SPI、I2C、USART、IRQ 和硬件设计。
+`SmartWatch.ioc` 按现有代码同步引脚、时钟、ADC/DMA、中断和 FreeRTOS 参数，作为配置参考。RTC、看门狗、任务创建及电池采样时的 GPIO 切换仍由应用代码管理；保留现有 SPI2 双线 HAL 设置与 SCK/MOSI 接线。维护配置时直接修改 `.ioc` 并对照代码，不执行 Generate Code 覆盖工程。引脚修改同时核对 `main.h`、GPIO、SPI、I2C、USART、IRQ 和硬件设计。
 
 当前模型接口、真机参数和 proto 后训练约定集中在 [AI/README.md](AI/README.md)。旧模型文件仍有留存，编译范围以 `.cproject` 的排除配置为准，避免把旧 `network*.c` 与当前网络同时纳入。`App/` 是未参与当前构建的旧任务架构。
 
