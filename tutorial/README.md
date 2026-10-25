@@ -1,5 +1,7 @@
 # SmartWatch HTML 教程
 
+**[在线阅读](https://cody-ic.github.io/SmartWatch/)** · 固定网址由 GitHub Pages 托管；国内网络的可达性和速度需按实际线路测试。
+
 当前快照为 **v0.2.0 预览版**（2026-10-25）。[从 GitHub Release 下载离线包](https://github.com/Cody-ic/SmartWatch/releases/tag/tutorial-v0.2.0)，完整解压后打开 `tutorial/index.html`。[v0.1.0](https://github.com/Cody-ic/SmartWatch/releases/tag/tutorial-v0.1.0) 历史版本继续保留。
 
 默认掌握 C，按具体问题、图解、小实验和项目对照学习。入口为 [index.html](index.html)，主线第一章“裸机开发”和第二章“FreeRTOS”共 29 篇；五条支线共 50 篇课程，全站 79 篇课程、88 个 HTML 页面。支线首页是路线图，不计入课程完成数量。
@@ -58,3 +60,10 @@ python -m http.server 8000
 ## 配套示例
 
 [tutorial/examples/branches/README.md](examples/branches/README.md) 说明 Dart、Python、训练和文件升级模型的运行方法；[Flutter 电量练习](examples/flutter_watch/README.md) 使用模拟数据，提供页面测试。依赖和构建结果放在独立练习目录，课程本身仍可离线阅读。
+
+
+## 在线版本更新
+
+`.github/workflows/tutorial-pages.yml` 在 `main` 分支的教程文件变更后自动发布，也支持在 GitHub Actions 中手动运行。只将 `tutorial/` 上传为网站根目录，不包含固件、App 或硬件工程。
+
+发布完成后，课程入口保持不变。站点使用相对链接，可在 `/SmartWatch/` 子路径下阅读；学习进度按当前浏览器及网站来源保存，不会自动迁移其他域名下的记录。
