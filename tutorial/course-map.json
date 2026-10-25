@@ -1,0 +1,377 @@
+{
+  "version": "0.2.0",
+  "lesson_count": 79,
+  "lessons": [
+    {
+      "id": "00-start",
+      "path": "main/00-start.html"
+    },
+    {
+      "id": "01-gpio",
+      "path": "main/01-gpio.html"
+    },
+    {
+      "id": "02-uart",
+      "path": "main/02-uart.html"
+    },
+    {
+      "id": "03-interrupt",
+      "path": "main/03-interrupt.html"
+    },
+    {
+      "id": "05-spi",
+      "path": "main/05-spi.html"
+    },
+    {
+      "id": "06-i2c",
+      "path": "main/06-i2c.html"
+    },
+    {
+      "id": "i2c-lsm6dsox",
+      "path": "main/i2c/01-lsm6dsox.html"
+    },
+    {
+      "id": "i2c-max30102",
+      "path": "main/i2c/02-max30102.html"
+    },
+    {
+      "id": "i2c-sampling",
+      "path": "main/i2c/03-sampling.html"
+    },
+    {
+      "id": "i2c-mlc",
+      "path": "main/i2c/04-mlc.html"
+    },
+    {
+      "id": "09-adc-dac",
+      "path": "main/09-adc-dac.html"
+    },
+    {
+      "id": "adc-microphone",
+      "path": "main/adc/01-microphone.html"
+    },
+    {
+      "id": "13-wireless",
+      "path": "main/13-wireless.html"
+    },
+    {
+      "id": "04-protocol",
+      "path": "main/04-protocol.html"
+    },
+    {
+      "id": "wireless-project",
+      "path": "main/wireless/02-project.html"
+    },
+    {
+      "id": "10-dma",
+      "path": "main/10-dma.html"
+    },
+    {
+      "id": "07-clock",
+      "path": "main/07-clock.html"
+    },
+    {
+      "id": "08-timer-pwm",
+      "path": "main/08-timer-pwm.html"
+    },
+    {
+      "id": "11-system",
+      "path": "main/11-system.html"
+    },
+    {
+      "id": "12-baremetal",
+      "path": "main/12-baremetal.html"
+    },
+    {
+      "id": "rtos-foundations",
+      "path": "main/freertos/00-foundations.html"
+    },
+    {
+      "id": "14-freertos",
+      "path": "main/14-freertos.html"
+    },
+    {
+      "id": "rtos-scheduling",
+      "path": "main/freertos/02-scheduling.html"
+    },
+    {
+      "id": "rtos-semaphore",
+      "path": "main/freertos/03-semaphore.html"
+    },
+    {
+      "id": "15-sync",
+      "path": "main/15-sync.html"
+    },
+    {
+      "id": "rtos-resources",
+      "path": "main/freertos/05-resources.html"
+    },
+    {
+      "id": "rtos-audio",
+      "path": "main/freertos/06-audio.html"
+    },
+    {
+      "id": "rtos-memory",
+      "path": "main/freertos/07-memory.html"
+    },
+    {
+      "id": "rtos-project",
+      "path": "main/freertos/08-project.html"
+    },
+    {
+      "id": "05-display",
+      "path": "branches/lvgl/01-display.html"
+    },
+    {
+      "id": "lvgl-port",
+      "path": "branches/lvgl/02-port.html"
+    },
+    {
+      "id": "lvgl-widgets",
+      "path": "branches/lvgl/03-widgets.html"
+    },
+    {
+      "id": "lvgl-layout",
+      "path": "branches/lvgl/04-layout.html"
+    },
+    {
+      "id": "lvgl-events",
+      "path": "branches/lvgl/05-events.html"
+    },
+    {
+      "id": "lvgl-data",
+      "path": "branches/lvgl/06-data.html"
+    },
+    {
+      "id": "lvgl-performance",
+      "path": "branches/lvgl/07-performance.html"
+    },
+    {
+      "id": "ch582m-00-platform",
+      "path": "branches/ch582m/00-platform.html"
+    },
+    {
+      "id": "ch582m-01-project",
+      "path": "branches/ch582m/01-project.html"
+    },
+    {
+      "id": "ch582m-02-uart",
+      "path": "branches/ch582m/02-uart.html"
+    },
+    {
+      "id": "ch582m-03-events",
+      "path": "branches/ch582m/03-events.html"
+    },
+    {
+      "id": "ch582m-04-gatt",
+      "path": "branches/ch582m/04-gatt.html"
+    },
+    {
+      "id": "ch582m-05-phone-to-watch",
+      "path": "branches/ch582m/05-phone-to-watch.html"
+    },
+    {
+      "id": "ch582m-06-watch-to-phone",
+      "path": "branches/ch582m/06-watch-to-phone.html"
+    },
+    {
+      "id": "ch582m-07-integration",
+      "path": "branches/ch582m/07-integration.html"
+    },
+    {
+      "id": "flutter-00-environment",
+      "path": "branches/flutter/00-environment.html"
+    },
+    {
+      "id": "flutter-01-dart",
+      "path": "branches/flutter/01-dart.html"
+    },
+    {
+      "id": "flutter-02-page",
+      "path": "branches/flutter/02-page.html"
+    },
+    {
+      "id": "flutter-03-state",
+      "path": "branches/flutter/03-state.html"
+    },
+    {
+      "id": "flutter-04-async",
+      "path": "branches/flutter/04-async.html"
+    },
+    {
+      "id": "flutter-05-protocol",
+      "path": "branches/flutter/05-protocol.html"
+    },
+    {
+      "id": "flutter-06-bluetooth",
+      "path": "branches/flutter/06-bluetooth.html"
+    },
+    {
+      "id": "flutter-07-control",
+      "path": "branches/flutter/07-control.html"
+    },
+    {
+      "id": "flutter-08-project",
+      "path": "branches/flutter/08-project.html"
+    },
+    {
+      "id": "flutter-09-alert",
+      "path": "branches/flutter/09-alert.html"
+    },
+    {
+      "id": "ai-00-python",
+      "path": "branches/ai/00-python.html"
+    },
+    {
+      "id": "ai-01-problem",
+      "path": "branches/ai/01-problem.html"
+    },
+    {
+      "id": "ai-02-data",
+      "path": "branches/ai/02-data.html"
+    },
+    {
+      "id": "ai-03-windows",
+      "path": "branches/ai/03-windows.html"
+    },
+    {
+      "id": "ai-04-learning",
+      "path": "branches/ai/04-learning.html"
+    },
+    {
+      "id": "ai-05-training",
+      "path": "branches/ai/05-training.html"
+    },
+    {
+      "id": "ai-06-convolution",
+      "path": "branches/ai/06-convolution.html"
+    },
+    {
+      "id": "ai-07-evaluation",
+      "path": "branches/ai/07-evaluation.html"
+    },
+    {
+      "id": "ai-08-deployment",
+      "path": "branches/ai/08-deployment.html"
+    },
+    {
+      "id": "ai-09-watch",
+      "path": "branches/ai/09-watch.html"
+    },
+    {
+      "id": "ai-10-keyword",
+      "path": "branches/ai/10-keyword.html"
+    },
+    {
+      "id": "ai-11-sleep",
+      "path": "branches/ai/11-sleep.html"
+    },
+    {
+      "id": "proto-01-adaptation",
+      "path": "branches/proto/01-adaptation.html"
+    },
+    {
+      "id": "proto-02-centers",
+      "path": "branches/proto/02-centers.html"
+    },
+    {
+      "id": "proto-03-similarity",
+      "path": "branches/proto/03-similarity.html"
+    },
+    {
+      "id": "proto-04-session",
+      "path": "branches/proto/04-session.html"
+    },
+    {
+      "id": "proto-05-evaluation",
+      "path": "branches/proto/05-evaluation.html"
+    },
+    {
+      "id": "proto-06-backup",
+      "path": "branches/proto/06-backup.html"
+    },
+    {
+      "id": "proto-07-project",
+      "path": "branches/proto/07-project.html"
+    },
+    {
+      "id": "ota-01-startup",
+      "path": "branches/ota/01-startup.html"
+    },
+    {
+      "id": "ota-02-image",
+      "path": "branches/ota/02-image.html"
+    },
+    {
+      "id": "ota-03-staging",
+      "path": "branches/ota/03-staging.html"
+    },
+    {
+      "id": "ota-04-trial",
+      "path": "branches/ota/04-trial.html"
+    },
+    {
+      "id": "ota-05-wireless",
+      "path": "branches/ota/05-wireless.html"
+    },
+    {
+      "id": "ota-06-validation",
+      "path": "branches/ota/06-validation.html"
+    }
+  ],
+  "branches": {
+    "ch582m": [
+      "ch582m-00-platform",
+      "ch582m-01-project",
+      "ch582m-02-uart",
+      "ch582m-03-events",
+      "ch582m-04-gatt",
+      "ch582m-05-phone-to-watch",
+      "ch582m-06-watch-to-phone",
+      "ch582m-07-integration"
+    ],
+    "flutter": [
+      "flutter-00-environment",
+      "flutter-01-dart",
+      "flutter-02-page",
+      "flutter-03-state",
+      "flutter-04-async",
+      "flutter-05-protocol",
+      "flutter-06-bluetooth",
+      "flutter-07-control",
+      "flutter-08-project",
+      "flutter-09-alert"
+    ],
+    "ai": [
+      "ai-00-python",
+      "ai-01-problem",
+      "ai-02-data",
+      "ai-03-windows",
+      "ai-04-learning",
+      "ai-05-training",
+      "ai-06-convolution",
+      "ai-07-evaluation",
+      "ai-08-deployment",
+      "ai-09-watch",
+      "ai-10-keyword",
+      "ai-11-sleep"
+    ],
+    "proto": [
+      "proto-01-adaptation",
+      "proto-02-centers",
+      "proto-03-similarity",
+      "proto-04-session",
+      "proto-05-evaluation",
+      "proto-06-backup",
+      "proto-07-project"
+    ],
+    "ota": [
+      "ota-01-startup",
+      "ota-02-image",
+      "ota-03-staging",
+      "ota-04-trial",
+      "ota-05-wireless",
+      "ota-06-validation"
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+# Teaching programs; use an isolated Python environment.
+numpy>=2.0,<3
+torch>=2.5,<3
+onnx>=1.17,<2
+onnxruntime>=1.20,<2

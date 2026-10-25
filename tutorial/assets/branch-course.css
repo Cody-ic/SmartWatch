@@ -1,0 +1,8 @@
+.skip{position:absolute;left:-9999px}.skip:focus{left:10px;top:10px;z-index:100;background:var(--paper)}
+.branch-course .eyebrow{text-transform:none}
+.branch-course .sources{line-height:1.8}
+.branch-course .widget output{display:block;min-height:4em;font:inherit;font-size:15px;line-height:1.8}
+.branch-course .widget svg{display:block;width:100%;height:auto;margin:18px 0;background:var(--paper)}
+aside .branch-route{font-size:12px}
+aside #branch5-nav>.branch-lessons>.nav-branch{margin:2px 0}
+@media(max-width:640px){.branch-course .controls label{display:block;width:100%}.branch-course .controls input[type=range]{width:100%}}
