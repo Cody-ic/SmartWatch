@@ -4,6 +4,12 @@
 
 **当前状态：** 两份固件和 Android Debug APK 已构建通过，App 与生产 C 主机测试通过；实板供电正常，既往烧录异常待定位，完整真机功能验收尚未完成。AI 层参数和识别效果需要真机数据验证。后续后训练统一采用 **proto（原型学习）** 路线。
 
+## 图解教程
+
+[HTML 教程入口与打开方法](tutorial/README.md)：面向已有 C 基础的嵌入式初学者，按具体问题、图解、独立实验和项目实践展开。第一章为裸机开发，第二章为 FreeRTOS，含配套与拓展共 29 篇；四条支线共 11 篇，全站 40 篇课程，配有原创图解和交互实验。
+
+[下载教程 v0.1.0 预览版](https://github.com/Cody-ic/SmartWatch/releases/tag/tutorial-v0.1.0)，解压后打开 `tutorial/index.html` 即可离线阅读。[课程首页源码](tutorial/index.html) 在 GitHub 文件页中只展示 HTML，不会运行交互。
+
 ## 系统架构
 
 ```mermaid

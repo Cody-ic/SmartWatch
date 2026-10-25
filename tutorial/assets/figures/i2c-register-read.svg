@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="880" height="1170" viewBox="0 0 880 1170" role="img" aria-labelledby="title desc">
+  <title id="title">读出 MPU6050 的 WHO_AM_I：先指定位置，再取回数值</title>
+  <desc id="desc">任务是读取MPU6050内部地址0x75的WHO_AM_I，预期返回0x68。STM32先发开始信号和写方向设备地址0xD0，传感器应答ACK；STM32再发寄存器地址0x75，传感器应答ACK；STM32发重复开始并发送读方向地址0xD1，传感器应答ACK。随后由传感器发送数据0x68，STM32接收并应答NACK，表示不再读取更多字节。最后STM32发停止信号。两种方向使用同一个七位设备地址0x68。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#147764"/></marker>
+    <style>
+      text { font-family: 'Microsoft YaHei', sans-serif; fill: #183039; }
+      .title { font-size: 32px; font-weight: 700; }
+      .step { font-size: 27px; font-weight: 700; }
+      .body { font-size: 26px; }
+      .note { font-size: 24px; fill: #526c71; }
+      .card { fill: #fff; stroke: #b6c9c3; stroke-width: 1.5; }
+      .flow { fill: none; stroke: #147764; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="880" height="1170" rx="16" fill="#fffefb"/>
+  <text class="title" x="30" y="47">读取 MPU6050 的身份寄存器</text>
+  <text class="body" x="30" y="88">任务：读出 WHO_AM_I（0x75），预期返回 0x68。</text>
+  <text class="note" x="30" y="124">先告诉传感器读哪个位置，再切换方向取回数值。</text>
+
+  <rect class="card" x="30" y="150" width="820" height="160" rx="11"/>
+  <text class="step" x="55" y="186">① STM32 发送：选择芯片（写方向）</text>
+  <text class="body" x="55" y="228">发出开始信号，再发送 0xD0，选择 MPU6050。</text>
+  <rect x="48" y="248" width="784" height="43" rx="7" fill="#e6f2eb"/>
+  <text class="body" x="62" y="278">传感器回复 ACK：确认接收到设备地址。</text>
+  <path class="flow" d="M440 316V329"/>
+
+  <rect class="card" x="30" y="336" width="820" height="150" rx="11"/>
+  <text class="step" x="55" y="372">② STM32 发送：指定要读的寄存器</text>
+  <text class="body" x="55" y="412">发送 0x75，指定 WHO_AM_I 所在的位置。</text>
+  <rect x="48" y="433" width="784" height="36" rx="7" fill="#e6f2eb"/>
+  <text class="body" x="62" y="460">传感器回复 ACK：确认接收到寄存器地址。</text>
+  <path class="flow" d="M440 492V505"/>
+
+  <rect class="card" x="30" y="512" width="820" height="180" rx="11"/>
+  <text class="step" x="55" y="548">③ STM32 发送：重复开始，改为读方向</text>
+  <text class="body" x="55" y="588">不结束整笔通信，先重新发出开始信号。</text>
+  <text class="body" x="55" y="623">再发 0xD1：仍选择同一芯片，方向改为读取。</text>
+  <rect x="48" y="641" width="784" height="36" rx="7" fill="#e6f2eb"/>
+  <text class="body" x="62" y="668">传感器回复 ACK：确认接收到读方向地址。</text>
+  <path class="flow" d="M440 698V711"/>
+
+  <rect class="card" x="30" y="718" width="820" height="160" rx="11"/>
+  <text class="step" x="55" y="754">④ 传感器发送：返回寄存器中的数值</text>
+  <text class="body" x="55" y="794">MPU6050 发送 0x68，STM32 把这个字节收下来。</text>
+  <rect x="48" y="815" width="784" height="43" rx="7" fill="#fff0dc"/>
+  <text class="body" x="62" y="845">STM32 回复 NACK：只读这一个字节，不再继续读。</text>
+  <path class="flow" d="M440 884V897"/>
+
+  <rect class="card" x="30" y="904" width="820" height="130" rx="11"/>
+  <text class="step" x="55" y="940">⑤ STM32 结束：发出停止信号</text>
+  <text class="body" x="55" y="980">本次读取完成；两根线恢复空闲高电平。</text>
+  <text class="note" x="55" y="1015">现在检查：通信成功，且收到的身份值为 0x68。</text>
+
+  <text class="note" x="30" y="1075">0xD0 / 0xD1 来自同一七位设备地址 0x68，读写位不同。</text>
+  <text class="note" x="30" y="1111">前半段“写”是在指定位置，不是在修改 WHO_AM_I 的内容。</text>
+  <text class="note" x="30" y="1147">每发一个字节，随后第九个时钟由接收方应答；SCL 始终由 STM32 产生。</text>
+</svg>

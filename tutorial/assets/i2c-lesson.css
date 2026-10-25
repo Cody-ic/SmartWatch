@@ -1,0 +1,2 @@
+#s2 .widget output,#i2c-address-lab output{display:block;white-space:pre-line;line-height:1.9;margin:18px 0 8px;padding:14px 16px;background:var(--soft);color:var(--ink);border-radius:7px}
+#s2 .widget .controls label{line-height:1.7}

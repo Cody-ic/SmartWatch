@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="1290" viewBox="0 0 760 1290" role="img" aria-labelledby="title desc">
+  <title id="title">主机发送一个字节后，怎样让传感器回答 ACK 或 NACK</title>
+  <desc id="desc">STM32发完八位后，在SCL低时释放SDA，把应答机会交给接收方传感器。第九拍由传感器应答：SDA低为ACK，SDA高为NACK。STM32始终产生SCL，在第九拍高电平时读取应答，再拉低SCL结束这次应答，传感器随后释放SDA。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#147764"/></marker>
+    <style>
+      text { font-family: 'Microsoft YaHei',sans-serif; fill: #183039; }
+      .title { font-size: 29px; font-weight: 700; }
+      .step { font-size: 24px; font-weight: 700; }
+      .label { font-size: 23px; }
+      .note { font-size: 21px; fill: #526c71; }
+      .small { font-size: 19px; fill: #526c71; }
+      .card { fill: #fff; stroke: #b6c9c3; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect width="760" height="1290" rx="16" fill="#fffefb"/>
+  <text class="title" x="28" y="45">发完八位，怎样知道对方有没有确认？</text>
+  <text class="note" x="28" y="81">例子：STM32 发送，传感器接收。SCL 由 STM32 控制。</text>
+
+  <rect class="card" x="25" y="106" width="710" height="160" rx="10"/>
+  <text class="step" x="45" y="141">① 八位发完，STM32 先把 SCL 拉低</text>
+  <g fill="#e6f2eb" stroke="#98b9ac">
+    <rect x="45" y="161" width="60" height="43" rx="5"/><rect x="119" y="161" width="60" height="43" rx="5"/>
+    <rect x="193" y="161" width="60" height="43" rx="5"/><rect x="267" y="161" width="60" height="43" rx="5"/>
+    <rect x="341" y="161" width="60" height="43" rx="5"/><rect x="415" y="161" width="60" height="43" rx="5"/>
+    <rect x="489" y="161" width="60" height="43" rx="5"/><rect x="563" y="161" width="60" height="43" rx="5"/>
+  </g>
+  <g class="label" text-anchor="middle"><text x="75" y="191">位7</text><text x="149" y="191">位6</text><text x="223" y="191">位5</text><text x="297" y="191">位4</text><text x="371" y="191">位3</text><text x="445" y="191">位2</text><text x="519" y="191">位1</text><text x="593" y="191">位0</text></g>
+  <text class="note" x="45" y="242">接下来留一个时钟给对方回答，不是再发第九个数据位。</text>
+
+  <rect class="card" x="25" y="284" width="710" height="285" rx="10"/>
+  <text class="step" x="45" y="320">② SCL 仍低，STM32 释放 SDA，准备交接</text>
+  <text class="note" x="45" y="355">前八位发送结束，接下来让传感器回答。</text>
+  <rect x="45" y="382" width="270" height="93" rx="9" fill="#e8eef8" stroke="#a1b2ca"/>
+  <text class="label" x="180" y="418" text-anchor="middle">前八位</text>
+  <text class="note" x="180" y="450" text-anchor="middle">STM32 控制 SDA</text>
+  <path d="M332 429H425" fill="none" stroke="#147764" stroke-width="3" marker-end="url(#arrow)"/>
+  <rect x="445" y="382" width="270" height="93" rx="9" fill="#e6f2eb" stroke="#98b9ac"/>
+  <text class="label" x="580" y="418" text-anchor="middle">第九拍</text>
+  <text class="note" x="580" y="450" text-anchor="middle">传感器控制 SDA</text>
+  <text class="note" x="45" y="510">此时 STM32 读取应答，不再发送数据位。</text>
+  <text class="small" x="45" y="548">SCL 始终由 STM32 控制，传感器只提供应答电平。</text>
+
+  <rect class="card" x="25" y="588" width="710" height="294" rx="10"/>
+  <text class="step" x="45" y="624">③ SCL 低时，传感器准备 ACK 或 NACK</text>
+  <rect x="45" y="647" width="670" height="91" rx="7" fill="#e6f2eb"/>
+  <text class="label" x="60" y="677">ACK：传感器把 SDA 拉低</text>
+  <text class="label" x="60" y="711">第九拍 SCL 高时，STM32 读到 0</text>
+  <rect x="45" y="752" width="670" height="91" rx="7" fill="#fff0dc"/>
+  <text class="label" x="60" y="782">NACK：SDA 保持高电平</text>
+  <text class="label" x="60" y="816">第九拍 SCL 高时，STM32 读到 1</text>
+  <text class="small" x="45" y="864">两种回答，选一种；不是 ACK 和 NACK 都发一次。</text>
+
+  <rect class="card" x="25" y="901" width="710" height="273" rx="10"/>
+  <text class="step" x="45" y="937">④ STM32 产生第九拍时钟，读取应答</text>
+  <rect x="45" y="958" width="670" height="70" rx="7" fill="#e8eef8"/>
+  <text class="label" x="60" y="986">STM32 让 SCL 变高，在高电平期间读取 SDA。</text>
+  <text class="small" x="60" y="1014">传感器保持应答电平不变：ACK 为低，NACK 为高。</text>
+  <path d="M380 1035V1059" stroke="#147764" stroke-width="3" marker-end="url(#arrow)"/>
+  <text class="label" x="60" y="1093">STM32 再把 SCL 拉低，本次应答结束。</text>
+  <text class="small" x="60" y="1128">传感器此后释放 SDA。</text>
+  <text class="small" x="60" y="1155">接下来继续传输，或由 STM32 产生结束信号。</text>
+
+  <text class="note" x="28" y="1200">第九拍：传感器应答，STM32 产生时钟并读取。</text>
+  <text class="note" x="28" y="1236">换成传感器发送字节时，由主机接收并回答。</text>
+  <text class="small" x="28" y="1270">状态与动作示意，不是实测波形；不按真实传输时间绘制。</text>
+</svg>

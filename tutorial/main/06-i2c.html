@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。"><title>I²C：读懂总线，写出一个传感器驱动 · SmartWatch 学习手册</title><link rel="stylesheet" href="../assets/book.css?v=chapter-nav1"><script src="../assets/book.js?v=4" defer></script><link rel="stylesheet" href="../assets/lvgl-course.css?v=1"><script src="../assets/i2c-lesson.js?v=4" defer></script><link rel="stylesheet" href="../assets/sensor-course.css?v=1"><link rel="stylesheet" href="../assets/i2c-lesson.css?v=2"></head>
+<body data-lesson="06-i2c"><a class="skip" href="#content" style="position:absolute;left:-9999px" onfocus="this.style.left='10px'" onblur="this.style.left='-9999px'">跳到正文</a><header class="top"><button class="plain" id="menu-toggle" type="button" aria-label="展开章节导航" aria-expanded="false">目录</button><a class="brand" href="../index.html">SMARTWATCH <em>学习手册</em></a><span class="edition">有 C 基础 · 嵌入式从零开始</span><div class="tools"><button class="plain" id="theme-toggle" type="button" aria-label="切换深浅主题">明 / 暗</button><button class="plain" type="button" onclick="window.print()">打印</button></div></header><div class="layout"><aside aria-label="课程导航"><label for="search" class="eyebrow">查找章节</label><input id="search" type="search" placeholder="GPIO、UART、麦克风、无线…"><div class="progress"><span id="progress-value">0 / 40 节已完成</span><progress id="progress-bar" max="40" value="0" aria-label="课程完成进度"></progress></div><div class="nav-title">第一章：裸机开发</div><a class="lesson-link" data-id="00-start" data-keywords=" 起点：让电路、代码与工具对上号" href="00-start.html">起点：让电路、代码与工具对上号</a><a class="lesson-link" data-id="01-gpio" data-keywords=" GPIO：从点亮一盏灯到读懂按钮" href="01-gpio.html">GPIO：从点亮一盏灯到读懂按钮</a><a class="lesson-link" data-id="02-uart" data-keywords=" UART：从高低电平到一次完整收发" href="02-uart.html">UART：从高低电平到一次完整收发</a><a class="lesson-link" data-id="03-interrupt" data-keywords=" 中断：从一次按钮事件到优先级与向量表" href="03-interrupt.html">中断：从一次按钮事件到优先级与向量表</a><a class="lesson-link" data-id="05-spi" data-keywords=" SPI：先读时序，再驱动一块屏幕" href="05-spi.html">SPI：先读时序，再驱动一块屏幕</a><details class="nav-branch current-branch" id="i2c-nav" open><summary>I²C / 总线与传感器驱动</summary><div class="branch-lessons"><a class="lesson-link current" data-id="06-i2c" data-keywords="IIC I2C I²C IIC I2C I²C  I²C：从共用线路到传感器驱动" href="06-i2c.html" aria-current="page">基础 · 总线、寄存器与 MPU6050</a><a class="lesson-link branch-child" data-id="i2c-lsm6dsox" data-keywords="IIC I2C I²C 传感器 LSM6DSOX IMU FIFO 加速度 陀螺仪 LSM6DSOX：从六轴读数到 FIFO" href="i2c/01-lsm6dsox.html">01 · LSM6DSOX：从六轴读数到 FIFO</a><a class="lesson-link branch-child" data-id="i2c-max30102" data-keywords="IIC I2C I²C 传感器 MAX30102 PPG FIFO 光学 红光 红外 MAX30102：从光学原始数据到批量采样" href="i2c/02-max30102.html">02 · MAX30102：从光学原始数据到批量采样</a><a class="lesson-link branch-child" data-id="i2c-sampling" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MAX30102 IMU PPG 联合采集 重采样 降采样 104 100 线性插值 联合采集与重采样：从 104 Hz 到 100 Hz" href="i2c/03-sampling.html">03 · 联合采集与重采样：从 104 Hz 到 100 Hz</a><a class="lesson-link branch-child" data-id="i2c-mlc" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MLC 决策树 AI 训练 标注 原型 复核 扩展：片内决策树与 AI 训练数据" href="i2c/04-mlc.html">04 · 扩展：片内决策树与 AI 训练数据</a></div></details><details class="nav-branch" id="adc-nav"><summary>ADC / 电压采集与项目麦克风</summary><div class="branch-lessons"><a class="lesson-link" data-id="09-adc-dac" data-keywords="ADC 模数转换 采样 量化 参考电压 电池 DAC" href="09-adc-dac.html">基础 · ADC 原理、转换与电池电压</a><a class="lesson-link branch-child" data-id="adc-microphone" data-keywords="ADC 麦克风 SPU0410 声音 DMA 缓冲 直流偏置" href="adc/01-microphone.html">项目 · 如何实现麦克风驱动</a></div></details><details class="nav-branch" id="wireless-nav"><summary>无线通信 / 基础、协议与项目实现</summary><div class="branch-lessons"><a class="lesson-link" data-id="13-wireless" data-keywords=" 无线通信：把串口消息送到手机 无线通信：让手机和手表交换数据" href="13-wireless.html">基础 · 无线连接与字节收发</a><a class="lesson-link branch-child" data-id="04-protocol" data-keywords=" 手写应用协议：从字节流得到可靠消息 手写协议：从字节流认出一条消息" href="04-protocol.html">01 · 手写应用协议</a><a class="lesson-link branch-child" data-id="wireless-project" data-keywords="无线 BLE 蓝牙 串口 手机 CH582M 协议 项目实现 项目实现：一条消息怎样走完三端" href="wireless/02-project.html">02 · 项目中怎样实现</a></div></details><a class="lesson-link" data-id="10-dma" data-keywords=" DMA 与双缓冲：数据在谁手里？ DMA：数据怎样自动搬进数组？" href="10-dma.html">DMA：数据怎样自动搬进数组？</a><details class="nav-branch" id="embedded-extra-nav"><summary>嵌入式拓展 / 时钟、TIM 与看门狗</summary><div class="branch-lessons"><a class="lesson-link" data-id="07-clock" data-keywords=" 时钟：把所有“每秒多少次”算清楚 时钟：这些“每秒多少次”从哪里来？" href="07-clock.html">时钟 · 节奏从哪里来</a><a class="lesson-link branch-child" data-id="08-timer-pwm" data-keywords=" TIM 与 PWM：让硬件负责时间 定时器：让硬件计数、定时和输出脉冲" href="08-timer-pwm.html">TIM · 计数、定时与脉冲</a><a class="lesson-link branch-child" data-id="11-system" data-keywords=" RTC、看门狗、Flash 与低功耗 系统运行：看门狗、实时时钟、保存与低功耗" href="11-system.html">看门狗、日历、保存与低功耗</a></div></details><a class="lesson-link" data-id="12-baremetal" data-keywords=" 裸机综合：把实验组织成一个系统 裸机逻辑综合：把手表各部分接起来" href="12-baremetal.html">裸机逻辑综合：把手表各部分接起来</a><div class="nav-title">第二章：FreeRTOS</div><a class="lesson-link" data-id="rtos-foundations" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 前置 · 函数指针与多任务" href="freertos/00-foundations.html">前置 · 函数指针与多任务</a><a class="lesson-link" data-id="14-freertos" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 1 · 创建并运行任务" href="14-freertos.html">1 · 创建并运行任务</a><a class="lesson-link" data-id="rtos-scheduling" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 2 · 等待、调度与优先级" href="freertos/02-scheduling.html">2 · 等待、调度与优先级</a><a class="lesson-link" data-id="rtos-semaphore" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 3 · 中断怎样唤醒任务" href="freertos/03-semaphore.html">3 · 中断怎样唤醒任务</a><a class="lesson-link" data-id="15-sync" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 4 · 用队列交付数据" href="15-sync.html">4 · 用队列交付数据</a><a class="lesson-link" data-id="rtos-resources" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 5 · 共享资源与互斥" href="freertos/05-resources.html">5 · 共享资源与互斥</a><a class="lesson-link" data-id="rtos-audio" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 6 · 声音帧与多个使用者" href="freertos/06-audio.html">6 · 声音帧与多个使用者</a><a class="lesson-link" data-id="rtos-memory" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 7 · 栈、堆与故障排查" href="freertos/07-memory.html">7 · 栈、堆与故障排查</a><a class="lesson-link" data-id="rtos-project" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 8 · 接回完整手表" href="freertos/08-project.html">8 · 接回完整手表</a><details class="nav-branch" id="lvgl-nav"><summary>支线一 / 显示驱动与 LVGL</summary><div class="branch-lessons"><a href="../branches/lvgl.html">支线一学习路线 · 7 篇</a><a class="lesson-link branch-child" data-id="05-display" data-keywords="LVGL UI 屏幕 控件 01 · 先驱动手表彩屏：GC9A01 与 RGB565" href="../branches/lvgl/01-display.html">01 · 先驱动手表彩屏：GC9A01 与 RGB565</a><a class="lesson-link branch-child" data-id="lvgl-port" data-keywords="LVGL UI 屏幕 控件 02 · 把 LVGL 接到屏幕：缓冲、刷新与时间" href="../branches/lvgl/02-port.html">02 · 把 LVGL 接到屏幕：缓冲、刷新与时间</a><a class="lesson-link branch-child" data-id="lvgl-widgets" data-keywords="LVGL UI 屏幕 控件 03 · 第一个界面：对象、标签与常用控件" href="../branches/lvgl/03-widgets.html">03 · 第一个界面：对象、标签与常用控件</a><a class="lesson-link branch-child" data-id="lvgl-layout" data-keywords="LVGL UI 屏幕 控件 04 · 把界面排整齐：布局、样式与显示资源" href="../branches/lvgl/04-layout.html">04 · 把界面排整齐：布局、样式与显示资源</a><a class="lesson-link branch-child" data-id="lvgl-events" data-keywords="LVGL UI 屏幕 控件 05 · 让界面响应：事件、输入与页面切换" href="../branches/lvgl/05-events.html">05 · 让界面响应：事件、输入与页面切换</a><a class="lesson-link branch-child" data-id="lvgl-data" data-keywords="LVGL UI 屏幕 控件 06 · 让界面持续正确：数据、定时器与生命周期" href="../branches/lvgl/06-data.html">06 · 让界面持续正确：数据、定时器与生命周期</a><a class="lesson-link branch-child" data-id="lvgl-performance" data-keywords="LVGL UI 屏幕 控件 07 · 把刷新做稳：性能、DMA 改造与排错" href="../branches/lvgl/07-performance.html">07 · 把刷新做稳：性能、DMA 改造与排错</a></div></details><div class="nav-title">其他支线 / App、AI 与升级</div><a class="lesson-link" data-id="flutter" data-keywords=" 支线二：从上位机到 Flutter App" href="../branches/flutter.html">支线二：从上位机到 Flutter App</a><a class="lesson-link" data-id="ai-st" data-keywords=" 支线三：AI 数据、训练与 ST.AI 接入" href="../branches/ai-st.html">支线三：AI 数据、训练与 ST.AI 接入</a><a class="lesson-link" data-id="proto" data-keywords=" 支线四 A：原型网络与真机后训练" href="../branches/proto.html">支线四 A：原型网络与真机后训练</a><a class="lesson-link" data-id="ota" data-keywords=" 支线四 B：无线固件升级的完整设计" href="../branches/ota.html">支线四 B：无线固件升级的完整设计</a><p id="search-empty" class="search-empty" hidden>未找到章节，试试 UART、麦克风、无线等关键词。</p><div class="nav-title">查阅</div><a href="../references.html">资料来源与版本说明</a><a href="https://github.com/Cody-ic/SmartWatch/blob/main/README.md" target="_blank" rel="noopener">项目 README</a></aside><main id="content"><article><div class="eyebrow">主线 / 从共用线路到独立器件驱动</div><h1>I²C：读懂总线，写出一个传感器驱动</h1><p class="lead">从为什么只需要一根数据线讲起，再沿 MPU6050 的手册完成身份、配置、数据读取与驱动封装。</p><div class="meta"><span class="pill">前置：GPIO、UART、中断、SPI</span><span class="pill">实战器件：历史 MPU6050</span><span class="pill">先轮询，再类比 IT / DMA</span></div><div class="callout"><strong>这一章要带走什么？</strong>不只是记住收发函数：要能说明谁控制线路、地址怎样选择设备、寄存器怎样配置功能、原始字节怎样变成带单位的数据，并据此阅读新器件手册，搭起基础驱动。</div><nav class="toc" aria-label="本章目录"><a href="#s1">1 · 两根线的来由</a><a href="#s2">2 · 电平与字节怎样传</a><a href="#s3">3 · 寄存器与手册</a><a href="#s4">4 · CubeMX 与 HAL</a><a href="#s5">5 · 配置与驱动封装</a><a href="#s6">6 · 数据与完整实验</a><a href="#s7">7 · 迁移到项目</a><a href="#s8">排错与验收</a><a href="#quiz">检查理解</a><a href="#i2c-projects">四篇项目实战</a></nav><section id="s1"><h2>第 1 节 · 从 SPI 出发：省掉片选线，再省掉一根数据线</h2>
+<p>前面讲 SPI 时，主机通过 CS 片选线选中要通信的器件。连接多个器件时，每个器件通常都需要自己的一根 CS，器件越多，占用的片选引脚也越多。</p>
+<p>现在我们想省掉这些片选线，让多个器件共用通信线路。但这样就出现了一个问题：<strong>没有 CS 了，主机怎样确定这次选哪颗器件？器件又怎样知道主机是不是在找自己？</strong></p>
+<p>I²C（也常写 IIC）的办法是引入<strong>设备地址</strong>，用一个编号区分总线上的器件。主机在通信开头，先通过数据线发出要找的设备地址。总线上的器件都检查这个地址，只有地址匹配的器件回应并参与后续通信，其余器件不应答。这样，就能通过发送地址来选择器件，省去每颗器件单独的一根片选线。</p>
+<p>下面先讨论一个主机连接多个从机的情况；手册中的 controller/target 与常见的主机/从机说法对应。</p>
+<p>既然已经省掉了片选线，能不能再省一根线呢？<strong>可以，还能把 SPI 原来的两根数据线合成一根。</strong>接下来就看看，这一根数据线怎样完成两个方向的通信。</p>
+<h3>为什么只要一根数据线？代价是什么？</h3>
+<p>SPI 全双工接法用 MOSI 和 MISO 分别承载两个方向，可以一边发、一边收。如果放弃“两个方向同时传数据”，就能让双方轮流使用同一根线：主机发送时，从机听；从机发送时，主机听。这就是本章 IIC 的半双工方式。</p>
+<p>因此 IIC 只保留两条通信线：<strong>SCL 时钟线</strong>维持共同节奏，<strong>SDA 数据线</strong>轮流承载两个方向的数据。电源与 GND 仍要连接，“两线”不包含它们。省引脚的代价包括不能同时双向交换有效数据，以及需要地址、应答和方向交接等过程。</p><figure class="figure"><img src="../assets/figures/i2c-shared-bus.svg" alt="一颗主机和两颗不同地址的器件共用 SCL SDA" loading="lazy" style="display:block;width:100%;height:auto"><figcaption>先按地址选设备，再由双方按规则轮流使用 SDA；同一总线上地址冲突必须解决。</figcaption></figure>
+<h3>设备地址与寄存器地址不是一回事</h3>
+<p>设备地址回答“找哪颗芯片”。选中芯片后，通常还要指定“操作里面哪个位置”，这就用到寄存器地址。可以把前者理解成选择一个设备，后者理解成选择它的某项配置或数据。它们不是同一层的地址，恰好数值相同也没有特殊关系。</p>
+<p>例如 MPU6050 的七位设备地址可为 0x68；它内部的身份寄存器地址是 0x75，读出的身份值又是 0x68。这里第一个 0x68 是找设备用的编号，第二个是从数据位置读出的内容，不能因相同就认为读到了设备地址本身。</p>
+<h3 id="i2c-address-format">同一颗器件，为什么会出现 0x68、0xD0、0xD1？</h3>
+<p>先固定看一颗 MPU6050：AD0 接低电平时，它的设备地址是 <code>0x68</code>。把它写成七位二进制，就是 <code>1101000</code>。<strong>这七位只负责告诉总线上的器件“我找谁”。</strong>无论接下来读还是写，找的都是这颗 MPU6050，这七位就保持不变。</p>
+<p>但主机还要告诉被选中的器件：这次是<strong>主机写入</strong>，还是<strong>主机读取</strong>？IIC 在这七位后面再接一位：<code>0</code> 表示写，<code>1</code> 表示读。这样，通信时先发出的就是一个完整的八位字节：</p>
+<div class="table-wrap"><table><thead><tr><th>接下来要做什么</th><th>线上发出的八位：找谁 + 读写位</th><th>整个字节的值</th></tr></thead><tbody>
+<tr><td>主机向这颗器件写入</td><td><code>1101000 <strong>0</strong></code></td><td><code>0xD0</code></td></tr>
+<tr><td>主机从这颗器件读取</td><td><code>1101000 <strong>1</strong></code></td><td><code>0xD1</code></td></tr>
+</tbody></table></div>
+<p>注意看前七位，两行都是 <code>1101000</code>，所以选中的器件相同。只有最后一位变了，用来区分读、写。<strong><code>0x68</code> 是设备地址；<code>0xD0</code> 和 <code>0xD1</code> 是加上读写位后，通信时发出的地址字节。</strong></p>
+<p>现在再看数据手册的不同写法，就能对应起来了：</p>
+<ul><li>写着 <strong>7-bit address = 0x68</strong>：手册只给出了用于选择器件的七位。</li><li>分别写着 <strong>Write address = 0xD0</strong>、<strong>Read address = 0xD1</strong>：手册已经把读写位也加进去了。手册把它们称为“八位地址”时，说的就是上表中的整个地址字节。</li></ul>
+<p>所以下面统一用<strong>“设备地址”</strong>指 <code>0x68</code> 这样的七位编号，用<strong>“地址字节”</strong>指 <code>0xD0 / 0xD1</code> 这样包含读写位的八位数。查手册时先看它是否包含 <code>R/W</code> 位，再决定怎样处理。</p>
+<p class="sources">七位设备地址后接一位读写标志，见 <a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf#page=13" target="_blank" rel="noopener">NXP IIC 规范 §3.1.10、图 10</a>。</p>
+
+<h3 id="i2c-address-shift">写程序时，什么时候需要 &lt;&lt; 1？</h3>
+<p>刚才是在七位编号 <code>1101000</code> 的后面接上一个读写位。在 C 里，可以先用 <code>&lt;&lt; 1</code> 把原来的七位向左移动，末尾补一个 <code>0</code>，为读写位留出位置：</p>
+<p><code>0x68 &lt;&lt; 1</code>：<code>1101000</code> → <code>11010000</code>，结果就是 <code>0xD0</code>。</p>
+<p><strong>接下来要区分：交给 HAL 函数的参数，和最终在线路上发出的地址字节。</strong>本项目使用 STM32U5 HAL1，在七位地址模式下，<code>DevAddress</code> 这个参数要求调用者先把设备地址左移一位。因此，调用函数时这样填写：</p>
+<div class="table-wrap"><table><thead><tr><th>调用哪种函数</th><th>传给 DevAddress 的值</th></tr></thead><tbody>
+<tr><td>HAL 的写函数</td><td><code>0x68 &lt;&lt; 1</code>，也就是 <code>0xD0</code></td></tr>
+<tr><td>HAL 的读函数</td><td>同样传 <code>0x68 &lt;&lt; 1</code>，也就是 <code>0xD0</code></td></tr>
+</tbody></table></div>
+<p><strong>为什么读的时候也传 0xD0？</strong>因为读写方向由 HAL 根据调用的函数另行设置。传参时，调用者只需要把设备编号左移、留好最低位；发出读方向的地址字节时，HAL 会把读写位设成 <code>1</code>，使它成为 <code>0xD1</code>。参数里末尾补的 <code>0</code>，不代表调用者已经选定了写方向。完整的读寄存器过程会在<a href="#s3">第三节</a>展开。</p>
+<p>因此，拿到手册后，填写本章 HAL 参数时只需分清这两种常见情况：</p>
+<ol><li><strong>手册给的是设备地址 0x68：</strong>使用 <code>0x68 &lt;&lt; 1</code>，得到 <code>0xD0</code>。</li><li><strong>手册已经列出写地址 0xD0、读地址 0xD1：</strong>直接取其中的写地址 <code>0xD0</code>，读、写函数都使用它，不再左移。</li></ol>
+<p>仓库的 <code>MPU6050.c</code> 已经把 <code>MPU6050_Addr</code> 定义为 <code>0xD0</code>，所以后面读它的代码时，会看到函数直接使用这个值。<strong>左移已经做过一次，就不要再移一次。</strong>器件内部的寄存器地址 <code>0x75</code> 则仍原样传入，不参与这里的转换。</p>
+<details><summary>查阅：手册只给读地址字节，或者换了其他函数库怎么办？</summary>
+<p>如果手册明确给的是含读写位的读地址字节 <code>0xD1</code>，可以先用 <code>0xD1 &gt;&gt; 1</code> 去掉最低读写位，得到设备地址 <code>0x68</code>，再按本章 HAL 的要求左移一次。这样最终传入的仍是 <code>0xD0</code>。对已经包含读写位的数，不要直接再左移。</p>
+<p>如果换用的库规定参数直接接收七位设备地址，那就直接传 <code>0x68</code>，不用左移。是否移位由函数接口约定决定；本章“读、写都传 <code>0xD0</code>”的规则针对本项目的 STM32U5 HAL1 接口。</p>
+<p>同样，<code>I2C_MEMADD_SIZE_8BIT</code> 表示器件内部寄存器地址占一个字节，后面会在 HAL 参数表里解释。它与设备地址是否包含读写位无关。</p>
+</details>
+<p class="sources">接口约定见仓库 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c#L2772" target="_blank" rel="noopener">HAL_I2C_Mem_Read 参数说明</a>；驱动中的定义见 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/MPU6050.c#L7" target="_blank" rel="noopener">MPU6050.c</a>。函数的完整参数在<a href="#s4">第四节</a>讲解。</p>
+
+<div class="widget" id="i2c-address-lab"><h3>试一试：七位地址、线上字节与 HAL 参数</h3><div class="controls"><label>七位设备地址（十六进制）<input aria-label="IIC七位地址" value="68" maxlength="2" size="4"></label><label>方向<select aria-label="IIC读写方向"><option value="0">主机写入</option><option value="1">主机读取</option></select></label></div><output aria-live="polite"></output><p>地址字节由“七位地址＋一位方向”组成，0 表示写、1 表示读。此处演示普通七位设备，不使用保留地址与十位地址。</p></div>
+</section><section id="s2"><h2>第 2 节 · 两根线怎样传出一个字节？</h2>
+<p>先认清两根线的名字：<strong>SDA 是数据线</strong>，线上电压的高、低用来表示 1、0；<strong>SCL 是时钟线</strong>，电压反复由低变高、再变低，两端按照这个节奏安排准备数据和读取数据的动作。下面固定用 STM32 作主机、一颗传感器作从机来讲。</p>
+<p>以采用 3.3 V 逻辑电平的接线为例，以 GND 为 0 V：SDA 电压接近 0 V 时，芯片读作 0；接近 3.3 V 时，读作 1。这里先用“低”和“高”指这两种电压状态，实际判定范围以芯片手册为准。</p>
+
+<h3>先看电路：“拉低”和“释放”究竟做了什么？</h3>
+<p>STM32 和传感器都连在同一根 SDA 上。每颗芯片内部都有控制这根线的电路，可以先用一个<strong>连接 SDA 与 GND 的开关</strong>来理解：</p>
+<ol><li><strong>内部开关接通：</strong>SDA 经过芯片内部电路接到 GND，电压接近 0 V。这叫<strong>拉低 SDA</strong>。</li><li><strong>内部开关断开：</strong>这颗芯片停止把 SDA 接到 GND。这叫<strong>释放 SDA</strong>。断开的是内部连接，外面的导线仍然连在引脚上。</li></ol>
+<figure class="figure"><img src="../assets/figures/i2c-open-drain.svg?v=2" alt="SDA通过电阻接向3.3V，两颗芯片内部各有接向GND的开关" loading="lazy" style="display:block;width:100%;height:auto"><figcaption>图中的两个开关都断开，SDA 经电阻连接电源，因此为高。任意一个开关接通，SDA 就经那颗芯片接到 GND，变成低电平。开关是内部电路的示意。</figcaption></figure>
+<p>那么，两边的内部开关都断开后，SDA 怎样回到高电平？接线中还有一只电阻，把 SDA 连向 3.3 V 电源。没有芯片把 SDA 接到 GND 时，它使 SDA 回到接近 3.3 V。这只电阻叫<strong>上拉电阻</strong>。</p>
+<p>这就是本节使用的<strong>开漏输出</strong>：芯片负责接通或断开到 GND 的内部连接，上拉电阻负责在两端都断开时使线路回到高电平。后文说“拉低”，就对应第一种动作；说“释放”，就对应第二种动作。</p>
+
+<div class="widget" id="i2c-bus-lab"><h3>试一试：改变哪一条到 GND 的内部连接？</h3><p>勾选表示这颗芯片的内部开关接通；取消勾选表示内部开关断开。</p><div class="controls"><label><input type="checkbox" aria-label="STM32内部开关接通">STM32 将 SDA 接到 GND</label><label><input type="checkbox" aria-label="传感器内部开关接通">传感器将 SDA 接到 GND</label></div><output aria-live="polite"></output><p>先只勾选传感器，再勾选、取消 STM32。观察：只要传感器仍把 SDA 接到 GND，STM32 断开自己的连接后，线上电压仍然是低。</p></div>
+<details><summary>把这个电路与 GPIO 的 SET、RESET 对上</summary><p>在 GPIO 配置为开漏输出时，写 RESET 使内部电路接到 GND；写 SET 使这条内部连接断开。于是 SET 之后，读到高还是低，还要看另一颗芯片和上拉电阻。使用硬件 IIC 时，IIC 外设按通信过程控制这些动作。</p></details>
+
+<h3 id="i2c-one-bit">先只传一个 0：哪根线先变，另一端什么时候读？</h3>
+<p>现在让 STM32 发送、传感器接收。STM32 设置 SDA 上的电平，传感器按照 SCL 的节奏读取。</p>
+<ol><li><strong>让 SCL 处于低电平。</strong>这段时间用来准备要发的数据。</li><li><strong>STM32 让 SDA 变为低电平。</strong>低电平表示要发送的 <code>0</code>。</li><li><strong>让 SCL 变为高电平。</strong>SDA 保持低，传感器在这段时间读到 <code>0</code>。</li><li><strong>让 SCL 再变回低电平。</strong>这一位结束，可以准备下一位。</li></ol>
+<p>要发送 <code>1</code>，只需在第 2 步让 SDA 为高，并在第 3 步保持高，传感器读到的就是 <code>1</code>。其余步骤相同。</p>
+<div class="callout"><strong>把动作顺序记成一句话</strong>SCL 为低时，发送方准备 SDA 上的 0 或 1；SCL 为高时，发送方保持这个电压，让接收方读取；SCL 回到低后，再准备下一位。</div>
+<p>一个 0 或 1 叫一位（bit），八位组成一个字节。IIC 先传最高位 bit7，最后传 bit0。例如 <code>0xD0</code> 的二进制为 <code>11010000</code>，就按 1、1、0、1、0、0、0、0 的顺序重复上面的过程。</p>
+
+<h3 id="i2c-start-stop">怎样让器件知道“开始了”和“结束了”？</h3>
+<p>前面只看了一位数据。真正通信时，STM32 还要先发出一个开始标志，让总线上的器件准备接收。没有通信时，SDA、SCL 都保持高电平，称为<strong>空闲</strong>。</p>
+<p><strong>开始标志 START：</strong>STM32 先让 SCL 保持高，再让 SDA 从高变低。器件看到“SCL 仍然高，SDA 却从高变低”，就知道一段通信开始了。随后 STM32 让 SCL 变低，准备第一个数据位。</p>
+<p><strong>结束标志 STOP：</strong>最后一次应答结束后，STM32 先在 SCL 为低时让 SDA 变低；接着让 SCL 变高，SDA 仍保持低；最后让 SDA 从低变高。器件看到“SCL 仍然高，SDA 从低变高”，就知道这段通信结束了。</p>
+<figure class="figure"><a href="../assets/figures/i2c-start-stop-steps.svg?v=3" target="_blank" rel="noopener" aria-label="查看开始与结束步骤大图"><img src="../assets/figures/i2c-start-stop-steps.svg?v=3" alt="START与STOP分别分成三步，标出每一步SCL和SDA的电压" loading="lazy" style="display:block;width:100%;height:auto"></a><figcaption>开始和结束也有动作顺序。STOP 中先使 SCL 回到高，再让 SDA 回到高，才能形成规定的结束标志。点击图片可查看大图。</figcaption></figure>
+<p>为什么不会把它们误读成普通的 0 或 1？因为传数据时，SDA 在 SCL 为高的整段时间保持不变；START、STOP 则利用这段时间内 SDA 的变化，分别表示开始和结束。</p>
+
+<h3 id="i2c-ack">八位发完，怎样给接收方一个回应的机会？</h3>
+<p>STM32 发出八位数据，只能说明它完成了发送，还不知道传感器是否在场、是否能够接收。因此 IIC 在每个字节后留出一次应答机会，由接收方回应。</p><p>STM32 发完八位后，还会提供<strong>第九个时钟</strong>。前八拍由 STM32 在 SDA 上放数据；第九拍把 SDA 留给刚才接收数据的传感器回应，<strong>这一拍不是第九个数据位</strong>。SCL 的节奏仍由 STM32 控制。</p>
+<ol><li><strong>第八拍结束，SCL 回到低电平。</strong>STM32 释放 SDA，把第九拍的 SDA 电平交给传感器决定。</li><li><strong>传感器准备应答。</strong>确认接收时，让 SDA 为低；没有应答时，SDA 为高。</li><li><strong>STM32 让 SCL 变高，并读取 SDA。</strong>读到低，就是 <strong>ACK（应答）</strong>；读到高，就是 <strong>NACK（未应答）</strong>。</li><li><strong>STM32 再让 SCL 变低。</strong>这一拍结束，传感器释放 SDA，双方再准备后续传输或结束信号。</li></ol>
+<figure class="figure"><a href="../assets/figures/i2c-ack-steps.svg?v=3" target="_blank" rel="noopener" aria-label="查看第九拍应答步骤大图"><img src="../assets/figures/i2c-ack-steps.svg?v=3" alt="STM32发送八位后释放SDA，由传感器在第九拍给出应答电平，STM32读取结果" loading="lazy" style="display:block;width:100%;height:auto"></a><figcaption>这一例是 STM32 发数据、传感器回应。第九拍换的是 SDA 上负责回应的器件，SCL 仍由 STM32 控制。点击图片可查看大图。</figcaption></figure>
+<div class="widget" id="i2c-byte-lab"><h3>跟着一个字节走：八位数据，再读一次应答</h3><p>这里演示发送 <code>0xD0 = 11010000</code>。开始标志已发出，当前 SCL 为低；每点击一次，观察一拍由谁设置 SDA、谁读取。</p><div class="controls"><button type="button" class="plain" data-byte-next>下一拍</button><button type="button" class="plain" data-byte-reset>从第一位重新看</button><button type="button" class="plain" data-byte-play>播放过程</button></div><svg viewBox="0 0 760 120" aria-label="前八拍STM32发送数据，第九拍传感器应答的示意" role="img"></svg><output aria-live="polite"></output><p>动画刻意放慢，只演示一个字节与一次 ACK。完整读寄存器的例子接着在下一节展开。</p></div>
+
+<h3>传感器向 STM32 返回数据时，谁来应答？</h3>
+<p>读取传感器数据时，前八拍改由传感器设置 SDA，STM32 读取。第九拍就由<strong>刚接收这八位的 STM32</strong>回应。可以先用这条规则判断：这一字节是谁接收的，应答就由谁决定。</p>
+<div class="table-wrap"><table><thead><tr><th>前八拍是谁发送？</th><th>谁接收？</th><th>第九拍由谁应答？</th></tr></thead><tbody><tr><td>STM32 发送设备地址、寄存器编号或待写入的值</td><td>传感器</td><td>传感器</td></tr><tr><td>传感器返回读出的数据</td><td>STM32</td><td>STM32</td></tr></tbody></table></div>
+<p>例如 STM32 要连续读取两个字节。传感器发完第一个字节后，STM32 在第九拍让 SDA 为低，回复 ACK，表示还要继续接收；第二个字节发完后，STM32 在第九拍让 SDA 为高，回复 NACK，表示这次读取到此为止。随后由 STM32 发 STOP。</p>
+<div class="callout"><strong>同样读到 NACK，要结合它出现的位置理解</strong>发设备地址后得到 NACK，表示这次没有收到该地址的应答，需要检查地址、供电或器件状态。STM32 读完所需的最后一个字节后主动发 NACK，则是正常结束读取的步骤。</div>
+<p>把这一节连起来看，一段写入通常是：<strong>开始 → 发八位 → 读第九拍应答 → 按需要再发下一个字节并读取应答 → 结束</strong>。下一节把设备地址、寄存器编号和实际数值放入这个过程。</p>
+
+<details><summary>扩展：上拉电阻、等待时钟和线路故障</summary><p>上拉电阻要与接线和通信速率匹配。阻值过大，电压回到高可能太慢；阻值过小，接到 GND 时的电流会增加。模块可能已经带上拉电阻，接线前先查其原理图。初次实验可先用 100 kHz，随后再核对波形。</p><p>主机释放 SCL 后，线路的电压需要时间升高；传感器也可能暂时将 SCL 保持为低，让主机多等一会儿，这叫时钟拉伸。主机应确认 SCL 实际已为高，再继续相应动作；软件等待也需要超时限制。多主机同时访问和线路一直为低的恢复过程，留到基本读写通顺后再学习。</p><p>对应规范：<a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf" target="_blank" rel="noopener">NXP UM10204 Rev.7.0 §3.1.1～3.1.6、§3.1.8～3.1.9、§3.1.16</a>。</p></details>
+<details><summary>名词查阅：SDK 与 SDA、SCL 有什么区别？</summary><p>SDA、SCL 是本节两根通信线的名称。SDK 是 Software Development Kit（软件开发工具包），通常指厂商提供的一套库文件、头文件、示例和开发工具，帮助我们写程序。STM32 的库函数和示例属于软件开发资料；SDA、SCL 则对应硬件接线。</p></details>
+</section>
+<section id="s3"><h2>第 3 节 · 从一次传输，走到一次寄存器读取</h2>
+<h3>寄存器先理解成芯片开放的配置与数据位置</h3>
+<p>传感器并非接上就会主动往 MCU 内存里写数据。它通常提供若干位置：有的用于选择量程，有的表示是否准备好，有的保存测量结果。给这些位置编号，应用就能通过读写改变设置或取得信息。具体哪个地址有什么含义，必须查对应型号的寄存器手册。</p>
+<p>一个寄存器常有八位，但每一位可能做不同事情。手册里的 R 表示只读、R/W 表示可读写；Reserved 是保留位，不应随意设置。有些状态读一次就清除，有些位写 1 才清除，不能认为所有地址都像普通 RAM 一样随便读回、覆盖。</p>
+<h3 id="mpu-whoami-read">完整走一遍：让 STM32 读出 MPU6050 的型号标识</h3>
+<p>现在假设 STM32 已经接好一颗 MPU6050。我们先做一件具体的事：<strong>读出它的型号标识，检查接上的器件是否符合预期。</strong>数据手册把保存这个标识的寄存器叫作 <code>WHO_AM_I</code>，可以理解成芯片回答“我是谁”的位置。</p>
+<p>根据<a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf#page=46" target="_blank" rel="noopener">MPU6050 寄存器手册 §4.34</a>，本次读取要用到下面三个数。这里仍以 AD0 接低电平为例：</p>
+<div class="table-wrap"><table><thead><tr><th>先明确的问题</th><th>本例的答案</th></tr></thead><tbody>
+<tr><td>找总线上的哪颗芯片？</td><td>设备地址为 <code>0x68</code> 的 MPU6050</td></tr>
+<tr><td>读它内部的哪个位置？</td><td>寄存器地址 <code>0x75</code>，名称为 <code>WHO_AM_I</code></td></tr>
+<tr><td>预期从这个位置读到什么？</td><td>型号标识值 <code>0x68</code></td></tr>
+</tbody></table></div>
+<p>本例的设备地址和预期型号标识都是 <code>0x68</code>：前一个是 STM32 发出去选芯片的，后一个是芯片返回的数据。我们要完成的是：<strong>先告诉 MPU6050“我要读 0x75 这个寄存器”，再让它把其中的一个字节发回来。</strong></p>
+<figure class="figure"><a href="../assets/figures/i2c-register-read.svg?v=2" target="_blank" rel="noopener" aria-label="查看读取MPU6050型号标识的完整步骤图"><img src="../assets/figures/i2c-register-read.svg?v=2" alt="STM32选择MPU6050并指定0x75寄存器，重复开始后改为读取，传感器返回0x68，STM32结束通信" width="880" height="1170" loading="lazy" style="display:block;width:100%;height:auto"></a><figcaption>先看清整次读取的目标和方向，再按下面的步骤逐个理解。图中的 ACK 表示接收方确认，最后一次 NACK 表示 STM32 已经读完所需的一个字节。点击图片可查看大图。</figcaption></figure>
+
+<p><strong>前半段：STM32 告诉 MPU6050，要读哪个寄存器。</strong></p>
+<ol>
+<li><strong>STM32 发出 START。</strong>总线上的器件开始等待主机发送设备地址。</li>
+<li><strong>STM32 发送 <code>0xD0</code>，MPU6050 回复 ACK。</strong><code>0xD0</code> 是前面算过的“设备地址 <code>0x68</code> 加写方向”。它选中这颗 MPU6050，并说明接下来的字节由 STM32 发送。</li>
+<li><strong>STM32 发送 <code>0x75</code>，MPU6050 再回复 ACK。</strong>这个字节告诉芯片：“接下来访问 WHO_AM_I 寄存器。”芯片记下要访问的位置，准备随后返回这里的内容。</li>
+</ol>
+<p>到这里，STM32 已经把“读哪个位置”告诉了芯片。接下来要让 MPU6050 把寄存器内容发回来，因此需要<strong>把传输方向改为读</strong>。</p>
+
+<p><strong>后半段：MPU6050 返回数据，STM32 接收并结束。</strong></p>
+<ol start="4">
+<li><strong>STM32 再发出一次 START，中间先不发 STOP。</strong>上一次 ACK 结束后，SCL 先回到低，MPU6050 释放 SDA，使 SDA 回到高。随后 STM32 让 SCL 变高，再让 SDA 从高变低，形成新的 START。这就叫<strong>重复起始（Repeated START）</strong>：在同一次操作里，重新开始发送设备地址。</li>
+<li><strong>STM32 发送 <code>0xD1</code>，MPU6050 回复 ACK。</strong>这次仍选中设备地址为 <code>0x68</code> 的同一颗芯片，但最后的方向位变成了 <code>1</code>，表示“现在请你发送数据给我”。</li>
+<li><strong>MPU6050 发送寄存器中的一个字节，STM32 读取。</strong>此时数据的发送方换成了 MPU6050；SCL 时钟仍由 STM32 产生。对于 WHO_AM_I，预期收到的八位是 <code>01101000</code>，也就是 <code>0x68</code>。</li>
+<li><strong>STM32 在第九拍回复 NACK。</strong>因为只需要这一个字节，STM32 用高电平表示“这次读到这里就够了”，不再要求下一个字节。</li>
+<li><strong>STM32 发出 STOP。</strong>本次通信结束，读到的 <code>0x68</code> 已经保存在 STM32 的接收变量中。</li>
+</ol>
+<p><strong>这次读取的结果是什么？</strong>STM32 取得了 WHO_AM_I 寄存器的内容，再将它与手册给出的预期值 <code>0x68</code> 比较；一致时，就通过了这一步型号标识检查。</p>
+
+<p><strong>为什么读之前，先用写方向发两个字节？</strong>因为芯片还不知道 STM32 想读哪一个寄存器。<code>0xD0</code> 让芯片准备接收主机发来的字节，紧接着的 <code>0x75</code> 用来指定寄存器位置；随后通过重复 START 和 <code>0xD1</code> 改成读方向，芯片才把这个位置的内容返回。把它连起来记，就是：<strong>选芯片 → 指定寄存器 → 改为读方向 → 取回数据 → 结束。</strong></p>
+<p class="sources">这条先指定寄存器、再改为读取的流程，见<a href="https://cdn.sparkfun.com/assets/a/4/6/8/e/MPU_6050.pdf#page=36" target="_blank" rel="noopener">MPU6050 产品规格书 §9.3，单字节读取时序</a>。重复 START 连接着前后两段操作；其他器件是否允许中间先 STOP、是否也采用寄存器读写方式，应查它自己的手册。</p>
+
+<h3>对照一下：真正写入寄存器内容时，后面还会发什么？</h3>
+<p>例如，要把数值 <code>0x01</code> 写入 MPU6050 的电源管理寄存器 <code>0x6B</code>，STM32 会先发 START，再依次发送三个字节：</p>
+<ol><li><code>0xD0</code>：选中 MPU6050，采用写方向。</li><li><code>0x6B</code>：指定要写入的寄存器。</li><li><code>0x01</code>：把这个值作为寄存器的新内容。</li></ol>
+<p>三个字节每发送完一个，都由 MPU6050 回复 ACK，最后由 STM32 发 STOP。可以看到：<strong>指定寄存器地址之后，再发送数值，是写入内容；指定寄存器地址之后，改为读方向，则是取回内容。</strong>后面的初始化例子会再结合寄存器位定义解释具体配置值。</p>
+<h3 id="i2c-reg-functions">把刚才的寄存器读写，写成函数调用</h3>
+<p>刚才把总线上的动作逐步拆开，是为了看懂 STM32 和传感器分别做了什么。写程序时，可以调用 HAL 提供的两个函数，让 IIC 外设完成这些时序：</p>
+<div class="table-wrap"><table><thead><tr><th>函数</th><th>调用后要完成的事</th></tr></thead><tbody>
+<tr><td><code>HAL_I2C_Mem_Read()</code></td><td>指定芯片和寄存器，将读出的字节存入我们提供的变量。</td></tr>
+<tr><td><code>HAL_I2C_Mem_Write()</code></td><td>指定芯片和寄存器，将我们提供的字节写入那个位置。</td></tr>
+</tbody></table></div>
+<p>名字中的 <code>Mem</code> 在这里对应器件内部的位置，MPU6050 的寄存器也可以这样读写。这两个函数都会返回<strong>本次通信的状态</strong>，其中 <code>HAL_OK</code> 表示成功；读函数实际读到的数值，放进我们指定的变量里。</p>
+<p>下面使用已经完成 I2C1 配置和初始化的实验工程。<code>i2c.h</code> 声明了工程中的 <code>hi2c1</code> 变量，用它管理 I2C1；把 <code>&amp;hi2c1</code> 传给函数，就表示本次使用 I2C1。配置和初始化步骤接着在<a href="#s4">第四节</a>讲。</p>
+
+<p><strong>例一：读取 WHO_AM_I，让结果进入变量 id。</strong></p>
+<p>这次选设备地址 <code>0x68</code> 的 MPU6050，读寄存器 <code>0x75</code>，只取一个字节。MPU6050 规定寄存器编号用一个字节发送，所以这里的地址长度参数写 <code>I2C_MEMADD_SIZE_8BIT</code>。</p>
+<p class="snippet-label">包含 i2c.h；调用部分放在 I2C1 初始化完成之后</p>
+<pre><code>#include "i2c.h"
+
+uint8_t id = 0;
+
+HAL_StatusTypeDef read_status = HAL_I2C_Mem_Read(
+    &amp;hi2c1, 0x68 &lt;&lt; 1,
+    0x75, I2C_MEMADD_SIZE_8BIT,
+    &amp;id, 1, 50);</code></pre>
+<p>按顺序读这次调用：<code>&amp;hi2c1</code> 选择 I2C1，<code>0x68 &lt;&lt; 1</code> 选择 MPU6050，<code>0x75</code> 选择它内部的 WHO_AM_I 寄存器。<code>&amp;id</code> 告诉函数把数据存到哪里，<code>1</code> 表示读取一个字节，<code>50</code> 是以毫秒为单位的超时参数。</p>
+<p><code>HAL_StatusTypeDef</code> 是 HAL 用来表示通信状态的类型。调用返回后，先看 <code>read_status</code>：为 <code>HAL_OK</code> 时，才能把 <code>id</code> 当作本次读到的结果，再检查它是否等于 <code>0x68</code>。<strong><code>read_status</code> 保存通信状态，<code>id</code> 保存寄存器里的值。</strong>可以在调试器中分别观察它们。</p>
+<p>这一句读函数，会完成前面图里的“选择芯片 → 指定 <code>0x75</code> → 重复 START → 改成读方向 → 收取一个字节 → NACK → STOP”，并把收到的字节存入 <code>id</code>。</p>
+
+<p><strong>例二：把变量 value 里的 0x01 写入寄存器 0x6B。</strong></p>
+<p>仍然使用同一颗 MPU6050。这次将要写入的数值放在 <code>value</code> 中，再把它的地址交给写函数：</p>
+<p class="snippet-label">同样包含 i2c.h，并在 I2C1 初始化完成后调用</p>
+<pre><code>uint8_t value = 0x01;
+
+HAL_StatusTypeDef write_status = HAL_I2C_Mem_Write(
+    &amp;hi2c1, 0x68 &lt;&lt; 1,
+    0x6B, I2C_MEMADD_SIZE_8BIT,
+    &amp;value, 1, 50);</code></pre>
+<p>与读函数对照：寄存器改成了 <code>0x6B</code>，数据地址改成了 <code>&amp;value</code>。在写函数里，这个地址告诉 HAL 从哪里取得要发出的数据；<code>1</code> 表示写入一个字节。</p>
+<p>当 <code>write_status == HAL_OK</code> 时，这次写入通信已完成。对应的总线过程就是“START → 发送 <code>0xD0</code> 选芯片 → 发送 <code>0x6B</code> 选寄存器 → 发送 <code>0x01</code> 作为内容 → STOP”，三个字节都由 MPU6050 应答。</p>
+<p>后面阅读仓库的 <code>reg_read()</code> 和 <code>reg_write()</code> 时，会看到它们正是调用这两个 HAL 函数来完成寄存器操作。完整参数表见<a href="#i2c-mem-parameters">第四节的 Mem_Read / Mem_Write 说明</a>。</p>
+<p class="sources">函数签名和参数约定可对照仓库中的 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c#L2644" target="_blank" rel="noopener">HAL_I2C_Mem_Write</a>、<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c#L2781" target="_blank" rel="noopener">HAL_I2C_Mem_Read</a>。</p>
+<h3 id="mpu-manuals">本章把两份 MPU6050 手册放在旁边</h3>
+<p>主例使用仓库曾用、现已停用的 MPU6050。以下是 InvenSense 厂商原文的 SparkFun 托管副本：产品规格书 <a href="https://cdn.sparkfun.com/assets/a/4/6/8/e/MPU_6050.pdf#page=1" target="_blank" rel="noopener">PS-MPU-6000A-00 Rev.3.4（2013-08-19）</a>，负责电气、接口和通信；寄存器说明 <a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf#page=1" target="_blank" rel="noopener">RM-MPU-6000A-00 Rev.4.0（2012-03-09）</a>，负责地址和位定义。页码按各自 PDF，不要在另一版本中直接套页码。链接用于查阅，不把 MPU6000 的 SPI 能力套到 MPU6050 上。</p><div class="table-wrap"><table><thead><tr><th>要查的问题</th><th>手册入口</th><th>本章怎么用</th></tr></thead><tbody><tr><td>引脚、供电与地址选择</td><td><a href="https://cdn.sparkfun.com/assets/a/4/6/8/e/MPU_6050.pdf#page=21" target="_blank" rel="noopener">§7.1～7.2，p.21～22</a>；<a href="https://cdn.sparkfun.com/assets/a/4/6/8/e/MPU_6050.pdf#page=33" target="_blank" rel="noopener">§9.2～9.3，p.33 起</a></td><td>AD0 低选 68，高选 69；模块的稳压及上拉另查其原理图</td></tr><tr><td>身份与电源管理</td><td><a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf#page=46" target="_blank" rel="noopener">§4.34，p.46</a>；<a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf#page=41" target="_blank" rel="noopener">§4.30，p.41</a></td><td>75：WHO_AM_I；6B：复位、睡眠和时钟</td></tr><tr><td>量程、滤波与输出节奏</td><td><a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf#page=11" target="_blank" rel="noopener">§4.2～4.5，p.11～15</a></td><td>19、1A、1B、1C，读位定义再设置</td></tr><tr><td>是否有新数据、怎样拼接</td><td><a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf#page=29" target="_blank" rel="noopener">§4.17～4.20，p.29～32</a></td><td>3A 状态；3B 起连续读取加速度、温度、角速度</td></tr></tbody></table></div>
+<p>接成品模块时，VCC 标记不必然等于芯片裸片 VDD，AD0 也可能已有默认电阻。先确认模块额定供电与 IO 电平，再把 SDA/SCL 接到实验工程相应引脚并共地。INT 本章轮询实验暂不接，XDA/XCL 是辅助接口，不要误当成主 IIC 接口。</p>
+<p>已经知道线上动作之后，下一步由硬件 IIC 外设完成这些时序，先把器件读通。用普通 GPIO 手动产生相同动作的软件 IIC，放在本章末尾的可选扩展中。</p></section><section id="s4"><h2>第 4 节 · 在 CubeMX 与 HAL 中完成同一件事</h2>
+<h3>先读配置截图：哪些是主机实验需要的？</h3>
+<p>选择 I2C1 的 I2C 模式，核对 SDA、SCL 对应引脚。仓库 i2c.c 使用 PB3 作 SDA、PB6 作 SCL，配置为 Alternate Function Open Drain；这里的复用表示由 IIC 外设接管时序，开漏仍保持前面“拉低或释放”的电气规则。</p><figure class="figure"><a href="../assets/screenshots/i2c-cubemx-parameters.png" target="_blank" rel="noopener"><img src="../assets/screenshots/i2c-cubemx-parameters.png" alt="CubeMX I2C1 参数，Fast Mode 400kHz，七位地址和滤波设置" loading="lazy" style="display:block;width:100%;height:auto"></a><figcaption>I2C1 参数页面示例。初次独立接线也可从 Standard Mode 100 kHz 开始，按实际时钟重新计算 Timing。 点击可查看原图。</figcaption></figure><div class="table-wrap"><table><thead><tr><th>界面设置</th><th>怎样理解</th><th>本次使用</th></tr></thead><tbody><tr><td>I2C Speed Mode / Frequency</td><td>总线时钟速率类别与目标值</td><td>截图 Fast Mode、400 kHz；不是每秒 400000 个有效数据字节</td></tr><tr><td>Rise/Fall Time</td><td>对线路上升/下降时间的输入估计，参与时序计算</td><td>截图 100/20 ns，不是软件设置后线路就必然达到这些值</td></tr><tr><td>Analog / Digital Filter</td><td>对输入毛刺的过滤，会影响时序</td><td>截图模拟 Enabled、数字系数 0；先沿用并核对实际波形</td></tr><tr><td>Timing</td><td>根据外设时钟与时序要求计算的寄存器值</td><td>截图 0x10F02A88，与当前仓库一致；换时钟或速率不能原样照搬</td></tr><tr><td>Primary Address Length</td><td>地址格式选择</td><td>本章七位设备地址</td></tr><tr><td>Primary slave address</td><td>STM32 自己作为从机时使用的地址</td><td>主机实验中的 0 不是 MPU6050 的地址；设备地址在 HAL 调用中传入</td></tr><tr><td>Clock No Stretch Mode</td><td>STM32 作从机时是否禁止其时钟拉伸</td><td>Disabled 不代表把所有从机的拉伸关掉</td></tr><tr><td>General Call / Dual address / Autonomous</td><td>广播、自身双地址与自主工作等选项</td><td>本次不使用，按截图禁用</td></tr></tbody></table></div>
+<p>GPIO 页检查开漏与上拉，线路上的外部上拉仍需按硬件核对。PB6 的 Fast-mode Plus 驱动能力选项不等于把总线频率自动变成 1 MHz。本章解释配置，不通过 Generate Code 覆盖现有固件。</p>
+<h3>工程中的 hi2c1 从哪里来？</h3>
+<p><code>I2C_HandleTypeDef</code> 是 HAL 定义的结构体类型，用来保存某个 IIC 外设的配置、运行状态及缓冲信息。<code>hi2c1</code> 是本工程为 I2C1 定义的管理对象，<code>&amp;hi2c1</code> 是它的地址。它不是传感器设备地址；同一总线上的多个传感器使用同一个管理对象，设备地址不同。</p>
+<p>工程的 i2c.h 提供声明，i2c.c 提供对象定义与 MX_I2C1_Init。函数无参数、无返回值，完成片内 I2C1 的初始化；main 的基础初始化路径必须真正调用它。不要在实验源文件里重新定义另一个同名 hi2c1。</p>
+<h3>第一次调用：检查指定地址是否应答</h3>
+<p><code>HAL_I2C_IsDeviceReady</code> 依次接收管理对象地址、设备地址、尝试次数和超时毫秒数，返回 HAL_StatusTypeDef。HAL_OK 表示该地址通过就绪检查，不证明型号正确或已经能测量。HAL_ERROR、HAL_BUSY、HAL_TIMEOUT 要当成不同排查线索，不用一个空循环掩盖失败。</p>
+<p>这里沿用<a href="#i2c-address-shift">第一节已经算出的地址</a>：七位设备地址 <code>0x68</code> 左移一次得到 <code>0xD0</code>。本项目 STM32U5 HAL1 的读、写接口都把这个值传给 <code>DevAddress</code>，读写方向由 HAL 设置。若地址定义已经是 <code>0xD0</code>，就直接使用，不能再次左移。</p><p class="snippet-label">独立实验中的教学片段 · 不与现有驱动重复定义</p><pre><code>#include &quot;i2c.h&quot;
+
+/* 放在 HAL、GPIO、I2C1 均已初始化之后的普通 main 路径。 */
+const uint16_t mpu_address = (uint16_t)(0x68U &lt;&lt; 1);
+HAL_StatusTypeDef status = HAL_I2C_IsDeviceReady(
+    &amp;hi2c1, mpu_address, 2, 50);
+/* 在调试器观察 status；失败时先排查，不继续假定器件存在。 */</code></pre>
+<h3 id="i2c-mem-parameters">读取寄存器：Mem_Read 的 Mem 指器件内部地址</h3>
+<p><a href="#i2c-reg-functions">上一节的两个示例</a>已经展示了 Mem_Read 读回寄存器内容、Mem_Write 写入寄存器内容的效果。这里以读取 WHO_AM_I 为例，把函数的七个参数逐一对上工程中的变量和手册中的地址：</p><div class="table-wrap"><table><thead><tr><th>参数顺序</th><th>本例</th><th>作用</th></tr></thead><tbody><tr><td>hi2c</td><td>&amp;hi2c1</td><td>选片内 I2C1</td></tr><tr><td>DevAddress</td><td>0x68 &lt;&lt; 1</td><td>选总线上的 MPU6050</td></tr><tr><td>MemAddress</td><td>0x75</td><td>选器件内部 WHO_AM_I 位置</td></tr><tr><td>MemAddSize</td><td>I2C_MEMADD_SIZE_8BIT</td><td>内部地址占一个字节，不是设备地址位数，也不是结果长度</td></tr><tr><td>pData</td><td>&amp;id</td><td>接收字节写到哪里</td></tr><tr><td>Size</td><td>1</td><td>读取多少字节</td></tr><tr><td>Timeout</td><td>50</td><td>阻塞调用的超时毫秒数</td></tr></tbody></table></div><p class="snippet-label">接在上例同一作用域 · 已有 status 与 mpu_address，不重复声明</p><pre><code>uint8_t id = 0;
+status = HAL_I2C_Mem_Read(&amp;hi2c1, mpu_address,
+                          0x75, I2C_MEMADD_SIZE_8BIT,
+                          &amp;id, 1, 50);
+if (status == HAL_OK &amp;&amp; id == 0x68) {
+    /* 型号检查通过，再进入复位和配置。 */
+} else {
+    /* 分别检查通信失败与身份不符，不把 id 当有效测量值。 */
+}</code></pre>
+<p>AD0 高时，把七位地址改为 0x69，WHO_AM_I 仍按其手册返回身份值 0x68，不能要求它也变成 0x69。设备存在、型号正确、测量配置正确，是三次不同的检查。</p>
+<h3>Master_Transmit/Receive 与 Mem_Read 有什么区别？</h3>
+<p><code>HAL_I2C_Master_Transmit</code> 的参数为管理对象、左移后的设备地址、发送区地址、字节数、超时；Master_Receive 同样排列，但缓冲区用于接收。两者都返回 HAL_StatusTypeDef。它们适合按器件协议发送或接收字节，不会凭空知道内部寄存器编号。</p>
+<p>普通阻塞 Master_Transmit 后接 Master_Receive 通常是两笔带 STOP 的事务，不能据此声称一定生成了重复 START。内部地址模型适合时用 Mem_Read；特殊命令协议则按手册组织 Master 或顺序接口，不是所有器件都套同一函数。</p>
+<h3 id="i2c-async">和 SPI 一样：阻塞、_IT、_DMA</h3>
+<p>IIC 也有前一章 SPI 的三种使用方式：不带后缀的阻塞函数等到完成或失败再返回；<code>_IT</code> 启动后由中断继续处理；<code>_DMA</code> 让 DMA 搬运数据，再走完成与错误处理。<strong>UART 串口也有这三种方式</strong>，例如 HAL_UART_Transmit、HAL_UART_Transmit_IT 和 HAL_UART_Transmit_DMA。</p><div class="table-wrap"><table><thead><tr><th>本次寄存器读取</th><th>完成时走到哪里</th><th>调用者注意</th></tr></thead><tbody><tr><td>HAL_I2C_Mem_Read</td><td>函数返回后检查状态</td><td>本次先用它，把协议和测量配置看清楚</td></tr><tr><td>HAL_I2C_Mem_Read_IT</td><td>HAL_I2C_MemRxCpltCallback</td><td>启动成功不等于读取完成，接收区必须一直有效</td></tr><tr><td>HAL_I2C_Mem_Read_DMA</td><td>HAL_I2C_MemRxCpltCallback</td><td>还需 DMA 通道与中断链路；不能在完成前使用或改写接收区</td></tr></tbody></table></div>
+<p>Mem_Write 的完成通知是 MemTxCpltCallback；Master_Receive 则有 MasterRxCpltCallback，不要混用。默认回调有 __weak，可以在应用中按相同签名重新实现，并先判断 hi2c 是否对应本模块。失败走 HAL_I2C_ErrorCallback，清理忙状态并把失败交回普通流程；不要在回调中 HAL_Delay 或无限重试。</p><figure class="figure"><a href="../assets/screenshots/i2c-cubemx-nvic.png" target="_blank" rel="noopener"><img src="../assets/screenshots/i2c-cubemx-nvic.png" alt="I2C1 Event 与 Error 中断勾选，抢占优先级7，子优先级0" loading="lazy" style="display:block;width:100%;height:auto"></a><figcaption>I2C1 的事件与错误中断配置。截图是项目设置，不是所有独立实验必须采用的优先级。 点击可查看原图。</figcaption></figure>
+<p>截图中的 Event 负责外设事件、Error 负责错误，两者优先级为 7/0。只用本章阻塞函数时，不需要因为这些框勾选了才会读到数据；使用 IT/DMA 则要检查对应 IRQHandler 调到 HAL、DMA 配置和完成路径。优先级与 HAL 时基的关系按中断章处理，数字 7 不提供普遍保证。</p>
+</section><section id="s5"><h2>第 5 节 · 读懂配置位，让 MPU6050 真正开始测量</h2>
+<h3>从读身份，走到复位、唤醒和配置</h3>
+<p>WHO_AM_I 能读通，只能证明访问链路与身份检查有结果。传感器可能还在睡眠，量程也不一定符合预期。下一步先按寄存器手册复位，再退出睡眠、设置测量范围。</p><div class="table-wrap"><table><thead><tr><th>位置</th><th>本例做法</th><th>怎样对照代码理解</th></tr></thead><tbody><tr><td>6B：PWR_MGMT_1</td><td>原代码写 80 复位，等待 100 ms，再写 00 唤醒</td><td>bit7 DEVICE_RESET，bit6 SLEEP；00 清除睡眠，CLKSEL＝0</td></tr><tr><td>1A：CONFIG；19：SMPLRT_DIV</td><td>原初始化没有写这两个位置</td><td>了解原有默认配置后，再按需要修改滤波与采样分频</td></tr><tr><td>1B：GYRO_CONFIG</td><td>原代码整字节写 18，其中 FS_SEL＝3</td><td>字段位于 bit4:3，移到位置后是 18，范围 ±2000°/s</td></tr><tr><td>1C：ACCEL_CONFIG</td><td>原代码整字节写 10，其中 AFS_SEL＝2</td><td>同在 bit4:3，移到位置后是 10，范围 ±8g</td></tr></tbody></table></div>
+<p>这里的 80、00、18、10 都是十六进制字节。±8g 表示各轴配置的加速度测量范围，±2000°/s 是角速度范围；不是“角度正负 2000 度”。滤波选择与分频需要配套看，不能把任意配置都代入 1 kHz。器件采样与应用读取是不同动作，不能只看主循环多久执行一次就推断器件内部的采样率。</p>
+<h3>为什么修改两位，不能直接乱写整个字节？</h3>
+<p>例如只改加速度量程：字段值 2 的二进制是 10，要放到 bit4:3，得到 0001 0000，即 0x10。掩码 0x18 的二进制为 0001 1000，表示这两位需要修改。先读出旧配置，将对应位清零，再填入新值，其余位保留。</p><p class="snippet-label">位运算示例 · old 是已成功读出的普通 R/W 配置字节</p><pre><code>uint8_t next = (uint8_t)((old &amp; (uint8_t)~0x18U)
+                         | ((2U &lt;&lt; 3) &amp; 0x18U));</code></pre>
+<p>这叫读改写。只在手册允许的普通配置寄存器上这样做；读清零、写一清零、写入触发动作的特殊位置不能机械套用。复位后明确建立全部初始状态时，可以依据位定义写整个字节，但仍要明确保留位和其他功能的取值。</p>
+<div class="widget" id="i2c-mask-lab"><h3>只改变 bit4:3，其余位是否保留下来？</h3><div class="controls"><label>旧配置（十六进制）<input aria-label="IIC旧寄存器值" value="00" maxlength="2" size="4"></label><label>AFS_SEL<select aria-label="IIC加速度量程"><option value="0">0：±2g</option><option value="1">1：±4g</option><option value="2" selected>2：±8g</option><option value="3">3：±16g</option></select></label></div><output aria-live="polite"></output><p>仅演示位运算，不让网页配置实际器件；真实初始化还应按手册关闭不需要的自检等功能。</p></div>
+<h3>先把反复用到的读写动作，取两个简单的名字</h3>
+<p>前面读身份时，每次都要写 HAL_I2C_Mem_Read，并填写总线、设备地址、内部地址长度和超时。接下来还要读配置、读状态，而同一个器件的许多参数都相同。仓库的 MPU6050.c 将这部分重复内容放进 reg_read、reg_write，调用处就能集中看“操作哪个寄存器、读出或写入什么值”。</p>
+<p>以下直接阅读 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/MPU6050.c" target="_blank" rel="noopener">仓库的 MPU6050.c</a>；它是被 #if 0 停用的历史代码，当前手表使用 LSM6DSOX。摘录用于理解，不要求将旧驱动重新启用。</p>
+<p>文件先用 <code>MPU6050_Addr</code> 保存 HAL 所需的地址 D0，用指针 <code>hi2c</code> 保存选中的 IIC 管理对象。static 表示这些名字只供本 C 文件使用。注意这里的 hi2c 是指向已有对象的指针，不是另建一份 IIC 外设。</p><p class="snippet-label">原文件中的地址、超时与总线指针 · 只阅读，不在已有文件重复定义</p><pre><code>#define MPU6050_Addr 0xd0
+#define SENSOR_I2C_TIMEOUT 10
+static I2C_HandleTypeDef *hi2c = NULL;</code></pre><p><code>reg_read(reg)</code> 只接收内部寄存器地址，返回读取的一个字节。先给 result 留出存储，再把它的地址交给 HAL；成功后将字节返回。原函数最多尝试三次，每次失败后等待 1 ms。里面的 HAL 参数都对应第 4 节已经使用过的接口。</p><p class="snippet-label">原 MPU6050.c 节选 · 单字节读取</p><pre><code>static uint8_t reg_read(uint8_t reg)
+{
+	uint8_t result = 0;
+	for (int retry = 0; retry &lt; 3; retry++) {
+		if (HAL_I2C_Mem_Read(hi2c, MPU6050_Addr, reg, I2C_MEMADD_SIZE_8BIT, &amp;result, 1, SENSOR_I2C_TIMEOUT) == HAL_OK)
+			return result;
+		HAL_Delay(1);
+	}
+	return result;
+}</code></pre><p><code>reg_write(reg,value)</code> 接收内部地址与要写的字节，没有返回值。下面只要顺着参数看：reg 交给 MemAddress，value 的地址交给发送缓冲，长度为 1。</p><p class="snippet-label">原 MPU6050.c 节选 · 单字节写入</p><pre><code>static void reg_write(uint8_t reg, uint8_t value)
+{
+	if(hi2c == NULL) return;
+	for (int retry = 0; retry &lt; 3; retry++) {
+		if (HAL_I2C_Mem_Write(hi2c, MPU6050_Addr, reg, I2C_MEMADD_SIZE_8BIT, &amp;value, 1, SENSOR_I2C_TIMEOUT) == HAL_OK)
+			return;
+		HAL_Delay(1);
+	}
+}</code></pre><p>到这里，<code>reg_read(0x75)</code> 的意思就是“读内部 75 位置的一个字节”；<code>reg_write(0x6B,0x80)</code> 的意思就是“往内部 6B 位置写入 80”。先读懂这两个动作，再看初始化，就不会被反复出现的 HAL 固定参数打断。</p>
+<h3>把初始化从头走一遍：认身份、复位、唤醒、选量程</h3>
+<p><code>MPU6050_Init(handle)</code> 接收已经初始化好的 IIC 管理对象地址，先保存到 hi2c；原函数用 0/1 表示身份检查失败或完成本段初始化。第一次看下面这段时，先按执行顺序读，再回到上方的寄存器表核对每个常量。</p><p class="snippet-label">原 MPU6050.c 初始化节选 · 原注释保留，中文说明标注为“教学补加”</p><pre><code>uint8_t MPU6050_Init(I2C_HandleTypeDef* handle)
+{
+	uint8_t chip_dev = 0;
+	hi2c = handle; //indicates that the initialization function has been called
+	chip_dev = reg_read(0x75);
+	if(chip_dev != 0x68){
+		return 0;
+	}
+	reg_write(0x6b,0x80);
+	HAL_Delay(100);
+	reg_write(0x6b,0x00);
+	/* 教学补加：原注释的角速度单位应读作 degrees/s，不是直接输出的角度。 */
+	reg_write(0x1b,0x18);//range:-2000 degrees ~ 2000 degrees
+	reg_write(0x1c,0x10);//range:-8g ~ 8g
+	return 1;
+}</code></pre><ol><li>保存 handle 后，reg_read 就知道应该通过哪一个 IIC 外设访问器件。</li><li>读 75 得到身份值，检查是否为 68；这里先确认访问的是预期器件。</li><li>向 6B 写 80，触发复位，等待 100 ms 后再向 6B 写 00，清除睡眠并采用该值对应的内部时钟选择。</li><li>向 1B 写 18：FS_SEL 为 3，角速度量程为 ±2000°/s。单位是每秒角度，不是直接输出的角度。</li><li>向 1C 写 10：AFS_SEL 为 2，加速度量程为 ±8g。</li></ol>
+<p>这段代码没有主动配置 19、1A 的分频和滤波，因此不能认定旧驱动已经设置为某个指定的采样率。需要改变时，先查对应字段，再增加明确的寄存器写入。</p>
+<details><summary>调试时还要知道：这份旧代码怎样处理读写失败？</summary><p>原 reg_read 在三次失败后仍返回 result，reg_write 失败后没有把状态传出；所以读到 0 不能独立证明通信成功，Init 返回 1 也不能证明每次配置都已写入。实验先在 HAL 调用处观察返回值，并读回允许读取的配置。需要完善错误报告时，直接传回 HAL 状态即可，无需先设计设备框架与新的状态枚举。</p></details>
+</section><section id="s6"><h2>第 6 节 · 读出字节，再得到加速度与角速度</h2>
+<h3>先只读一个轴：两个字节分别是什么？</h3>
+<p>初始化后，先用前面已经学会的 HAL_I2C_Mem_Read，从加速度 X 的高字节地址 3B 连续读两个字节。它们依次是高八位、低八位。下面是在独立实验 main 中增加的观察代码，不是另一套驱动；地址使用同一个 68 左移结果。</p><p class="snippet-label">基础初始化和 MPU6050_Init 已完成 · 单独观察一个轴，不同时启动旧驱动的 DMA</p><pre><code>uint8_t x_bytes[2];
+HAL_StatusTypeDef status = HAL_I2C_Mem_Read(
+    &amp;hi2c1, (uint16_t)(0x68U &lt;&lt; 1), 0x3B,
+    I2C_MEMADD_SIZE_8BIT, x_bytes, 2, 50);
+if (status == HAL_OK) {
+    /* 本次读取成功后，再按下面的方法拼接。 */
+}</code></pre><p>以 10 00 为例，高字节 10 放到整个数的高八位，再与低字节 00 合并，得到 0x1000＝4096。若收到 F0 00，则位模式为 F000，按 16 位补码是 -4096。负号表示测量方向，不是通信错误。</p><p class="snippet-label">先无符号拼接，再解释符号 · 当前原驱动设置 ±8g，对应 4096 LSB/g</p><pre><code>/* 放在上面的 status == HAL_OK 分支内。 */
+uint16_t bits = (uint16_t)(((uint16_t)x_bytes[0] &lt;&lt; 8) | x_bytes[1]);
+int32_t value = bits;
+if (bits &gt;= 0x8000U) {
+    value -= 65536;  /* 将 16 位补码解释为负数。 */
+}
+int16_t ax = (int16_t)value;
+float ax_g = ax / 4096.0f;</code></pre><p>也可以像旧驱动中那样将两字节的拼接直接写在赋值语句里。上面多展开几行，只为先看清位模式怎样变成正负数。量程改变后，换算系数必须一起改；±2000°/s 对应的角速度系数为 16.4 LSB/(°/s)。静止时，加速度某个轴出现约 ±1g 是正常现象；陀螺仪输出的是角速度，不是直接输出角度。</p>
+<div class="widget" id="i2c-decode-lab"><h3>拼一次字节，再按量程换算</h3><div class="controls"><label>高字节（十六进制）<input aria-label="IIC样本高字节" value="F0" maxlength="2" size="4"></label><label>低字节（十六进制）<input aria-label="IIC样本低字节" value="00" maxlength="2" size="4"></label></div><output aria-live="polite"></output><p>按原驱动加速度 ±8g、4096 LSB/g 换算。试试 10 00、F0 00、7F FF 与 80 00。</p></div>
+<h3>要读齐所有轴，就沿着手册连续读十四个字节</h3>
+<p>从 3B 起依次是加速度 X/Y/Z、温度、角速度 X/Y/Z，每项两个字节，共十四个字节。中间的温度不能跳过去，否则后面三个轴的位置就错了。</p>
+<figure class="figure"><img src="../assets/figures/i2c-sample-bytes.svg" alt="十四字节依次为加速度XYZ温度角速度XYZ，每项高字节在前" loading="lazy" style="display:block;width:100%;height:auto"><figcaption>先将数组下标与手册输出位置对应，再写数据处理。</figcaption></figure>
+<h3>再读项目原有的 DMA 路径：开始、完成、取走</h3>
+<p>原驱动用 DMA 一次读取十四字节。<code>DmaBuffer</code> 是长期存在的接收数组；<code>raw_data[2][7]</code> 保存两组七项结果；active_buf_idx 表示完成回调当前写哪一组，isready 表示有一组数据待应用读取。先沿一次正常流程理解这些变量，不把它们当成写所有驱动都必须具备的结构。</p><p class="snippet-label">原文件的接收与结果存储 · aligned(4) 为工程 GCC 的四字节对齐写法</p><pre><code>static uint8_t DmaBuffer[14] __attribute__((aligned(4)));
+static int16_t raw_data[2][7];
+static volatile uint8_t isready = 0;
+static volatile uint8_t active_buf_idx = 0;</code></pre><p><code>MPU6050_readbegin()</code> 没有参数和返回值，向 HAL 提交一次从 3B 开始的十四字节读取。HAL_I2C_Mem_Read_DMA 返回表示启动是否成功，不表示数据已到达。</p><p class="snippet-label">原 MPU6050.c 节选 · 认识启动动作；旧代码未报告启动失败</p><pre><code>void MPU6050_readbegin(void){
+	if(hi2c == NULL || hi2c-&gt;State == HAL_I2C_STATE_BUSY) return;//if not initialized or it is busy, do not execute
+	HAL_I2C_Mem_Read_DMA(hi2c, MPU6050_Addr, 0x3b, I2C_MEMADD_SIZE_8BIT, DmaBuffer, 14);
+}</code></pre><p>数据全部收到后再拼接。整理后的文件直接展示了回调，与启动、取数据函数连在一起阅读；整个驱动仍被外层 #if 0 排除编译。Mem_Read_DMA 使用 <strong>HAL_I2C_MemRxCpltCallback</strong>，源码注释也说明了这个对应关系。下面保留逐项展开的处理方式；实际移植时需接入应用已有回调，不重复定义。</p><p class="snippet-label">MPU6050.c 回调节选 · 随整个旧驱动被 #if 0 排除；拼接的补码含义见前文</p><pre><code>void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef* hi2cPar){
+	if(hi2cPar == hi2c) {
+		raw_data[active_buf_idx][0] = ((int16_t)DmaBuffer[0] &lt;&lt; 8) | DmaBuffer[1];
+		raw_data[active_buf_idx][1] = ((int16_t)DmaBuffer[2] &lt;&lt; 8) | DmaBuffer[3];
+		raw_data[active_buf_idx][2] = ((int16_t)DmaBuffer[4] &lt;&lt; 8) | DmaBuffer[5];
+		raw_data[active_buf_idx][3] = ((int16_t)DmaBuffer[6] &lt;&lt; 8) | DmaBuffer[7];
+		raw_data[active_buf_idx][4] = ((int16_t)DmaBuffer[8] &lt;&lt; 8) | DmaBuffer[9];
+		raw_data[active_buf_idx][5] = ((int16_t)DmaBuffer[10] &lt;&lt; 8) | DmaBuffer[11];
+		raw_data[active_buf_idx][6] = ((int16_t)DmaBuffer[12] &lt;&lt; 8) | DmaBuffer[13];
+		active_buf_idx = !active_buf_idx;
+		isready = 1;
+	}
+}</code></pre><p>先写完七项，再切换 active_buf_idx、置 isready。应用通过 MPU6050_isReady 判断，再由 MPU6050_getData 把另一组结果写入传入的七个变量地址，并清掉 isready。取走的是原始 int16_t；需要显示 g 或 °/s 时再按配置换算。</p><p class="snippet-label">原 MPU6050.c 节选 · 参数依次对应加速度、温度、角速度</p><pre><code>void MPU6050_getData(int16_t* ax, int16_t* ay, int16_t* az, int16_t* temp, int16_t* gx, int16_t* gy, int16_t* gz)
+{
+	if(hi2c == NULL) return;
+	uint8_t read_idx = 0;
+	if(active_buf_idx == 0) read_idx =1;//read inactive cache area only
+	*ax = raw_data[read_idx][0];
+	*ay = raw_data[read_idx][1];
+	*az = raw_data[read_idx][2];
+	*temp = raw_data[read_idx][3];
+	*gx = raw_data[read_idx][4];
+	*gy = raw_data[read_idx][5];
+	*gz = raw_data[read_idx][6];
+	isready = 0;
+}</code></pre><p>这不是无限缓冲：如果采集不断继续而应用一直不取，两组结果仍可能被后续覆盖。初次实验先一次启动、等完成、取走，再启动下一次；更高采样率下的数据一致性、丢样策略和 DMA 配置留到相应章节展开。不要仅靠 volatile 或“两组数组”就认定任何并发访问都安全。</p>
+<p>没有硬件时，先对照手册手算字节位置与换算；有设备后，从身份、配置读回、一个轴，再到全部数据逐步检查。读取失败时，不将数组原来留着的内容当成本次新数据。</p>
+</section><section id="s7"><h2>第 7 节 · 回到仓库，把方法迁移到其他器件</h2>
+<p>现在回看 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/MPU6050.c" target="_blank" rel="noopener">旧 MPU6050.c</a>：文件被 #if 0 排除，旧地址 D0 正是 68 左移一次；初始化中的 1B/18、1C/10 就是本篇逐项读过的量程设置。但旧 reg_write 没有把失败传回上层，旧代码的 DMA 与回调片段也不是本章可直接启用的完整驱动。不要为了练习删除 #if 0、替换当前 IMU。</p>
+<p>手表当前 IMU 是 LSM6DSOX，光学传感器是 MAX30102。它们使用同样的 IIC 事务思路，但身份、位定义、字节顺序及 FIFO 行为需要重新查各自手册，不能只把 MPU6050 的设备地址改掉。</p><div class="table-wrap"><table><thead><tr><th>器件与资料</th><th>沿仓库找什么</th><th>迁移时重新核对</th></tr></thead><tbody><tr><td>LSM6DSOX：<a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf" target="_blank" rel="noopener">ST DS12814 Rev.4（2024-06）</a></td><td><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/LSM6DSOX.c" target="_blank" rel="noopener">LSM6DSOX.c</a> 的初始化、WHO_AM_I、FIFO 读取</td><td>器件地址、输出高低字节顺序、连续读控制、FIFO 标签与水位</td></tr><tr><td>MAX30102：<a href="https://www.analog.com/media/en/technical-documentation/data-sheets/max30102.pdf" target="_blank" rel="noopener">ADI/MAXIM Rev.1（2018-10）</a></td><td><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/MAX30102.c" target="_blank" rel="noopener">max30102.c</a> 的身份检查、模式与 FIFO 读取</td><td>每个通道的有效位、每样本字节数、FIFO 指针及溢出处理</td></tr></tbody></table></div>
+<p>查新芯片时先找 Interface、Register Map、Reset/Power、Data Output 等章节，再沿驱动调用对应起来。上表给出的是控制器/传感器原文，不替代具体成品模块的稳压、上拉或排针说明。</p>
+<h3>到这里，“能写驱动”应具体意味着什么？</h3>
+<p>已有 GPIO、SPI、IIC 后，应能为项目中这些接口的普通器件搭起基础驱动：确认接线与协议，建立初始化，读写配置，解释数据，返回错误，再让应用调用。这里也有一条结构上的共同点：底层搬字节，器件层解释命令和寄存器，应用层决定数据显示和业务行为。</p><figure class="figure"><img src="../assets/figures/i2c-driver-layers.svg" alt="GPIO SPI IIC收发到器件语义再到应用的数据路径" loading="lazy" style="display:block;width:100%;height:auto"><figcaption>屏幕驱动把像素变成命令，传感器驱动把寄存器字节变成测量值；应用都不必重复实现底层事务。</figcaption></figure>
+<p>麦克风的数据采集、持续缓冲留到采样与 DMA 等知识后再讲。FIFO、中断与 DMA 是提升采集效率的下一步，本章先完成基础轮询路径，不把“会读寄存器”扩大成已经实现所有器件功能。</p>
+<h3>独立任务：不用照抄，自己补一个小功能</h3>
+<ol><li>把 AD0 置为模块支持的另一个状态，重新确定设备地址；解释为什么 WHO_AM_I 不跟着变。</li><li>把加速度范围改为 ±4g，根据手册修改字段和换算系数，读回确认。不要只改打印单位。</li><li>从手册找到温度输出的转换关系，增加一个接口，说明它测的不是哪一种温度。</li><li>迁移到一颗当前项目传感器：先完成身份检查与一个配置字段读回，再继续数据输出。列出与 MPU6050 不同的三处协议或数据细节。</li></ol>
+</section><section id="s8"><h2>排错与验收 · 从线上应答，检查到应用数据</h2><div class="table-wrap"><table><thead><tr><th>现象</th><th>先看什么</th><th>不要直接下结论</th></tr></thead><tbody><tr><td>地址后 NACK</td><td>七位地址和左移次数、AD0、供电、SDA/SCL 与上拉</td><td>不是扫描出任意地址就能确定型号</td></tr><tr><td>HAL_BUSY</td><td>上次操作是否结束、总线是否卡低、是否多个路径同时访问</td><td>不是立刻再启动十次传输</td></tr><tr><td>一直等不到数据</td><td>初始化返回值、SLEEP、配置读回、数据就绪</td><td>不是把未更新缓冲区重复画出来</td></tr><tr><td>数值极大或变号异常</td><td>高低字节、补码、14字节中的温度位置</td><td>不是一看到负数就认为测量错误</td></tr><tr><td>换量程后结果翻倍</td><td>配置字段与换算常数是否同时改变</td><td>不是固定除以一个数适用于所有配置</td></tr><tr><td>100kHz可用、400kHz失败</td><td>上拉、电容、上升时间、Timing所用外设时钟</td><td>不是只把频率框改成400就完成了提速</td></tr><tr><td>IT/DMA没有回调</td><td>事件/错误IRQ、DMAIRQ、HAL处理入口、正确Mem回调</td><td>不是启动返回HAL_OK就已经拿到数据</td></tr></tbody></table></div>
+<p>最终验收：能在纸上写出 WHO_AM_I 的完整事务和各拍 SDA 的控制方；能解释每个 HAL 参数；能从手册推导量程配置与换算；断开器件后能报告失败，恢复连接后按应用策略重新初始化；旧数据不会继续被当作新样本。没有硬件时先完成网页推导、代码编译与逻辑测试，真机读数、时序和电气性能仍需后续测量。</p>
+</section><section id="soft-i2c"><h2>可选扩展 · 用已经学过的 GPIO，手动发送一个字节</h2>
+<p>主线用硬件 IIC 完成器件访问，到这里可以直接继续后面的课程。本扩展只给希望亲自控制电平的读者：把第 2 节的动作逐句写成 HAL_GPIO_WritePin 和 HAL_GPIO_ReadPin，不使用隐藏实现的时序辅助函数。</p>
+<p>使用独立实验板的 PB8 作 SCL、PB9 作 SDA，在 CubeMX 将它们设为<strong>普通开漏输出</strong>，初始高，按实验硬件配置外部上拉与共地；不配置成 IIC 复用功能，也不接管手表正在使用的 IIC1。开漏写 SET 是释放，写 RESET 是拉低，ReadPin 读实际线上电平。</p>
+<h3>先明确时间：这个例子刻意很慢</h3>
+<p>为直接使用已经学过的 HAL_Delay，每阶段等待 1 ms，因此只是低速观察实验，不是 100/400 kHz 的软件 IIC；也不适用于带特殊事务超时限制的任意器件。函数在普通 main 路径调用，HAL 毫秒时基必须工作，不能放中断里。精确的微秒时序到时钟、定时器章节再处理。</p>
+<h3>一位怎样发出去？看见每一次引脚操作</h3>
+<p>下面的 SoftI2C_SendByte(value) 接收一个字节，返回 HAL_OK 表示收到 ACK，HAL_ERROR 表示 NACK，HAL_TIMEOUT 表示释放 SCL 后等不到高。调用前已开始事务、SCL 为低；它负责八位和第九拍应答，不负责选设备、START 或 STOP。</p><p class="snippet-label">低速独立 GPIO 实验 · 每步操作明确展开；不是完整多主机驱动</p><pre><code>HAL_StatusTypeDef SoftI2C_SendByte(uint8_t value)
+{
+    for (int bit = 7; bit &gt;= 0; bit--) {
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+        if ((value &amp; (1U &lt;&lt; bit)) != 0) {
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+        } else {
+            HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+        }
+        HAL_Delay(1);  /* SCL 低时，先准备好 SDA。 */
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+        uint32_t started = HAL_GetTick();
+        while (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == GPIO_PIN_RESET) {
+            if ((uint32_t)(HAL_GetTick() - started) &gt;= 10U) {
+                HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET);
+                return HAL_TIMEOUT;
+            }
+        }
+        HAL_Delay(1);  /* SCL 已高：保持 SDA，让接收方读。 */
+        HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+        HAL_Delay(1);
+    }
+
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET); /* 松手等应答。 */
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+    uint32_t started = HAL_GetTick();
+    while (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == GPIO_PIN_RESET) {
+        if ((uint32_t)(HAL_GetTick() - started) &gt;= 10U) {
+            return HAL_TIMEOUT;
+        }
+    }
+    HAL_Delay(1);
+    GPIO_PinState ack_level = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+    HAL_Delay(1);
+    return ack_level == GPIO_PIN_RESET ? HAL_OK : HAL_ERROR;
+}</code></pre><p>先只看循环第一轮：bit 为 7，取出最高位，决定 PB9 拉低还是释放；等待后释放 PB8，读回时钟确实为高，再保持数据。八轮结束后 PB9 释放，把第九拍交给接收方。这里保留了重复的等待代码，便于将每一行与电平动作对应；不先提取新函数。</p>
+<h3>START 与 STOP 怎样接上去？</h3>
+<p>START 前，先释放 SDA/SCL 并确认两者都为高；若读到低，本次不要开始，先排查总线占用或卡低。确认空闲后，SCL 仍高时拉低 SDA，再拉低 SCL。下面是这一段的实际操作：</p><p class="snippet-label">独立 main 中观察：开始后仅发送 MPU6050 写地址字节；不是完整寄存器访问</p><pre><code>HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8 | GPIO_PIN_9, GPIO_PIN_SET);
+HAL_Delay(1);
+if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == GPIO_PIN_SET &amp;&amp;
+    HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_9) == GPIO_PIN_SET) {
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET); /* START */
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_RESET);
+    HAL_Delay(1);
+    HAL_StatusTypeDef status = SoftI2C_SendByte(0xD0);
+    /* 检查 status；随后完成 STOP 或进入下一字节。 */
+} else {
+    /* 本次没有开始事务，不继续发送。 */
+}</code></pre><p>STOP 的顺序相反：SCL 低时先将 SDA 拉低，释放 SCL 并确认实际变高，然后释放 SDA，使它在 SCL 高时上升。若 SCL 等不到高，STOP 就没有真正完成，需按失败处理，不能继续说总线已经空闲。</p><p class="snippet-label">低速 STOP 操作片段 · 超时不是通过输出一个高电平就能消除的</p><pre><code>/* 接在 SCL 当前为低、单字节正常结束的路径。 */
+HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_RESET);
+HAL_Delay(1);
+HAL_GPIO_WritePin(GPIOB, GPIO_PIN_8, GPIO_PIN_SET);
+uint32_t stop_started = HAL_GetTick();
+while (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == GPIO_PIN_RESET &amp;&amp;
+       (uint32_t)(HAL_GetTick() - stop_started) &lt; 10U) {
+    /* 有限等待实际时钟变高。 */
+}
+if (HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_8) == GPIO_PIN_SET) {
+    HAL_Delay(1);
+    HAL_GPIO_WritePin(GPIOB, GPIO_PIN_9, GPIO_PIN_SET); /* STOP */
+    HAL_Delay(1);
+} else {
+    /* 总线仍有故障，不当作 STOP 成功。 */
+}</code></pre><p>读者可再按相同电平规则实现读取八位及主机 ACK/NACK；先画清每拍由谁控制 SDA，再写 GPIO 语句。完整重复开始、故障清理、仲裁和精确时序另行实现，本扩展不把一个 SendByte 当成完整驱动。</p></section><section id="quiz"><h2>检查理解</h2><form class="quiz" data-answer="1" data-explain="设备地址选择芯片，75 选择内部身份位置；重复开始切到读方向，最后 NACK 结束本次读取。" data-hint="先区分设备、内部位置、结果与应答的发送方。"><fieldset><legend>七位地址 68 的 MPU6050 读取 75 身份寄存器，哪条顺序正确？</legend><label><input type="radio" name="answer" value="0">S → 75 → 68 → P</label><label><input type="radio" name="answer" value="1">S → D0 → ACK → 75 → ACK → Sr → D1 → ACK → 数据 → 主机NACK → P</label><label><input type="radio" name="answer" value="2">只发 D1，任何时候都不用先选择内部位置</label></fieldset><button type="submit" class="plain">检查理解</button><output aria-live="polite"></output></form></section><section id="i2c-projects"><h2>接下来：四篇项目传感器实战</h2><p>目录中点击“I²C / 总线与传感器驱动”即可展开基础篇和四篇实战。先用刚学会的读写方法驱动两颗器件，再组织联合采集与重采样，最后按需部署片内决策树。</p><div class="cards"><a class="card" href="i2c/01-lsm6dsox.html"><small>IIC 项目实战 · 01</small><h3>LSM6DSOX：从六轴读数到 FIFO</h3><p>先取得能解释的六轴读数，再让 FIFO 保存连续记录，并按水位读取。</p></a><a class="card" href="i2c/02-max30102.html"><small>IIC 项目实战 · 02</small><h3>MAX30102：从光学原始数据到批量采样</h3><p>从光照和原始数值开始，读出一组红光与红外，再组织连续批量采样。</p></a><a class="card" href="i2c/03-sampling.html"><small>IIC 项目实战 · 03</small><h3>联合采集与重采样：从 104 Hz 到 100 Hz</h3><p>将两颗传感器放进同一条采集路径，推导 26 对与 25 组，并用线性插值满足算法输入要求。</p></a><a class="card" href="i2c/04-mlc.html"><small>IIC 项目实战 · 04</small><h3>扩展：片内决策树与 AI 训练数据</h3><p>把参考树部署到 LSM6DSOX，并理解它怎样辅助人工标注、复核分歧和比较模型。</p></a></div></section><section id="sources"><h2>参考与源码入口</h2><ul class="sources"><li><a href="https://www.nxp.com/docs/en/user-guide/UM10204.pdf" target="_blank" rel="noopener">NXP UM10204 Rev.7.0</a>：§3.1.1～3.1.10 电平、字节、应答与地址；§3.1.16 总线清理。</li><li><a href="https://cdn.sparkfun.com/assets/a/4/6/8/e/MPU_6050.pdf" target="_blank" rel="noopener">InvenSense MPU-6000/6050 产品规格 Rev.3.4</a> 与 <a href="https://cdn.sparkfun.com/datasheets/Sensors/Accelerometers/RM-MPU-6000A.pdf" target="_blank" rel="noopener">寄存器说明 Rev.4.0</a>：正文阅读入口见 MPU 手册对照表，两份均为 SparkFun 托管的厂商原文。</li><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Drivers/STM32U5xx_HAL_Driver/Src/stm32u5xx_hal_i2c.c" target="_blank" rel="noopener">仓库 STM32U5 HAL1 IIC 源码</a>：地址传参、阻塞事务与 Mem 完成回调；以工程所用版本为准。</li><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/i2c.c" target="_blank" rel="noopener">当前 i2c.c</a>、<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/MPU6050.c" target="_blank" rel="noopener">停用的 MPU6050.c</a>：配置与历史实现对应。正文直接阅读历史驱动，并将接口修正单独注明；现有固件不作修改。</li></ul><p class="sources">原创图解和交互模型用于理解流程，不是实测波形。配置截图按所示 I2C1 页面解释。相关资料亦见 <a href="../references.html">资料索引</a>。</p></section><nav class="chapter-end" aria-label="章节切换"><a href="05-spi.html">← SPI 主线</a><button class="action" id="mark-done" type="button">标记本章完成</button><a href="i2c/01-lsm6dsox.html">LSM6DSOX：从六轴读数到 FIFO →</a></nav><footer>SmartWatch 学习手册 · 2026-10-23 初版<br>文字、实验示例与教学图为本教程组织编写；参考资料在各章末注明。示意动画不代表真实硬件测量，代码片段不是完整可直接刷入的固件。阅读与交互可离线进行，资料链接需联网。学习进度仅保存在当前浏览器；存储不可用时不影响阅读。</footer></article></main></div></body></html>

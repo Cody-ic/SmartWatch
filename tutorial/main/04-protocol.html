@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="手写协议：从字节流认出一条消息，从具体问题、图解到项目源码。"><title>手写协议：从字节流认出一条消息 · SmartWatch 学习手册</title><link rel="stylesheet" href="../assets/book.css?v=chapter-nav1"><script src="../assets/book.js?v=4" defer></script><link rel="stylesheet" href="../assets/lvgl-course.css?v=1"><link rel="stylesheet" href="../assets/sensor-course.css?v=1"><link rel="stylesheet" href="../assets/sensor-course.css?v=1"></head>
+<body class="sensor-course" data-lesson="04-protocol"><a class="skip" href="#content" style="position:absolute;left:-9999px" onfocus="this.style.left='10px'" onblur="this.style.left='-9999px'">跳到正文</a><header class="top"><button class="plain" id="menu-toggle" type="button" aria-label="展开章节导航" aria-expanded="false">目录</button><a class="brand" href="../index.html">SMARTWATCH <em>学习手册</em></a><span class="edition">有 C 基础 · 嵌入式从零开始</span><div class="tools"><button class="plain" id="theme-toggle" type="button" aria-label="切换深浅主题">明 / 暗</button><button class="plain" type="button" onclick="window.print()">打印</button></div></header><div class="layout"><aside aria-label="课程导航"><label for="search" class="eyebrow">查找章节</label><input id="search" type="search" placeholder="GPIO、UART、麦克风、无线…"><div class="progress"><span id="progress-value">0 / 40 节已完成</span><progress id="progress-bar" max="40" value="0" aria-label="课程完成进度"></progress></div><div class="nav-title">第一章：裸机开发</div><a class="lesson-link" data-id="00-start" data-keywords=" 起点：让电路、代码与工具对上号" href="00-start.html">起点：让电路、代码与工具对上号</a><a class="lesson-link" data-id="01-gpio" data-keywords=" GPIO：从点亮一盏灯到读懂按钮" href="01-gpio.html">GPIO：从点亮一盏灯到读懂按钮</a><a class="lesson-link" data-id="02-uart" data-keywords=" UART：从高低电平到一次完整收发" href="02-uart.html">UART：从高低电平到一次完整收发</a><a class="lesson-link" data-id="03-interrupt" data-keywords=" 中断：从一次按钮事件到优先级与向量表" href="03-interrupt.html">中断：从一次按钮事件到优先级与向量表</a><a class="lesson-link" data-id="05-spi" data-keywords=" SPI：先读时序，再驱动一块屏幕" href="05-spi.html">SPI：先读时序，再驱动一块屏幕</a><details class="nav-branch" id="i2c-nav"><summary>I²C / 总线与传感器驱动</summary><div class="branch-lessons"><a class="lesson-link" data-id="06-i2c" data-keywords="IIC I2C I²C IIC I2C I²C  I²C：从共用线路到传感器驱动" href="06-i2c.html">基础 · 总线、寄存器与 MPU6050</a><a class="lesson-link branch-child" data-id="i2c-lsm6dsox" data-keywords="IIC I2C I²C 传感器 LSM6DSOX IMU FIFO 加速度 陀螺仪 LSM6DSOX：从六轴读数到 FIFO" href="i2c/01-lsm6dsox.html">01 · LSM6DSOX：从六轴读数到 FIFO</a><a class="lesson-link branch-child" data-id="i2c-max30102" data-keywords="IIC I2C I²C 传感器 MAX30102 PPG FIFO 光学 红光 红外 MAX30102：从光学原始数据到批量采样" href="i2c/02-max30102.html">02 · MAX30102：从光学原始数据到批量采样</a><a class="lesson-link branch-child" data-id="i2c-sampling" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MAX30102 IMU PPG 联合采集 重采样 降采样 104 100 线性插值 联合采集与重采样：从 104 Hz 到 100 Hz" href="i2c/03-sampling.html">03 · 联合采集与重采样：从 104 Hz 到 100 Hz</a><a class="lesson-link branch-child" data-id="i2c-mlc" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MLC 决策树 AI 训练 标注 原型 复核 扩展：片内决策树与 AI 训练数据" href="i2c/04-mlc.html">04 · 扩展：片内决策树与 AI 训练数据</a></div></details><details class="nav-branch" id="adc-nav"><summary>ADC / 电压采集与项目麦克风</summary><div class="branch-lessons"><a class="lesson-link" data-id="09-adc-dac" data-keywords="ADC 模数转换 采样 量化 参考电压 电池 DAC" href="09-adc-dac.html">基础 · ADC 原理、转换与电池电压</a><a class="lesson-link branch-child" data-id="adc-microphone" data-keywords="ADC 麦克风 SPU0410 声音 DMA 缓冲 直流偏置" href="adc/01-microphone.html">项目 · 如何实现麦克风驱动</a></div></details><details class="nav-branch" id="wireless-nav"><summary>无线通信 / 基础、协议与项目实现</summary><div class="branch-lessons"><a class="lesson-link" data-id="13-wireless" data-keywords=" 无线通信：把串口消息送到手机 无线通信：让手机和手表交换数据" href="13-wireless.html">基础 · 无线连接与字节收发</a><a class="lesson-link branch-child" data-id="04-protocol" data-keywords=" 手写应用协议：从字节流得到可靠消息 手写协议：从字节流认出一条消息" href="04-protocol.html">01 · 手写应用协议</a><a class="lesson-link branch-child" data-id="wireless-project" data-keywords="无线 BLE 蓝牙 串口 手机 CH582M 协议 项目实现 项目实现：一条消息怎样走完三端" href="wireless/02-project.html">02 · 项目中怎样实现</a></div></details><a class="lesson-link" data-id="10-dma" data-keywords=" DMA 与双缓冲：数据在谁手里？ DMA：数据怎样自动搬进数组？" href="10-dma.html">DMA：数据怎样自动搬进数组？</a><details class="nav-branch" id="embedded-extra-nav"><summary>嵌入式拓展 / 时钟、TIM 与看门狗</summary><div class="branch-lessons"><a class="lesson-link" data-id="07-clock" data-keywords=" 时钟：把所有“每秒多少次”算清楚 时钟：这些“每秒多少次”从哪里来？" href="07-clock.html">时钟 · 节奏从哪里来</a><a class="lesson-link branch-child" data-id="08-timer-pwm" data-keywords=" TIM 与 PWM：让硬件负责时间 定时器：让硬件计数、定时和输出脉冲" href="08-timer-pwm.html">TIM · 计数、定时与脉冲</a><a class="lesson-link branch-child" data-id="11-system" data-keywords=" RTC、看门狗、Flash 与低功耗 系统运行：看门狗、实时时钟、保存与低功耗" href="11-system.html">看门狗、日历、保存与低功耗</a></div></details><a class="lesson-link" data-id="12-baremetal" data-keywords=" 裸机综合：把实验组织成一个系统 裸机逻辑综合：把手表各部分接起来" href="12-baremetal.html">裸机逻辑综合：把手表各部分接起来</a><div class="nav-title">第二章：FreeRTOS</div><a class="lesson-link" data-id="rtos-foundations" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 前置 · 函数指针与多任务" href="freertos/00-foundations.html">前置 · 函数指针与多任务</a><a class="lesson-link" data-id="14-freertos" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 1 · 创建并运行任务" href="14-freertos.html">1 · 创建并运行任务</a><a class="lesson-link" data-id="rtos-scheduling" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 2 · 等待、调度与优先级" href="freertos/02-scheduling.html">2 · 等待、调度与优先级</a><a class="lesson-link" data-id="rtos-semaphore" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 3 · 中断怎样唤醒任务" href="freertos/03-semaphore.html">3 · 中断怎样唤醒任务</a><a class="lesson-link" data-id="15-sync" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 4 · 用队列交付数据" href="15-sync.html">4 · 用队列交付数据</a><a class="lesson-link" data-id="rtos-resources" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 5 · 共享资源与互斥" href="freertos/05-resources.html">5 · 共享资源与互斥</a><a class="lesson-link" data-id="rtos-audio" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 6 · 声音帧与多个使用者" href="freertos/06-audio.html">6 · 声音帧与多个使用者</a><a class="lesson-link" data-id="rtos-memory" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 7 · 栈、堆与故障排查" href="freertos/07-memory.html">7 · 栈、堆与故障排查</a><a class="lesson-link" data-id="rtos-project" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 8 · 接回完整手表" href="freertos/08-project.html">8 · 接回完整手表</a><details class="nav-branch" id="lvgl-nav"><summary>支线一 / 显示驱动与 LVGL</summary><div class="branch-lessons"><a href="../branches/lvgl.html">支线一学习路线 · 7 篇</a><a class="lesson-link branch-child" data-id="05-display" data-keywords="LVGL UI 屏幕 控件 01 · 先驱动手表彩屏：GC9A01 与 RGB565" href="../branches/lvgl/01-display.html">01 · 先驱动手表彩屏：GC9A01 与 RGB565</a><a class="lesson-link branch-child" data-id="lvgl-port" data-keywords="LVGL UI 屏幕 控件 02 · 把 LVGL 接到屏幕：缓冲、刷新与时间" href="../branches/lvgl/02-port.html">02 · 把 LVGL 接到屏幕：缓冲、刷新与时间</a><a class="lesson-link branch-child" data-id="lvgl-widgets" data-keywords="LVGL UI 屏幕 控件 03 · 第一个界面：对象、标签与常用控件" href="../branches/lvgl/03-widgets.html">03 · 第一个界面：对象、标签与常用控件</a><a class="lesson-link branch-child" data-id="lvgl-layout" data-keywords="LVGL UI 屏幕 控件 04 · 把界面排整齐：布局、样式与显示资源" href="../branches/lvgl/04-layout.html">04 · 把界面排整齐：布局、样式与显示资源</a><a class="lesson-link branch-child" data-id="lvgl-events" data-keywords="LVGL UI 屏幕 控件 05 · 让界面响应：事件、输入与页面切换" href="../branches/lvgl/05-events.html">05 · 让界面响应：事件、输入与页面切换</a><a class="lesson-link branch-child" data-id="lvgl-data" data-keywords="LVGL UI 屏幕 控件 06 · 让界面持续正确：数据、定时器与生命周期" href="../branches/lvgl/06-data.html">06 · 让界面持续正确：数据、定时器与生命周期</a><a class="lesson-link branch-child" data-id="lvgl-performance" data-keywords="LVGL UI 屏幕 控件 07 · 把刷新做稳：性能、DMA 改造与排错" href="../branches/lvgl/07-performance.html">07 · 把刷新做稳：性能、DMA 改造与排错</a></div></details><div class="nav-title">其他支线 / App、AI 与升级</div><a class="lesson-link" data-id="flutter" data-keywords=" 支线二：从上位机到 Flutter App" href="../branches/flutter.html">支线二：从上位机到 Flutter App</a><a class="lesson-link" data-id="ai-st" data-keywords=" 支线三：AI 数据、训练与 ST.AI 接入" href="../branches/ai-st.html">支线三：AI 数据、训练与 ST.AI 接入</a><a class="lesson-link" data-id="proto" data-keywords=" 支线四 A：原型网络与真机后训练" href="../branches/proto.html">支线四 A：原型网络与真机后训练</a><a class="lesson-link" data-id="ota" data-keywords=" 支线四 B：无线固件升级的完整设计" href="../branches/ota.html">支线四 B：无线固件升级的完整设计</a><p id="search-empty" class="search-empty" hidden>未找到章节，试试 UART、麦克风、无线等关键词。</p><div class="nav-title">查阅</div><a href="../references.html">资料来源与版本说明</a><a href="https://github.com/Cody-ic/SmartWatch/blob/main/README.md" target="_blank" rel="noopener">项目 README</a></aside><main id="content"><article><div class="eyebrow">无线通信子篇 / 01</div>
+<h1>手写协议：从字节流认出一条消息</h1>
+<p class="lead">上一篇已经把手机、无线芯片和 STM32 接通。现在从一条电池消息开始，逐步约定它从哪里开始、表示什么、占多长，以及收到后怎样检查，再把这些规则写成 C 程序。</p>
+<div class="meta"><span class="pill">前置：串口字节、数组、移位</span><span class="pill">沿问题逐步增加字段</span><span class="pill">使用项目现有外层格式</span></div>
+<nav class="toc" id="lesson-outline" aria-label="本篇目录"><a href="#s1">1 · 先约定一个数怎样发送</a><a href="#s2">2 · 消息怎样开始、结束和检查</a><a href="#s3">3 · 按字段把消息打包</a><a href="#s4">4 · 一次来一个字节，怎样接起来</a><a href="#s5">5 · 从正确接收，到确认执行</a></nav>
+
+<section id="s1"><h2>第 1 节 · 要发送 4000，先发送哪几个字节？</h2>
+<p>假设手表电池为 4000 毫伏。整数 4000 的十六进制写法是 0x0FA0，超过一个字节能表示的范围，所以用两个字节保存。还要约定先发哪一个：项目默认<strong>低字节在前</strong>，即先 A0、后 0F，叫小端字节序。</p>
+<p>接收方用“第一个字节＋第二个字节左移八位”恢复整数。先确定这条约定，才能避免两边把同一组字节解释成不同的数。发送二进制 A0、0F，与发送四个字符“4”“0”“0”“0”是两种格式；本项目使用前者。</p>
+<pre><code>uint16_t millivolts = 4000;
+uint8_t payload[3];
+payload[0] = (uint8_t)millivolts;        /* A0：低八位 */
+payload[1] = (uint8_t)(millivolts &gt;&gt; 8); /* 0F：高八位 */
+payload[2] = 60;                         /* 电量百分比 */</code></pre>
+<p>payload 表示载荷，也就是消息实际携带的内容。这里约定前三项分别为电压低字节、电压高字节、电量百分比，得到 <code>A0 0F 3C</code>。60 的十六进制为 3C；接收方需要知道第三项的单位是百分比。</p>
+</section>
+
+<section id="s2"><h2>第 2 节 · 只有载荷，接收方怎样认出这是一条电池消息？</h2>
+<p>如果心率、步数和电池字节连续到来，接收方需要知道当前消息从哪里开始、是哪一种、还要收几个字节。于是依次增加三个字段：</p>
+<ol><li><strong>帧头 AA。</strong>先找到一个约定的起点。</li><li><strong>类型 06。</strong>告诉接收方按电池消息的字段解释。项目还有 02 心率、91 时间设置等其他类型。</li><li><strong>载荷长度 03。</strong>说明接下来三个字节属于本条消息；不包含帧头、类型、长度自身和最后的校验字节。</li></ol>
+<p>把一条消息按照这种格式包起来，叫<strong>组帧</strong>。目前已有 <code>AA 06 03 A0 0F 3C</code>。如果其中一个字节传错，接收方还需要一种检查手段，因此最后再附加一个校验字节。</p>
+<h3>让所有字节相加，低八位等于零</h3>
+<p>先把已有六个字节相加：170＋6＋3＋160＋15＋60＝414。414 的低八位是 158，再加 98，就得到 512，低八位为零。98 的十六进制是 62，因此最终一帧为：</p>
+<figure class="figure" id="wireless-frame"><svg viewBox="0 0 900 310" role="img" aria-labelledby="wireless-frame-title wireless-frame-desc" xmlns="http://www.w3.org/2000/svg"><title id="wireless-frame-title">电池消息的五个字段</title><desc id="wireless-frame-desc">AA帧头，06类型，03载荷长度，A0 0F 3C载荷，62校验。总长7字节，电压4000毫伏和电量60%。</desc><defs><marker id="wireless-frame-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L10 5 L0 10 Z" fill="#276e64"/></marker></defs><rect x="1" y="1" width="898" height="308" rx="16" fill="#f5f8f5" stroke="#b5c8c0"/><g font-family="Microsoft YaHei, sans-serif"><text x="30" y="45" font-size="28" fill="#183c36" text-anchor="start" font-weight="bold">一条电池上报：把三个载荷字节包成完整消息</text><rect x="20" y="88" width="130" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="85.0" y="130" font-size="31" fill="#183c36" text-anchor="middle" font-weight="bold">AA</text><text x="85.0" y="168" font-size="23" fill="#183c36" text-anchor="middle">帧头</text><rect x="165" y="88" width="130" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="230.0" y="130" font-size="31" fill="#183c36" text-anchor="middle" font-weight="bold">06</text><text x="230.0" y="168" font-size="23" fill="#183c36" text-anchor="middle">电池类型</text><rect x="310" y="88" width="130" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="375.0" y="130" font-size="31" fill="#183c36" text-anchor="middle" font-weight="bold">03</text><text x="375.0" y="168" font-size="23" fill="#183c36" text-anchor="middle">载荷长度</text><rect x="455" y="88" width="260" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="585.0" y="130" font-size="31" fill="#183c36" text-anchor="middle" font-weight="bold">A0 0F 3C</text><text x="585.0" y="168" font-size="23" fill="#183c36" text-anchor="middle">4000 毫伏、60%</text><rect x="730" y="88" width="150" height="105" rx="10" fill="#fff1df" stroke="#276e64"/><text x="805.0" y="130" font-size="31" fill="#183c36" text-anchor="middle" font-weight="bold">62</text><text x="805.0" y="168" font-size="23" fill="#183c36" text-anchor="middle">校验</text><text x="450" y="240" font-size="25" fill="#183c36" text-anchor="middle">一共 7 字节；03 只计算中间三个载荷字节。</text><text x="450" y="280" font-size="25" fill="#183c36" text-anchor="middle">全部字节相加，低八位为 00。</text></g></svg><figcaption>字节显示为十六进制。类型和载荷字段均按当前项目协议解释。</figcaption></figure>
+<p>这里每个数字均为十六进制。发送端计算 <code>校验 = (uint8_t)(0U - sum)</code>；接收端把整帧相加，检查转为 uint8_t 后是否为零。uint8_t 只保留低八位，使加法在 0～255 范围内循环。这个简单和校验能发现一部分错误，并不能发现所有多字节错误，也不证明发送者身份。</p>
+<p>项目载荷最多 124 字节，连同四个外层字节，总帧长最多 128 字节。收到 length=255 时，应立即拒绝，不能先写进 124 字节数组再检查。帧头也可能出现在载荷里：一旦已知道长度，就按长度取完，不能见到 AA 就重开一帧。</p>
+</section>
+
+<section id="s3"><h2>第 3 节 · 已经写过一条，再把重复动作封装成打包函数</h2>
+<p>电池、心率等消息的外层动作相同：放帧头、类型和长度，复制载荷，再算校验。这时再提取为 <code>pack()</code>，可以省掉重复代码。它接收类型、载荷地址、载荷长度、输出数组和输出容量；成功返回实际帧长，空间或参数不符合要求时返回 0。</p>
+<p>完整例程见本节末尾。先看已经解释过的核心步骤：</p>
+<pre><code>out[0] = 0xAA;
+out[1] = type;
+out[2] = length;
+for (uint8_t i = 0; i &lt; length; i++) out[3 + i] = payload[i];
+uint8_t sum = 0;
+for (size_t i = 0; i &lt; (size_t)length + 3; i++) sum += out[i];
+out[3 + length] = (uint8_t)(0U - sum);</code></pre>
+<p>调用前已经在上一节准备好了 payload；输出数组为最大帧留够空间：</p>
+<pre><code>uint8_t frame[128];
+size_t frame_size = pack(0x06, payload, 3, frame, sizeof(frame));
+/* 成功时 frame_size 为 7，frame 是 AA 06 03 A0 0F 3C 62。 */</code></pre>
+<p>基础链路中可调用 <code>HAL_UART_Transmit(&amp;huart1, frame, frame_size, 50)</code> 发送，最后一个参数是最长等待毫秒数。数组在发送完成前必须有效。当前阻塞发送会等待串口送出；返回 HAL_OK 只说明串口这一步成功，手机是否收全要在接收端确认。</p>
+<div class="widget" data-widget="packet"><h3>输入一帧，检查长度与校验</h3><div class="controls"><label>十六进制字节 <input type="text" value="AA 06 03 A0 0F 3C 62" style="width:100%;max-width:32em"></label></div><output class="result" aria-live="polite"></output><p>修改其中一个载荷字节，观察校验失败；把长度改成 04，观察当前字节数不足。它只检查外层格式，不会真的发送命令。</p></div>
+</section>
+
+<section id="s4"><h2>第 4 节 · 一次来一个字节，程序怎样记住收到哪了？</h2>
+<p>串口可能先送来 AA、06，过一会儿才来剩余字节。函数返回以后，下次仍要知道“类型已收到，接下来等长度”。用一个变量记录当前位置，这就是这里需要的<strong>解析状态</strong>。状态机表示：当前等什么，收到以后做什么，再转去等什么。</p>
+<div class="table-wrap"><table><thead><tr><th>当前等什么</th><th>这次怎样处理</th><th>接着等什么</th></tr></thead><tbody><tr><td>帧头</td><td>跳过其他字节，遇到 AA 记下起点</td><td>类型</td></tr><tr><td>类型</td><td>保存这一个字节</td><td>载荷长度</td></tr><tr><td>长度</td><td>检查不超过 124，清除已收数量</td><td>长度为零直接等校验，否则等载荷</td></tr><tr><td>载荷</td><td>依次保存，直到收到规定数量</td><td>校验</td></tr><tr><td>校验</td><td>检查整帧低八位和是否为零</td><td>回到帧头；正确时报告一条消息完成</td></tr></tbody></table></div>
+<p>教学例程的 <code>receive_byte(byte)</code> 每次接收一个字节。返回 0 表示还没有得到完整正确消息；返回 1 时，可以读取 frame_type、frame_length、frame_payload，再处理下一字节。它们是本例的接收结果，不是串口硬件寄存器。</p>
+<p class="snippet-label">完整例程中，正在等待载荷这一分支</p>
+<pre><code>case WAIT_PAYLOAD:
+    frame_payload[index_in_payload++] = byte;
+    running_sum += byte;
+    if (index_in_payload == frame_length) state = WAIT_CHECKSUM;
+    break;</code></pre>
+<p>长度在前一状态已经限制到数组范围，才能安全保存。下面对一段已到达的字节数组逐个调用；每认出一条，就先处理它，再继续喂后面的字节：</p>
+<pre><code>for (size_t i = 0; i &lt; count; i++) {
+    if (receive_byte(bytes[i])) {
+        if (frame_type == 0x06 &amp;&amp; frame_length == 3) {
+            uint16_t mv = (uint16_t)frame_payload[0]
+                        | ((uint16_t)frame_payload[1] &lt;&lt; 8);
+            uint8_t percent = frame_payload[2];
+            /* 这里使用 mv 和 percent，再处理后续字节。 */
+        }
+    }
+}</code></pre>
+<p>把一帧分成 2 字节和 5 字节送入，或把两帧接在一起送入，都应该得到相同结果。解析器关心连续字节顺序，不依赖一次蓝牙回调或串口回调的边界。</p>
+<h3>半帧之后再也没有数据怎么办？</h3>
+<p>不能永远停在“还差两个载荷字节”。接收端记录最后来字节的时刻，超过约定等待上限就调用 <code>reset_receiver()</code>，重新找帧头。缓冲区溢出、已知丢字节时也要丢弃损坏的半帧。当前仓库的普通半帧超时为 100 毫秒，具体选择要结合链路；教学纯 C 例程把重置接口留出来，由使用它的主循环处理时间。</p>
+<details><summary>展开完整打包与逐字节解析例程</summary><p>这是本篇用到的完整 C 例程。先分段读懂，再整体对照；只在单一主循环中调用解析函数并即时使用完成结果。</p><pre><code>/* 教学例程：外层格式与当前手表一致；在主循环中逐字节调用。 */
+#include &lt;stdint.h&gt;
+#include &lt;stddef.h&gt;
+
+/* 调用 receive_byte() 返回 1 后，先使用这三个结果，再喂下一个字节。 */
+uint8_t frame_type;
+uint8_t frame_length;
+uint8_t frame_payload[124];
+
+/* 返回实际帧长；参数或空间不足时返回 0。长度是载荷字节数。 */
+size_t pack(uint8_t type, const uint8_t *payload, uint8_t length,
+            uint8_t *out, size_t capacity)
+{
+    if (out == NULL || length &gt; 124 || capacity &lt; (size_t)length + 4)
+        return 0;
+    if (length != 0 &amp;&amp; payload == NULL) return 0;
+    out[0] = 0xAA;
+    out[1] = type;
+    out[2] = length;
+    for (uint8_t i = 0; i &lt; length; i++) out[3 + i] = payload[i];
+    uint8_t sum = 0;
+    for (size_t i = 0; i &lt; (size_t)length + 3; i++) sum += out[i];
+    out[3 + length] = (uint8_t)(0U - sum);
+    return (size_t)length + 4;
+}
+
+/* 状态只表示“下一个字节应该放在哪个字段”。 */
+enum { WAIT_HEADER, WAIT_TYPE, WAIT_LENGTH, WAIT_PAYLOAD, WAIT_CHECKSUM };
+static uint8_t state = WAIT_HEADER;
+static uint8_t index_in_payload;
+static uint8_t running_sum;
+
+/* 丢字节、缓冲区溢出或半帧超时后调用，重新寻找帧头。 */
+void reset_receiver(void)
+{
+    state = WAIT_HEADER;
+    index_in_payload = 0;
+    running_sum = 0;
+}
+
+/* 返回 1：刚得到一条校验正确的消息；返回 0：继续等后续字节。 */
+int receive_byte(uint8_t byte)
+{
+    switch (state) {
+    case WAIT_HEADER:
+        if (byte == 0xAA) {
+            running_sum = byte;
+            state = WAIT_TYPE;
+        }
+        break;
+    case WAIT_TYPE:
+        frame_type = byte;
+        running_sum += byte;
+        state = WAIT_LENGTH;
+        break;
+    case WAIT_LENGTH:
+        if (byte &gt; sizeof(frame_payload)) {
+            reset_receiver();
+            break;
+        }
+        frame_length = byte;
+        index_in_payload = 0;
+        running_sum += byte;
+        state = byte == 0 ? WAIT_CHECKSUM : WAIT_PAYLOAD;
+        break;
+    case WAIT_PAYLOAD:
+        frame_payload[index_in_payload++] = byte;
+        running_sum += byte;
+        if (index_in_payload == frame_length) state = WAIT_CHECKSUM;
+        break;
+    case WAIT_CHECKSUM: {
+        int valid = (uint8_t)(running_sum + byte) == 0;
+        reset_receiver();
+        return valid;
+    }
+    default:
+        reset_receiver();
+        break;
+    }
+    return 0;
+}
+</code></pre></details><p><a href="../examples/wireless_frame.c" download>下载本节完整 C 例程</a>，或直接对照上面的分段讲解。</p>
+</section>
+
+<section id="s5"><h2>第 5 节 · 校验通过了，就能说明手表执行成功吗？</h2>
+<p>一条消息还要经过字段检查和具体操作。例如授时命令类型为 91，载荷必须正好四字节，接收端才能按约定恢复时间并设置时钟。<strong>外层帧正确、字段有效、操作完成，是依次发生的几步。</strong></p>
+<p>需要让发送端知道操作结果时，接收端再返回一条应用确认消息。若等不到，就在超时后决定重试。重试可能让同一条命令到两次，因此“把时间设为某值”与“给计数器加一”的行为不同：后者若重复执行会多加一次，需要给请求增加编号并识别重复。</p>
+<p>项目的原型模型恢复需要发送很长的数据，所以又增加事务编号、分片编号、整体校验和“最终提交”确认。先理解这些需求，再阅读相应实现；入门发送一条电池消息不需要提前创建整套传输管理对象。具体大包流程放在 <a href="../branches/proto.html">原型网络支线</a>，当前所有消息格式查 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/PROTOCOL.md" target="_blank" rel="noopener">项目协议规范</a>。</p>
+<p>到这里已经能把数值打成帧，也能从分批到来的字节中恢复消息。下一篇 <a href="wireless/02-project.html">项目中怎样实现</a>，沿一条电池上报和一条时间命令，把这些动作对应到三端源码。</p>
+</section>
+<section id="sources"><h2>源码与格式对照</h2><ul class="sources"><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/PROTOCOL.md" target="_blank" rel="noopener">项目协议规范</a>：128 字节外层帧、长度与校验、字节序及消息表。</li><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/ble_uart.c" target="_blank" rel="noopener">ble_uart.c</a>：实际发送、接收状态机和命令分发；<a href="https://github.com/Cody-ic/SmartWatch/blob/main/app/flutter_app/lib/ble_protocol.dart" target="_blank" rel="noopener">ble_protocol.dart</a>：手机一端相同的约定。</li></ul></section>
+<nav class="chapter-end" aria-label="章节切换"><a href="13-wireless.html">← 无线通信基础</a><button class="action" id="mark-done" type="button">标记本篇完成</button><a href="wireless/02-project.html">项目中怎样实现 →</a></nav><footer>SmartWatch 学习手册 · 2026-10-25 更新<br>图解与代码用于解释流程，不代表设备实测。按相邻条件阅读代码，现有固件源码通过 GitHub 对照；外部资料需要联网。</footer></article></main></div></body></html>

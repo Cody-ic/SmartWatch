@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="1350" viewBox="0 0 760 1350" role="img" aria-labelledby="title desc">
+  <title id="title">IIC 开始和结束：按三个动作分别观察两根线</title>
+  <desc id="desc">以3.3伏电平为例。开始时两线先为高，主机在SCL保持高时把SDA拉低，然后将SCL拉低以准备第一位。结束时先使SCL和SDA为低，再让SCL升高，最后在SCL保持高时让SDA升高。图为状态示意，不是真实测量波形。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#a65417"/></marker>
+    <style>
+      text { font-family: 'Microsoft YaHei',sans-serif; fill: #183039; }
+      .title { font-size: 29px; font-weight: 700; }
+      .section { font-size: 27px; font-weight: 700; }
+      .step { font-size: 24px; font-weight: 700; }
+      .label { font-size: 23px; }
+      .note { font-size: 21px; fill: #526c71; }
+      .clock { stroke: #147764; stroke-width: 5; fill: none; stroke-linecap: round; }
+      .data { stroke: #a65417; stroke-width: 5; fill: none; stroke-linecap: round; }
+      .card { fill: #fff; stroke: #b6c9c3; stroke-width: 1.5; }
+    </style>
+  </defs>
+  <rect width="760" height="1350" rx="16" fill="#fffefb"/>
+  <text class="title" x="28" y="45">开始与结束：关键是哪根线在高电平时变化</text>
+  <text class="note" x="28" y="82">示例：高电平约为 3.3 V，低电平约为 0 V。</text>
+
+  <text class="section" x="28" y="135">开始 START</text>
+  <rect class="card" x="25" y="151" width="710" height="150" rx="10"/>
+  <text class="step" x="45" y="184">① 暂未传输，两根线都是高</text>
+  <text class="label" x="45" y="224">SCL 时钟</text>
+  <path class="clock" d="M210 216H475"/>
+  <text class="label" x="495" y="224">高 · 3.3 V</text>
+  <text class="label" x="45" y="267">SDA 数据</text>
+  <path class="data" d="M210 259H475"/>
+  <text class="label" x="495" y="267">高 · 3.3 V</text>
+
+  <rect class="card" x="25" y="316" width="710" height="177" rx="10"/>
+  <text class="step" x="45" y="350">② SCL 保持高，主机把 SDA 拉低</text>
+  <text class="label" x="45" y="391">SCL 时钟</text>
+  <path class="clock" d="M210 383H475"/>
+  <text class="label" x="495" y="391">一直为高</text>
+  <text class="label" x="45" y="435">SDA 数据</text>
+  <text class="label" x="220" y="435">3.3 V</text>
+  <path d="M305 427H392" stroke="#a65417" stroke-width="3" marker-end="url(#arrow)"/>
+  <text class="label" x="413" y="435">0 V</text>
+  <text class="note" x="45" y="471">这个“时钟高时，数据从高变低”就是开始信号。</text>
+
+  <rect class="card" x="25" y="508" width="710" height="165" rx="10"/>
+  <text class="step" x="45" y="542">③ 主机把 SCL 拉低，准备发送第一位</text>
+  <text class="label" x="45" y="585">SCL 时钟</text>
+  <path class="clock" d="M210 577H475"/>
+  <text class="label" x="495" y="585">低 · 0 V</text>
+  <text class="note" x="45" y="625">SCL 低时，按第一位设置 SDA 的电平：</text>
+  <text class="note" x="45" y="654">发 0，SDA 设为低；发 1，SDA 设为高。</text>
+
+  <text class="section" x="28" y="730">结束 STOP</text>
+  <rect class="card" x="25" y="747" width="710" height="150" rx="10"/>
+  <text class="step" x="45" y="780">① 先在 SCL 低时，把 SDA 也设为低</text>
+  <text class="label" x="45" y="820">SCL 时钟</text>
+  <path class="clock" d="M210 812H475"/>
+  <text class="label" x="495" y="820">低 · 0 V</text>
+  <text class="label" x="45" y="863">SDA 数据</text>
+  <path class="data" d="M210 855H475"/>
+  <text class="label" x="495" y="863">低 · 0 V</text>
+
+  <rect class="card" x="25" y="912" width="710" height="150" rx="10"/>
+  <text class="step" x="45" y="945">② 让 SCL 升到高，SDA 仍保持低</text>
+  <text class="label" x="45" y="985">SCL 时钟</text>
+  <path class="clock" d="M210 977H475"/>
+  <text class="label" x="495" y="985">已为高 · 3.3 V</text>
+  <text class="label" x="45" y="1028">SDA 数据</text>
+  <path class="data" d="M210 1020H475"/>
+  <text class="label" x="495" y="1028">仍为低 · 0 V</text>
+
+  <rect class="card" x="25" y="1077" width="710" height="177" rx="10"/>
+  <text class="step" x="45" y="1111">③ SCL 保持高，SDA 从低变高</text>
+  <text class="label" x="45" y="1152">SCL 时钟</text>
+  <path class="clock" d="M210 1144H475"/>
+  <text class="label" x="495" y="1152">一直为高</text>
+  <text class="label" x="45" y="1196">SDA 数据</text>
+  <text class="label" x="220" y="1196">0 V</text>
+  <path d="M305 1188H392" stroke="#a65417" stroke-width="3" marker-end="url(#arrow)"/>
+  <text class="label" x="413" y="1196">3.3 V</text>
+  <text class="note" x="45" y="1232">这个“时钟高时，数据从低变高”就是结束信号。</text>
+
+  <text class="note" x="28" y="1298">每张卡展示一个动作或状态，不按真实传输时间绘制。</text>
+  <text class="note" x="28" y="1329">普通数据传输：SCL 低时改变 SDA，SCL 高时保持 SDA。</text>
+</svg>

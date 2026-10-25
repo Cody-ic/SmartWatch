@@ -1,0 +1,7 @@
+.skip{position:absolute;left:-9999px}.skip:focus{left:10px;top:10px;z-index:100;background:var(--paper)}
+.sensor-course .result{display:block;white-space:normal;font:inherit;font-size:15px;line-height:1.8;min-height:3.5em}
+.sensor-course .figure svg{min-width:0}
+.sensor-course .route-list a{display:block;margin:8px 0}
+.sensor-course .snippet-label{line-height:1.7}
+.sensor-course .controls select{max-width:100%;background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:5px}
+@media(max-width:640px){.sensor-course .controls label{display:block;width:100%}.sensor-course .controls input[type=range]{width:100%;max-width:none}}

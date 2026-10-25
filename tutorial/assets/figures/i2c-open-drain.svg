@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="430" viewBox="0 0 800 430" role="img" aria-labelledby="od-title od-desc">
+<title id="od-title">SDA怎样通过上拉电阻接电源，又通过内部开关接GND</title>
+<desc id="od-desc">SDA经一只上拉电阻连接3.3V。STM32和传感器内部各有连接SDA与GND的开关。两个开关都断开时SDA为高，任意一个接通时SDA为低。外部导线始终连接。</desc>
+<rect width="800" height="430" rx="12" fill="#fffefb"/>
+<g font-family="Microsoft YaHei,sans-serif" fill="#182a30">
+<text x="25" y="35" font-size="22" font-weight="700">先看实际连接：电阻接电源，芯片内部开关接 GND</text>
+<text x="55" y="78" font-size="20">3.3 V 电源</text>
+<path d="M110 90 V105 l-7 6 14 9 -14 9 14 9 -7 6 V160 H745" fill="none" stroke="#007b68" stroke-width="3"/>
+<text x="140" y="125" font-size="19">上拉电阻</text><text x="680" y="150" font-size="20">SDA</text>
+<rect x="160" y="185" width="245" height="135" rx="10" fill="#e6f2eb" stroke="#a8c5b8"/>
+<rect x="470" y="185" width="285" height="135" rx="10" fill="#e9eef8" stroke="#a9bace"/>
+<path d="M205 160 V225 l18 31 M205 267 V296 M191 296 H219 M195 302 H215 M199 308 H211 M515 160 V225 l18 31 M515 267 V296 M501 296 H529 M505 302 H525 M509 308 H521" fill="none" stroke="#007b68" stroke-width="3"/>
+<text x="245" y="220" font-size="20">STM32 内部</text>
+<text x="245" y="253" font-size="18">开关断开</text><text x="245" y="287" font-size="18">GND = 0 V</text>
+<text x="555" y="220" font-size="20">传感器内部</text>
+<text x="555" y="253" font-size="18">开关断开</text><text x="555" y="287" font-size="18">GND = 0 V</text>
+<text x="25" y="356" font-size="19">图中：两个内部开关都断开，SDA 经电阻回到高电平。</text>
+<text x="25" y="388" font-size="19">任意一个开关接通：SDA 经那颗芯片接到 GND，变为低电平。</text>
+<text x="25" y="417" font-size="16" fill="#607075">开关只表示内部电路的连接状态；外部的 SDA 导线一直连接在引脚上。</text>
+</g></svg>

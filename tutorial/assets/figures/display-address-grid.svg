@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="395" viewBox="0 0 900 395" role="img" aria-labelledby="title desc">
+<title id="title">用列编号和行编号找到一个像素</title><desc id="desc">示例五列四行，从零编号。二号列与一号行交会的格子标红，对应坐标二逗号一，也就是第三列第二行。</desc>
+<rect width="900" height="395" rx="12" fill="#fffefb"/>
+<g font-family="Microsoft YaHei, sans-serif" fill="#182a30">
+<text x="35" y="38" font-size="22" font-weight="700">先用两个编号，找到要修改的那一格</text>
+<text x="260" y="82" font-size="17">列编号 x →</text><text x="28" y="156" font-size="17">行编号 y</text><text x="60" y="182" font-size="22">↓</text>
+<rect x="130" y="115" width="300" height="240" fill="#e6f2eb" stroke="#779e91"/>
+<rect x="250" y="175" width="60" height="60" fill="#d74d42"/>
+<path d="M190 115V355M250 115V355M310 115V355M370 115V355M130 175H430M130 235H430M130 295H430" stroke="#779e91" fill="none"/>
+<g font-size="18" text-anchor="middle"><text x="160" y="105">0</text><text x="220" y="105">1</text><text x="280" y="105" font-weight="700">2</text><text x="340" y="105">3</text><text x="400" y="105">4</text><text x="113" y="151">0</text><text x="113" y="211" font-weight="700">1</text><text x="113" y="271">2</text><text x="113" y="331">3</text></g>
+<path d="M315 205H490" stroke="#d74d42" stroke-width="2"/>
+<text x="510" y="170" font-size="24" font-weight="700">(2, 1)</text><text x="510" y="210" font-size="19">x = 2：编号为 2 的列</text><text x="510" y="245" font-size="19">y = 1：编号为 1 的行</text><text x="510" y="292" font-size="19" fill="#007b68">从 0 编号，所以是第 3 列、第 2 行</text><text x="130" y="381" font-size="15" fill="#607075">每一格表示一个像素位置；本图只示意定位规则。</text>
+</g></svg>

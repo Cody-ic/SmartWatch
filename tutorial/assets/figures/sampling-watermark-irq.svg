@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="2010" viewBox="0 0 720 2010" role="img" aria-labelledby="title desc">
+  <title id="title">LSM6DSOX 用一次水位中断通知 STM32，随后读取两颗传感器</title>
+  <desc id="desc">LSM6DSOX 以 104 Hz 采集加速度和角速度，MAX30102 以 100 Hz 采集红光和红外光，两者各自存入缓存队列。LSM6DSOX 累积 26 对加速度和角速度，对应 52 条缓存记录，名义上经过 250 毫秒；MAX30102 此时约有 25 组红光与红外光。LSM6DSOX 的 INT1 从低电平变为高电平，连接的 STM32 PB4 触发第 4 路外部中断。回调函数仅设置标志，主循环随后通过双线通信总线读取 LSM6DSOX 的 26 对和 MAX30102 的最多 25 组，并检查实际数量。最后把 26 对运动数据重采样为 25 对。MAX30102 不需要另一路中断通知，两颗传感器仍各自按自己的采样时钟工作。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#52766c"/></marker>
+    <style>
+      text { font-family: 'Microsoft YaHei', sans-serif; fill: #183039; }
+      .title { font-size: 32px; font-weight: 700; }
+      .step { font-size: 28px; font-weight: 700; }
+      .body { font-size: 26px; }
+      .emphasis { font-size: 29px; font-weight: 700; }
+      .card { fill: #f4f8f6; stroke: #99b4a9; stroke-width: 1.5; }
+      .lsm { fill: #e5f3eb; stroke: #86aa98; stroke-width: 1.5; }
+      .max { fill: #edf2fc; stroke: #9aaecf; stroke-width: 1.5; }
+      .highlight { fill: #fff0d9; stroke: #c8a269; stroke-width: 1.5; }
+      .flow { fill: none; stroke: #52766c; stroke-width: 3; marker-end: url(#arrow); }
+      .signal { fill: none; stroke: #187b61; stroke-width: 4; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="720" height="2010" rx="16" fill="#fffefb"/>
+  <text class="title" x="28" y="47">一次通知，依次读取两路数据</text>
+  <text class="body" x="28" y="89">先等数据攒够一批，再处理采样率的差别。</text>
+
+  <rect class="card" x="25" y="119" width="670" height="310" rx="12"/>
+  <text class="step" x="45" y="159">① 两颗传感器各自采样</text>
+  <text class="body" x="45" y="197">并存入各自的缓存队列</text>
+  <rect class="lsm" x="45" y="216" width="306" height="186" rx="10"/>
+  <text class="step" x="64" y="253">LSM6DSOX</text>
+  <text class="body" x="64" y="294">104 Hz</text>
+  <text class="body" x="64" y="332">每次一对：</text>
+  <text class="body" x="64" y="373">加速度、角速度</text>
+  <rect class="max" x="369" y="216" width="306" height="186" rx="10"/>
+  <text class="step" x="388" y="253">MAX30102</text>
+  <text class="body" x="388" y="294">100 Hz</text>
+  <text class="body" x="388" y="332">每次一组：</text>
+  <text class="body" x="388" y="373">红光、红外光</text>
+  <path class="flow" d="M360 439V467"/>
+
+  <rect class="card" x="25" y="478" width="670" height="274" rx="12"/>
+  <text class="step" x="45" y="518">② LSM6DSOX 达到缓存队列水位</text>
+  <rect class="highlight" x="45" y="542" width="630" height="85" rx="9"/>
+  <text class="emphasis" x="66" y="595">26 对 = 水位 52 条记录</text>
+  <text class="body" x="45" y="670">26 ÷ 104 = 0.25 秒，即 250 ms。</text>
+  <text class="body" x="45" y="712">MAX30102 此时名义上积累 25 组。</text>
+  <path class="flow" d="M360 762V790"/>
+
+  <rect class="card" x="25" y="800" width="670" height="300" rx="12"/>
+  <text class="step" x="45" y="840">③ INT1 变高，PB4 检测到上升沿</text>
+  <rect class="lsm" x="45" y="866" width="250" height="105" rx="9"/>
+  <text class="body" x="64" y="908">LSM6DSOX</text>
+  <text class="body" x="64" y="946">INT1 引脚</text>
+  <rect class="lsm" x="447" y="866" width="228" height="105" rx="9"/>
+  <text class="body" x="464" y="928">STM32 PB4</text>
+  <path class="signal" d="M295 942H350V896H440"/>
+  <text class="body" x="250" y="1012">低电平 → 高电平</text>
+  <text class="body" x="45" y="1055">这根线向 STM32 发出取数通知。</text>
+  <text class="body" x="45" y="1092">MAX30102 无需再发一次通知。</text>
+  <path class="flow" d="M360 1110V1138"/>
+
+  <rect class="card" x="25" y="1147" width="670" height="185" rx="12"/>
+  <text class="step" x="45" y="1187">④ 第 4 路外部中断：记下取数通知</text>
+  <text class="body" x="45" y="1229">回调函数只设置标志，随即返回。</text>
+  <text class="body" x="45" y="1267">主循环看到标志后，再通过</text>
+  <text class="body" x="45" y="1305">双线通信总线读取数据。</text>
+  <path class="flow" d="M360 1342V1370"/>
+
+  <rect class="card" x="25" y="1380" width="670" height="230" rx="12"/>
+  <text class="step" x="45" y="1420">⑤ 主循环依次读取两个缓存队列</text>
+  <text class="body" x="45" y="1462">先读 LSM6DSOX：26 对加速度和角速度。</text>
+  <text class="body" x="45" y="1504">再读 MAX30102：最多 25 组红光和红外光。</text>
+  <text class="body" x="45" y="1546">读取时检查实际数量；</text>
+  <text class="body" x="45" y="1584">实际数量不一定刚好等于名义数量。</text>
+  <path class="flow" d="M360 1620V1648"/>
+
+  <rect class="card" x="25" y="1660" width="670" height="194" rx="12"/>
+  <text class="step" x="45" y="1700">⑥ 读出数据后，再处理数量的差别</text>
+  <text class="body" x="45" y="1742">将 LSM6DSOX 的 26 对重采样为 25 对。</text>
+  <text class="body" x="45" y="1784">MAX30102 的红光、红外数据</text>
+  <text class="body" x="45" y="1822">保持原来的 100 Hz。</text>
+
+  <text class="body" x="28" y="1904">INT1 只发出取数通知。</text>
+  <text class="body" x="28" y="1942">两颗传感器仍各自按采样时钟工作。</text>
+  <text class="body" x="28" y="1980">实际样本数量要读取缓存队列后确认。</text>
+</svg>

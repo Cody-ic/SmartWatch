@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="980" viewBox="0 0 720 980" role="img" aria-labelledby="title desc">
+  <title id="title">先选择寄存器组，再读取MLC分类结果</title>
+  <desc id="desc">原始测量与FIFO在普通寄存器组中访问。STM32向寄存器0x01写入0x80，选择嵌入功能寄存器组，再从0x70读取分类值：1表示静止或其他非走跑动作，4表示步行或快走，8表示慢跑或跑步。之后向0x01写入0x00，恢复普通寄存器组，才能按原来的地址继续访问FIFO。寄存器组在英文资料中称为bank。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#52766c"/></marker>
+    <style>
+      text { font-family: 'Microsoft YaHei', sans-serif; fill: #183039; }
+      .title { font-size: 32px; font-weight: 700; }
+      .step { font-size: 28px; font-weight: 700; }
+      .body { font-size: 26px; }
+      .note { font-size: 24px; fill: #526c71; }
+      .ordinary { fill: #eaf5ef; stroke: #8aac9e; stroke-width: 1.5; }
+      .embedded { fill: #fff5e8; stroke: #cba878; stroke-width: 1.5; }
+      .flow { fill: none; stroke: #52766c; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="720" height="980" rx="16" fill="#fffefb"/>
+  <text class="title" x="28" y="46">分类结果在另一组寄存器里</text>
+  <text class="body" x="28" y="88">先选寄存器组，再读取其中的地址。</text>
+
+  <rect class="ordinary" x="25" y="119" width="670" height="123" rx="11"/>
+  <text class="step" x="45" y="156">① 现在：普通寄存器组</text>
+  <text class="body" x="45" y="195">此前读取原始值、FIFO，都在这一组中访问。</text>
+  <text class="note" x="45" y="226">英文资料把寄存器组称为 bank。</text>
+  <path class="flow" d="M360 248V272"/>
+
+  <rect class="embedded" x="25" y="279" width="670" height="128" rx="11"/>
+  <text class="step" x="45" y="316">② STM32 选择嵌入功能组</text>
+  <text class="body" x="45" y="355">向 0x01 写入 0x80。</text>
+  <text class="note" x="45" y="389">后续地址，按新选中的寄存器组解释。</text>
+  <path class="flow" d="M360 413V437"/>
+
+  <rect class="embedded" x="25" y="444" width="670" height="196" rx="11"/>
+  <text class="step" x="45" y="481">③ STM32 从 0x70 读取类别</text>
+  <text class="body" x="45" y="519">传感器把本次决策树的分类结果保存在这里。</text>
+  <rect x="45" y="540" width="190" height="44" rx="7" fill="#fff" stroke="#cba878"/>
+  <rect x="265" y="540" width="190" height="44" rx="7" fill="#fff" stroke="#cba878"/>
+  <rect x="485" y="540" width="190" height="44" rx="7" fill="#fff" stroke="#cba878"/>
+  <text class="body" x="140" y="571" text-anchor="middle">1：其他</text>
+  <text class="body" x="360" y="571" text-anchor="middle">4：步行</text>
+  <text class="body" x="580" y="571" text-anchor="middle">8：跑步</text>
+  <text class="note" x="45" y="622">“其他”包含静止及其他动作，不能认定为静止。</text>
+  <path class="flow" d="M360 646V670"/>
+
+  <rect class="ordinary" x="25" y="677" width="670" height="128" rx="11"/>
+  <text class="step" x="45" y="714">④ STM32 切回普通寄存器组</text>
+  <text class="body" x="45" y="753">向 0x01 写入 0x00。</text>
+  <text class="note" x="45" y="787">随后继续 FIFO 等原来的读取。</text>
+
+  <rect x="25" y="840" width="670" height="114" rx="11" fill="#fff" stroke="#b6c9c3" stroke-width="1.5"/>
+  <text class="step" x="45" y="876">不要省略最后一步</text>
+  <text class="note" x="45" y="912">相同地址在不同组中，可能有不同含义。</text>
+  <text class="note" x="45" y="943">成功或失败后，都应恢复普通组再继续采样。</text>
+</svg>

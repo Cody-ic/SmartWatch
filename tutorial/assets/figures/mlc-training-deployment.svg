@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1300" viewBox="0 0 720 1300" role="img" aria-labelledby="title desc">
+  <title id="title">决策树的训练与部署：电脑训练，传感器判断</title>
+  <desc id="desc">先在电脑使用带人工动作标注的连续加速度数据训练决策树，生成寄存器地址与写入数值清单。STM32通过IIC按顺序把完整配置写入LSM6DSOX，传感器随后使用新加速度执行判断，在结果位置保存类别，STM32读取类别。教程先使用已经生成的ST参考配置，传感器上的判断叫推理，不是在传感器上重新训练。</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 10 5 0 10Z" fill="#52766c"/></marker>
+    <style>
+      text { font-family: 'Microsoft YaHei', sans-serif; fill: #183039; }
+      .title { font-size: 32px; font-weight: 700; }
+      .phase { font-size: 29px; font-weight: 700; }
+      .step { font-size: 27px; font-weight: 700; }
+      .body { font-size: 26px; }
+      .note { font-size: 24px; fill: #526c71; }
+      .computer { fill: #fff5e8; stroke: #cba878; stroke-width: 1.5; }
+      .sensor { fill: #eaf5ef; stroke: #8aac9e; stroke-width: 1.5; }
+      .flow { fill: none; stroke: #52766c; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="720" height="1300" rx="16" fill="#fffefb"/>
+  <text class="title" x="28" y="46">决策树在哪里学，在哪里用？</text>
+  <text class="body" x="28" y="87">电脑负责训练，传感器负责执行判断。</text>
+  <text class="phase" x="28" y="141">电脑上：准备并训练</text>
+  <text class="note" x="28" y="176">本教程先用 ST 已生成的参考配置，训练流程后续展开。</text>
+
+  <rect class="computer" x="25" y="196" width="670" height="123" rx="11"/>
+  <text class="step" x="45" y="232">① 给采样数据写清动作说明</text>
+  <text class="body" x="45" y="270">例如：这段来自静放，那段来自步行或跑步。</text>
+  <text class="note" x="45" y="303">数据是连续加速度，动作说明由人工标注。</text>
+  <path class="flow" d="M360 325V344"/>
+
+  <rect class="computer" x="25" y="351" width="670" height="123" rx="11"/>
+  <text class="step" x="45" y="387">② 电脑根据这些数据训练决策树</text>
+  <text class="body" x="45" y="425">从不同动作的数据中，学出一组判断条件。</text>
+  <text class="note" x="45" y="458">这一步在电脑完成，不在传感器里训练。</text>
+  <path class="flow" d="M360 480V499"/>
+
+  <rect class="computer" x="25" y="506" width="670" height="196" rx="11"/>
+  <text class="step" x="45" y="542">③ 电脑生成配置写入清单</text>
+  <rect x="90" y="560" width="540" height="93" rx="7" fill="#fff" stroke="#cba878"/>
+  <path d="M90 605H630 M360 560V653" fill="none" stroke="#cba878" stroke-width="1.5"/>
+  <text class="body" x="225" y="591" text-anchor="middle">寄存器地址</text>
+  <text class="body" x="495" y="591" text-anchor="middle">写入数值</text>
+  <text class="body" x="225" y="638" text-anchor="middle">0x01</text>
+  <text class="body" x="495" y="638" text-anchor="middle">0x80</text>
+  <text class="note" x="45" y="683">这里只示意两列格式；真实模型须使用完整清单。</text>
+  <path class="flow" d="M360 708V729"/>
+
+  <text class="phase" x="28" y="769">传感器上：用新数据做判断</text>
+  <rect class="sensor" x="25" y="791" width="670" height="103" rx="11"/>
+  <text class="step" x="45" y="827">④ STM32 经 IIC 逐条写入配置</text>
+  <text class="body" x="45" y="866">按清单顺序写完，传感器才有完整的树配置。</text>
+  <path class="flow" d="M360 900V919"/>
+
+  <rect class="sensor" x="25" y="926" width="670" height="123" rx="11"/>
+  <text class="step" x="45" y="962">⑤ LSM6DSOX 用新加速度作判断</text>
+  <text class="body" x="45" y="1000">判断更像哪种动作，把类别放在结果位置。</text>
+  <text class="note" x="45" y="1033">这叫推理（执行判断），不是在这里重新训练。</text>
+  <path class="flow" d="M360 1055V1074"/>
+
+  <rect class="sensor" x="25" y="1081" width="670" height="123" rx="11"/>
+  <text class="step" x="45" y="1117">⑥ STM32 读取传感器的分类结果</text>
+  <text class="body" x="45" y="1155">得到类别编号，再决定界面或应用动作。</text>
+  <text class="note" x="45" y="1188">STM32 负责写入与读取，决策树在传感器中执行。</text>
+
+  <text class="note" x="28" y="1251">ST 参考配置可用于接通流程；佩戴准确率仍需真机验证。</text>
+  <text class="note" x="28" y="1284">图示数据流，不表示训练或推理已经通过本机实测。</text>
+</svg>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="IIC 项目实战：扩展：片内决策树与 AI 训练数据"><title>扩展：片内决策树与 AI 训练数据 · SmartWatch 学习手册</title><link rel="stylesheet" href="../../assets/book.css?v=chapter-nav1"><script src="../../assets/book.js?v=4" defer></script><link rel="stylesheet" href="../../assets/sensor-course.css?v=1"><script src="../../assets/sensor-course.js?v=1" defer></script></head><body class="sensor-course" data-lesson="i2c-mlc"><a class="skip" href="#content">跳到正文</a><header class="top"><button class="plain" id="menu-toggle" type="button" aria-label="展开章节导航" aria-expanded="false">目录</button><a class="brand" href="../../index.html">SMARTWATCH <em>学习手册</em></a><span class="edition">有 C 基础 · 嵌入式从零开始</span><div class="tools"><button class="plain" id="theme-toggle" type="button" aria-label="切换深浅主题">明 / 暗</button><button class="plain" type="button" onclick="window.print()">打印</button></div></header><div class="layout"><aside aria-label="课程导航"><label for="search" class="eyebrow">查找章节</label><input id="search" type="search" placeholder="GPIO、UART、麦克风、无线…"><div class="progress"><span id="progress-value">0 / 40 节已完成</span><progress id="progress-bar" max="40" value="0" aria-label="课程完成进度"></progress></div><div class="nav-title">第一章：裸机开发</div><a class="lesson-link" data-id="00-start" data-keywords=" 起点：让电路、代码与工具对上号" href="../00-start.html">起点：让电路、代码与工具对上号</a><a class="lesson-link" data-id="01-gpio" data-keywords=" GPIO：从点亮一盏灯到读懂按钮" href="../01-gpio.html">GPIO：从点亮一盏灯到读懂按钮</a><a class="lesson-link" data-id="02-uart" data-keywords=" UART：从高低电平到一次完整收发" href="../02-uart.html">UART：从高低电平到一次完整收发</a><a class="lesson-link" data-id="03-interrupt" data-keywords=" 中断：从一次按钮事件到优先级与向量表" href="../03-interrupt.html">中断：从一次按钮事件到优先级与向量表</a><a class="lesson-link" data-id="05-spi" data-keywords=" SPI：先读时序，再驱动一块屏幕" href="../05-spi.html">SPI：先读时序，再驱动一块屏幕</a><details class="nav-branch" id="i2c-nav"><summary>I²C / 总线与传感器驱动</summary><div class="branch-lessons"><a class="lesson-link" data-id="06-i2c" data-keywords="IIC I2C I²C IIC I2C I²C  I²C：从共用线路到传感器驱动" href="../06-i2c.html">基础 · 总线、寄存器与 MPU6050</a><a class="lesson-link branch-child" data-id="i2c-lsm6dsox" data-keywords="IIC I2C I²C 传感器 LSM6DSOX IMU FIFO 加速度 陀螺仪 LSM6DSOX：从六轴读数到 FIFO" href="01-lsm6dsox.html">01 · LSM6DSOX：从六轴读数到 FIFO</a><a class="lesson-link branch-child" data-id="i2c-max30102" data-keywords="IIC I2C I²C 传感器 MAX30102 PPG FIFO 光学 红光 红外 MAX30102：从光学原始数据到批量采样" href="02-max30102.html">02 · MAX30102：从光学原始数据到批量采样</a><a class="lesson-link branch-child" data-id="i2c-sampling" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MAX30102 IMU PPG 联合采集 重采样 降采样 104 100 线性插值 联合采集与重采样：从 104 Hz 到 100 Hz" href="03-sampling.html">03 · 联合采集与重采样：从 104 Hz 到 100 Hz</a><a class="lesson-link branch-child" data-id="i2c-mlc" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MLC 决策树 AI 训练 标注 原型 复核 扩展：片内决策树与 AI 训练数据" href="04-mlc.html">04 · 扩展：片内决策树与 AI 训练数据</a></div></details><details class="nav-branch" id="adc-nav"><summary>ADC / 电压采集与项目麦克风</summary><div class="branch-lessons"><a class="lesson-link" data-id="09-adc-dac" data-keywords="ADC 模数转换 采样 量化 参考电压 电池 DAC" href="../09-adc-dac.html">基础 · ADC 原理、转换与电池电压</a><a class="lesson-link branch-child" data-id="adc-microphone" data-keywords="ADC 麦克风 SPU0410 声音 DMA 缓冲 直流偏置" href="../adc/01-microphone.html">项目 · 如何实现麦克风驱动</a></div></details><details class="nav-branch" id="wireless-nav"><summary>无线通信 / 基础、协议与项目实现</summary><div class="branch-lessons"><a class="lesson-link" data-id="13-wireless" data-keywords=" 无线通信：把串口消息送到手机 无线通信：让手机和手表交换数据" href="../13-wireless.html">基础 · 无线连接与字节收发</a><a class="lesson-link branch-child" data-id="04-protocol" data-keywords=" 手写应用协议：从字节流得到可靠消息 手写协议：从字节流认出一条消息" href="../04-protocol.html">01 · 手写应用协议</a><a class="lesson-link branch-child" data-id="wireless-project" data-keywords="无线 BLE 蓝牙 串口 手机 CH582M 协议 项目实现 项目实现：一条消息怎样走完三端" href="../wireless/02-project.html">02 · 项目中怎样实现</a></div></details><a class="lesson-link" data-id="10-dma" data-keywords=" DMA 与双缓冲：数据在谁手里？ DMA：数据怎样自动搬进数组？" href="../10-dma.html">DMA：数据怎样自动搬进数组？</a><details class="nav-branch" id="embedded-extra-nav"><summary>嵌入式拓展 / 时钟、TIM 与看门狗</summary><div class="branch-lessons"><a class="lesson-link" data-id="07-clock" data-keywords=" 时钟：把所有“每秒多少次”算清楚 时钟：这些“每秒多少次”从哪里来？" href="../07-clock.html">时钟 · 节奏从哪里来</a><a class="lesson-link branch-child" data-id="08-timer-pwm" data-keywords=" TIM 与 PWM：让硬件负责时间 定时器：让硬件计数、定时和输出脉冲" href="../08-timer-pwm.html">TIM · 计数、定时与脉冲</a><a class="lesson-link branch-child" data-id="11-system" data-keywords=" RTC、看门狗、Flash 与低功耗 系统运行：看门狗、实时时钟、保存与低功耗" href="../11-system.html">看门狗、日历、保存与低功耗</a></div></details><a class="lesson-link" data-id="12-baremetal" data-keywords=" 裸机综合：把实验组织成一个系统 裸机逻辑综合：把手表各部分接起来" href="../12-baremetal.html">裸机逻辑综合：把手表各部分接起来</a><div class="nav-title">第二章：FreeRTOS</div><a class="lesson-link" data-id="rtos-foundations" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 前置 · 函数指针与多任务" href="../freertos/00-foundations.html">前置 · 函数指针与多任务</a><a class="lesson-link" data-id="14-freertos" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 1 · 创建并运行任务" href="../14-freertos.html">1 · 创建并运行任务</a><a class="lesson-link" data-id="rtos-scheduling" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 2 · 等待、调度与优先级" href="../freertos/02-scheduling.html">2 · 等待、调度与优先级</a><a class="lesson-link" data-id="rtos-semaphore" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 3 · 中断怎样唤醒任务" href="../freertos/03-semaphore.html">3 · 中断怎样唤醒任务</a><a class="lesson-link" data-id="15-sync" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 4 · 用队列交付数据" href="../15-sync.html">4 · 用队列交付数据</a><a class="lesson-link" data-id="rtos-resources" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 5 · 共享资源与互斥" href="../freertos/05-resources.html">5 · 共享资源与互斥</a><a class="lesson-link" data-id="rtos-audio" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 6 · 声音帧与多个使用者" href="../freertos/06-audio.html">6 · 声音帧与多个使用者</a><a class="lesson-link" data-id="rtos-memory" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 7 · 栈、堆与故障排查" href="../freertos/07-memory.html">7 · 栈、堆与故障排查</a><a class="lesson-link" data-id="rtos-project" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 8 · 接回完整手表" href="../freertos/08-project.html">8 · 接回完整手表</a><details class="nav-branch" id="lvgl-nav"><summary>支线一 / 显示驱动与 LVGL</summary><div class="branch-lessons"><a href="../../branches/lvgl.html">支线一学习路线 · 7 篇</a><a class="lesson-link branch-child" data-id="05-display" data-keywords="LVGL UI 屏幕 控件 01 · 先驱动手表彩屏：GC9A01 与 RGB565" href="../../branches/lvgl/01-display.html">01 · 先驱动手表彩屏：GC9A01 与 RGB565</a><a class="lesson-link branch-child" data-id="lvgl-port" data-keywords="LVGL UI 屏幕 控件 02 · 把 LVGL 接到屏幕：缓冲、刷新与时间" href="../../branches/lvgl/02-port.html">02 · 把 LVGL 接到屏幕：缓冲、刷新与时间</a><a class="lesson-link branch-child" data-id="lvgl-widgets" data-keywords="LVGL UI 屏幕 控件 03 · 第一个界面：对象、标签与常用控件" href="../../branches/lvgl/03-widgets.html">03 · 第一个界面：对象、标签与常用控件</a><a class="lesson-link branch-child" data-id="lvgl-layout" data-keywords="LVGL UI 屏幕 控件 04 · 把界面排整齐：布局、样式与显示资源" href="../../branches/lvgl/04-layout.html">04 · 把界面排整齐：布局、样式与显示资源</a><a class="lesson-link branch-child" data-id="lvgl-events" data-keywords="LVGL UI 屏幕 控件 05 · 让界面响应：事件、输入与页面切换" href="../../branches/lvgl/05-events.html">05 · 让界面响应：事件、输入与页面切换</a><a class="lesson-link branch-child" data-id="lvgl-data" data-keywords="LVGL UI 屏幕 控件 06 · 让界面持续正确：数据、定时器与生命周期" href="../../branches/lvgl/06-data.html">06 · 让界面持续正确：数据、定时器与生命周期</a><a class="lesson-link branch-child" data-id="lvgl-performance" data-keywords="LVGL UI 屏幕 控件 07 · 把刷新做稳：性能、DMA 改造与排错" href="../../branches/lvgl/07-performance.html">07 · 把刷新做稳：性能、DMA 改造与排错</a></div></details><div class="nav-title">其他支线 / App、AI 与升级</div><a class="lesson-link" data-id="flutter" data-keywords=" 支线二：从上位机到 Flutter App" href="../../branches/flutter.html">支线二：从上位机到 Flutter App</a><a class="lesson-link" data-id="ai-st" data-keywords=" 支线三：AI 数据、训练与 ST.AI 接入" href="../../branches/ai-st.html">支线三：AI 数据、训练与 ST.AI 接入</a><a class="lesson-link" data-id="proto" data-keywords=" 支线四 A：原型网络与真机后训练" href="../../branches/proto.html">支线四 A：原型网络与真机后训练</a><a class="lesson-link" data-id="ota" data-keywords=" 支线四 B：无线固件升级的完整设计" href="../../branches/ota.html">支线四 B：无线固件升级的完整设计</a><p id="search-empty" class="search-empty" hidden>未找到章节，试试 UART、麦克风、无线等关键词。</p><div class="nav-title">查阅</div><a href="../../references.html">资料来源与版本说明</a><a href="https://github.com/Cody-ic/SmartWatch/blob/main/README.md" target="_blank" rel="noopener">项目 README</a></aside><main id="content"><article><div class="eyebrow">IIC 项目实战 / 04 · 可选扩展</div>
+<h1>扩展：片内决策树与 AI 训练数据</h1>
+<p class="lead">前面读出的是加速度和角速度。这次让 LSM6DSOX 自己判断“其他、步行、跑步”，再由 STM32 读出类别。先完成一次小实验，再拆开配置写入和结果读取。</p>
+<div class="meta"><span class="pill">前置：LSM6DSOX 读写与 FIFO</span><span class="pill">使用仓库已有驱动与 ST 参考树</span><span class="pill">裸机实验即可开始</span></div>
+<nav class="toc" aria-label="本篇目录"><a href="#s1">1 · 数据怎样变成判断</a><a href="#s2">2 · 树在哪里训练、怎样装入</a><a href="#s3">3 · 先读到一次分类</a><a href="#s4">4 · 拆开结果读取</a><a href="#s5">5 · 拆开配置写入</a><a href="#s6">6 · 用结果帮助整理训练数据</a><a href="#sources">手册与源码</a></nav>
+<div class="callout" id="datasheet"><strong>本篇配套资料</strong><a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf#page=6" target="_blank" rel="noopener">LSM6DSOX 数据手册 §2.4：机器学习核心</a>介绍芯片怎样执行判断；<a href="https://www.st.com/resource/en/application_note/an5259-lsm6dsox-machine-learning-core-stmicroelectronics.pdf" target="_blank" rel="noopener">ST AN5259：MLC 应用说明</a>说明训练与配置流程。实验使用的输入条件、输出编号见<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Inc/mlc/README.md" target="_blank" rel="noopener">仓库中的参考模型说明</a>，下文会逐项解释。</div>
+
+<section id="s1"><h2>第 1 节 · 一串加速度，怎样变成一个判断？</h2>
+<p>在前篇实验中，手腕动一下，ax、ay、az 都会变化。现在想知道“人正在走路吗”。只看某一时刻的一个数很难回答：静放时可能出现这个值，走路的某一瞬间也可能出现。可以先连续观察一小段，再描述这段数据的变化。</p>
+<h3>先用四个数，做一个最简单的判断</h3>
+<p>假设从加速度 X 轴依次取得下面两段数据，单位为 g。对每段各算一次“最大值减最小值”：</p>
+<div class="table-wrap"><table><thead><tr><th>一段数据</th><th>计算过程</th><th>得到的变化范围</th></tr></thead><tbody><tr><td>0.1、0.2、0.1、0.2</td><td>0.2 − 0.1</td><td>0.1 g</td></tr><tr><td>−0.8、0.8、−0.7、0.9</td><td>0.9 − (−0.8)</td><td>1.7 g</td></tr></tbody></table></div>
+<p>现在规定一个条件：变化范围大于 1 g，就归到“变化较大”；否则归到“变化较小”。第一段走向“较小”，第二段走向“较大”。这样，原先四个数就变成了一个判断结果。</p>
+<p>刚才一起参与计算的四个数，组成一个<strong>数据窗口</strong>；算出的变化范围，叫一个<strong>特征</strong>；用来比较的 1 g，叫<strong>阈值</strong>。这些名称分别对应刚才做的三个具体动作：取一段、算一个描述、与一个界限比较。</p>
+<p>如果一次比较还不能分清动作，就在某个分支继续比较别的特征。把这些条件和分支连接起来，末端给出类别，就形成一棵<strong>决策树</strong>。（上面的四个数和 1 g 只演示判断方法，不是 ST 参考树的实际条件，也不能据此识别走路或跑步。）</p>
+<h3>条件由谁确定，判断又由谁执行？</h3>
+<p>我们可以人为规定条件，也可以给电脑许多已经注明“这段在走路、那段在跑步”的数据，让训练工具寻找能区分它们的特征、阈值和分支。这个寻找过程叫<strong>训练</strong>；训练完成后保存下来的判断规则，就是这里说的<strong>模型</strong>。</p>
+<p>LSM6DSOX 内部有一块专门执行这类判断的硬件，叫 <strong>MLC（Machine Learning Core，机器学习核心）</strong>。把训练好的规则写进去，它就能用后来测到的新加速度执行判断，这个过程叫<strong>推理</strong>。本篇先使用 ST 已经训练好的腕戴活动参考树，自己训练的步骤留到 AI 支线。</p>
+</section>
+
+<section id="s2"><h2>第 2 节 · 电脑训练好的树，怎样放进传感器？</h2>
+<p>前面用 C 的 if 就能表达一次判断。MLC 执行判断时，需要把“算什么特征、与什么值比较、沿哪个分支继续”存进芯片规定的位置。训练工具会把这些规则转换成一份<strong>配置写入清单</strong>，每项说明一个寄存器地址和要写进去的字节。</p>
+<p>STM32 的工作就接回了已经学过的 IIC：按顺序把清单写入 LSM6DSOX。写完后，传感器根据新测量的数据分类；STM32 再通过 IIC 读取分类编号。整件事分布在电脑、STM32、传感器三个地方：</p>
+<figure class="figure"><img src="../../assets/figures/mlc-training-deployment.svg" width="720" height="1300" style="display:block;width:100%;height:auto" alt="电脑根据人工标注数据训练并生成配置清单；STM32通过IIC写入；LSM6DSOX用新加速度执行判断，STM32读取结果"><figcaption>本篇从已经生成的 ST 参考配置开始。传感器执行训练好的树，电脑负责训练。</figcaption></figure>
+<h3>先认清这棵参考树需要什么</h3>
+<p>这次部署的是 ST 的<a href="https://github.com/STMicroelectronics/st-mems-machine-learning-core/tree/de192e99620b7b818cd7cca0f840893098dc4a93/examples/activity_recognition_for_wrist/lsm6dsox" target="_blank" rel="noopener">腕戴活动识别示例</a>。它使用三轴加速度，量程为 ±8 g。树内部每秒处理 26 份数据，累积 52 份形成一个窗口，即 52 ÷ 26＝2 秒。因此它判断的是一段时间内的活动。</p>
+<p>当前项目仍以 104 Hz 保存原始六轴数据，MLC 在芯片内部按 26 Hz 处理加速度。这两条通路可以同时工作：FIFO 供 STM32 取得原始记录，MLC 另外产生类别。MLC 的 26 Hz 不要求把前篇的原始采集改成 26 Hz。</p>
+<p>类别用一个字节传回。仓库头文件给这些编号取了下面的名字，稍后的程序直接使用它们：</p>
+<div class="table-wrap"><table><thead><tr><th>程序看到的值</th><th>头文件中的名字</th><th>怎样理解</th></tr></thead><tbody><tr><td>1</td><td>MLC_OTHER</td><td>其他，包含静止及其他非走跑动作；仅凭 1 还分不清具体是哪一种</td></tr><tr><td>4</td><td>MLC_WALKING</td><td>参考树判断为步行或快走</td></tr><tr><td>8</td><td>MLC_RUNNING</td><td>参考树判断为慢跑或跑步</td></tr><tr><td>255</td><td>MLC_UNKNOWN</td><td>驱动表示“本次没有可用分类”，可能还在等待结果，也可能加载或通信失败</td></tr></tbody></table></div>
+<p>这棵树只给出粗类别。比如读到 1，还需要结合人工记录，才能知道人是在静放、骑行，还是做了其他动作。</p>
+</section>
+
+<section id="s3"><h2>第 3 节 · 先让程序读到一次分类</h2>
+<p>沿用前篇已经能与 LSM6DSOX 通信的裸机实验工程。这次先单独观察分类值，完成后再接回连续采集。HAL、系统时钟、GPIO 和 I2C1 的初始化仍使用实验工程已有的设置；本次轮询实验无需启用 PB4 外部中断。</p>
+<h3>① 找到配置和两个现有函数</h3>
+<p>仓库已经把加载和读取写进驱动。使用下面三个文件即可：<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/LSM6DSOX.c" target="_blank" rel="noopener">LSM6DSOX.c</a> 参加编译，<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Inc/LSM6DSOX.h" target="_blank" rel="noopener">LSM6DSOX.h</a> 提供函数声明和分类名字，<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Inc/mlc/lsm6dsox_wrist_mlc.h" target="_blank" rel="noopener">mlc/lsm6dsox_wrist_mlc.h</a> 保存完整配置数组。保留模型头文件的 mlc 子目录，驱动已经包含它。</p>
+<ul><li><code>LSM6DSOX_MLC_Init()</code>：没有参数，向已经初始化的传感器加载这棵树。返回 0 表示成功，返回 1 表示失败。</li><li><code>LSM6DSOX_MLC_GetResult()</code>：没有参数，读取最近的分类，返回前表中的 1、4、8 或 255。</li></ul>
+<p>两个函数各做一件事：前者启动时调用一次，后者在运行中反复读取。下面先用它们接通实验，第 4、5 节再分别拆开它们内部的 IIC 操作。</p>
+<h3>② 先初始化传感器，再加载树</h3>
+<p>在 main.c 顶部包含头文件，用 activity 保存最新类别。<code>volatile</code> 让编译器保留对这个变量的更新，方便在调试器中观察；<code>MLC_UNKNOWN</code> 的值为 255，表示开始时还没有分类：</p>
+<p class="snippet-label">main.c 顶部 · 用户头文件区与全局变量区</p>
+<pre><code>#include "LSM6DSOX.h"
+#include "i2c.h"
+
+volatile uint8_t activity = MLC_UNKNOWN;</code></pre>
+<p>在 main() 中，等生成的 <code>MX_I2C1_Init()</code> 已执行，再写下面几行。前篇的 <code>LSM6DSOX_Init(&amp;hi2c1)</code> 完成身份检查和基本配置，返回 0 才继续加载树。用两个变量保留结果，便于知道失败发生在哪一步：</p>
+<p class="snippet-label">main() 的 USER CODE BEGIN 2 区域 · 启动采集之前</p>
+<pre><code>uint8_t init_status = LSM6DSOX_Init(&amp;hi2c1);
+uint8_t load_status = 1;
+if (init_status == 0) {
+    load_status = LSM6DSOX_MLC_Init();
+}</code></pre>
+<p>先观察这两个变量：都为 0，才表示基本初始化和加载都成功。若 init_status 非 0，加载函数根本没有执行，load_status 保留初值 1。加载期间会暂停测量并清空 FIFO，所以把它安排在开始连续采集之前。</p>
+<h3 id="mlc-first-read">③ 每隔一会儿读取，观察变量变化</h3>
+<p>用下面的 <code>while (1)</code> 替换独立实验原有的主循环，本次暂不运行原 FIFO 读取循环。前面的初始化代码仍留在循环外。成功后才调用读取函数，将返回的类别赋给 activity；<code>HAL_Delay(2000)</code> 让主循环等待约 2000 毫秒，也就是两秒。等待发生在主循环中。</p>
+<p class="snippet-label">分类独立实验的主循环 · 只观察 activity</p>
+<pre><code>while (1) {
+    if (init_status == 0 &amp;&amp; load_status == 0) {
+        activity = LSM6DSOX_MLC_GetResult();
+    }
+    HAL_Delay(2000);
+}</code></pre>
+<p>初始化返回的 0 是“操作成功”，读取返回的 4 是“判断为步行”，它们回答的是不同问题。activity 始终为 255 时，先确认两个初始化结果，再检查通信、等待分类。</p>
+<h3>④ 戴在手腕上，依次静放、步行、跑步</h3>
+<ol><li>在调试器的变量观察窗口加入 activity，让程序继续运行。可以使用支持运行中读取的观察方式，避免反复暂停 MCU。</li><li>每种动作保持约十秒或更久，记录观察到的编号和动作切换时刻。步行尝试观察 4，跑步尝试观察 8；静放可能归入 1。</li><li>刚上电可能先读到 255。动作切换后也可能暂时保留旧类别：特征窗口需要收满数据，参考树还会综合连续几次判断，因此“两秒一读”不等于“两秒必定切换”。</li></ol>
+<p>这些是待检查的现象，佩戴位置和动作差异都可能影响结果。先确认能读到有效编号，再记录哪些情况判错。</p>
+<div class="callout"><strong>这份两秒等待只用于分类观察实验。</strong>此时没有保存连续 FIFO 记录。接回前篇联合采集时，两个 FIFO 仍需按原来的约 250 ms 节奏及时读取；MLC 每隔约两秒顺带读取一次。不能把这段长等待直接放进联合采集循环。</div>
+</section>
+
+<section id="s4"><h2>第 4 节 · 拆开读取函数：为什么先选一组寄存器？</h2>
+<p>已经读到类别后，再看它来自哪里。参考树把分类放在一个叫 <code>MLC0_SRC</code> 的寄存器里，地址为 <code>0x70</code>。但只知道地址还不够：LSM6DSOX 有多组寄存器，读写前要选中对应的一组。</p>
+<p>前篇访问原始测量和 FIFO 时，使用的是<strong>普通寄存器组（user bank）</strong>。MLC 的结果在<strong>嵌入功能寄存器组（embedded bank）</strong>。英文 bank 在这里就是“一组寄存器”；相同数字的地址，在不同组里可能代表不同内容。</p>
+<p>负责选组的是 <code>FUNC_CFG_ACCESS（0x01）</code>。本次向它写 0x80，选择嵌入功能组；写 0x00，回到普通组。因此一次结果读取要按下面的顺序做：</p>
+<figure class="figure"><img src="../../assets/figures/mlc-bank-read.svg" width="720" height="980" style="display:block;width:100%;height:auto" alt="普通寄存器组中开始，向0x01写0x80选择嵌入功能组，从0x70读取分类，最后向0x01写0x00恢复普通组"><figcaption>选择的是芯片内部寄存器组。IIC 设备地址仍是原来的 LSM6DSOX 地址。</figcaption></figure>
+<h3>把三个动作和已学过的读写函数对上</h3>
+<p>回忆前篇：<code>reg_write(reg, value)</code> 往寄存器写一个字节；<code>reg_read(reg, &amp;result)</code> 从寄存器读一个字节，存进 result。它们是 LSM6DSOX.c 内部的函数。先只看通信都成功时的操作：</p>
+<p class="snippet-label">读取函数内部的成功路径示意 · 在 LSM6DSOX.c 中对照阅读</p>
+<pre><code>uint8_t result = 0;
+reg_write(0x01, 0x80);       /* 选中嵌入功能组 */
+reg_read(0x70, &amp;result);     /* 取得分类编号 */
+reg_write(0x01, 0x00);       /* 恢复普通组 */</code></pre>
+<p>第三行执行后，result 里就是芯片给出的原始编号。最后一行同样必需：下一次读 FIFO 时，程序要重新按普通组解释寄存器地址。选组和恢复应由同一个读取过程完成。</p>
+<p>实际的 <code>LSM6DSOX_MLC_GetResult()</code> 还会检查每次读写是否成功，并核对编号。模型未加载、读到刚启动时的 0、读到未定义类别或通信失败，都返回 MLC_UNKNOWN。上面四行只帮助看清动作，应用仍调用已经处理这些情况的现有函数。</p>
+<p>回到项目源码时，可以在 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/LSM6DSOX.c" target="_blank" rel="noopener">LSM6DSOX.c</a> 搜索这个函数，从这三次操作向外读它的判断分支。FIFO 读取和分类读取应依次执行，避免一处还在嵌入功能组中，另一处就开始访问普通组。</p>
+</section>
+
+<section id="s5"><h2>第 5 节 · 拆开加载函数：一张表，怎样成为整棵树？</h2>
+<p>再回头看启动时调用的 <code>LSM6DSOX_MLC_Init()</code>。第 2 节提到的配置清单，在仓库里已经转换成 C 数组，保存在模型头文件中。它的开头是这样的：</p>
+<p class="snippet-label">lsm6dsox_wrist_mlc 数组开头节选 · 每行是 {寄存器地址, 写入值}</p>
+<pre><code>static const uint8_t lsm6dsox_wrist_mlc[][2] = {
+    {0x10, 0x00},
+    {0x11, 0x00},
+    {0x01, 0x80},
+    /* 后面继续保存完整配置。 */
+};</code></pre>
+<p><code>[][2]</code> 表示每行有两个字节。第一行要求向 0x10 写 0x00，先停止加速度测量；第二行停止陀螺仪；第三行选择嵌入功能寄存器组。这些都还是之前学过的寄存器写入。后面的各项继续写入特征、树的判断条件和运行设置，最后启用分类。</p>
+<p>第 i 行的 <code>lsm6dsox_wrist_mlc[i][0]</code> 是地址，<code>lsm6dsox_wrist_mlc[i][1]</code> 是写入值。加载函数按顺序取出这两个字节，再完成相应的 IIC 写入。完整表共有 461 项，具体数值由工具根据模型生成。这里只展示开头帮助认识格式，实验使用仓库的完整数组。</p>
+<h3>把整个加载过程分成三段来看</h3>
+<ol><li><strong>准备：</strong>确认基本初始化已成功，暂停测量并清空旧 FIFO 数据，准备写入。</li><li><strong>装入：</strong>按清单顺序写入模型的全部设置，再开启 MLC。</li><li><strong>恢复原始采集：</strong>把项目原有的加速度、陀螺仪恢复为 104 Hz，重新开启 FIFO 连续模式。MLC 仍按模型要求以 26 Hz 工作。</li></ol>
+<p>参考配置还包含“分类变化时从 INT1 通知”的设置。项目的 INT1 已经用来通知 FIFO 水位，所以当前加载函数关闭参考树的这条通知，改由 STM32 主动读分类。这样，PB4 收到的仍是前篇讲过的 FIFO 通知。</p>
+<details id="config-page"><summary>继续拆开：清单为什么会反复向 0x09 写不同的值？</summary>
+<p>一整棵树有许多配置字节，需要放进片内的一片配置存储区。芯片把它分成页，每页里再按位置保存字节。写入前要告诉芯片“选哪一页、从页内哪里开始”；随后通过一个固定的写入入口连续送入数据。</p>
+<p>选中嵌入功能寄存器组后，实际表中紧接着出现下面的操作。所有数值均为十六进制：</p>
+<div class="table-wrap"><table><thead><tr><th>地址 ← 数值</th><th>这一步做什么</th></tr></thead><tbody><tr><td>0x17 ← 0x40</td><td>开启配置存储区的页写入</td></tr><tr><td>0x02 ← 0x11</td><td>选择第 1 页</td></tr><tr><td>0x08 ← 0xEA</td><td>指定从这一页的 0xEA 位置开始写</td></tr><tr><td>0x09 ← 0xB4</td><td>通过写入入口，向当前位置 0xEA 存入字节 0xB4</td></tr><tr><td>0x09 ← 0x03</td><td>入口地址仍是 0x09，存放位置已自动前进到 0xEB，写入字节 0x03</td></tr></tbody></table></div>
+<p>这个入口叫 <code>PAGE_VALUE</code>。每写一次，芯片内部的存放位置自动前进，所以重复写 0x09 是在依次装入模型的不同字节。清单中的顺序必须保留；后面还会继续选择位置、写入其他字节，再关闭页写入。</p>
+<p>这里的“页内位置”属于芯片内部配置存储区。IIC 依然访问同一颗器件，STM32 仍向 8 位寄存器地址写数据。先选寄存器组，再通过这组里的入口访问配置存储区，是两层不同的选择。</p>
+</details>
+<details id="source-reading"><summary>对照完整源码：现在再看加载函数里的其他分支</summary>
+<p>打开 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/LSM6DSOX.c" target="_blank" rel="noopener">LSM6DSOX.c</a>，搜索 LSM6DSOX_MLC_Init。先找到按表写入的 for 循环，再对照三个具体问题：</p>
+<ul><li><strong>为什么记录当前 bank？</strong>加载清单自己会切换寄存器组，程序要据此识别当前操作的是哪个寄存器。例如普通组的 0x09 控制 FIFO，嵌入功能组的 0x09 则是刚才的页写入入口。</li><li><strong>为什么页数据失败后直接停止？</strong>写入入口会自动前进。若芯片已经接收字节、总线随后报错，重试同一个字节可能把后面的内容错位。现有加载器会终止这次上传。</li><li><strong>为什么有统一清理分支？</strong>中途失败时，程序尝试关闭页写入、关闭未装完整的模型并恢复普通组，再向调用者报告失败。</li></ul>
+<p>这时再看 bank 变量、goto 清理和各处返回值，就能把它们对应到实际问题。源文件保留完整实现，正文的小片段用于逐项理解。配置写入失败后先排除通信问题，再从基本初始化开始；传感器重新初始化后，也要重新加载树。</p>
+</details>
+</section>
+
+<section id="s6"><h2>第 6 节 · 这份分类，怎样帮助整理 AI 训练数据？</h2>
+<p>现在已有两份可以读取的东西：FIFO 中的连续六轴数据，以及 MLC 给出的粗类别。假设准备采集一段步行数据，用它训练 STM32 上的活动识别模型。训练工具需要知道输入数据中人实际做了什么，这个动作说明就叫<strong>标签</strong>。</p>
+<p>最直接的做法是事先记录：第 10 秒开始走路，第 30 秒停下。这样，连续数据中对应的一段就有了人工动作记录。MLC 则可以在旁边再提供一列“它判断成什么”，帮助检查这段数据：</p>
+<div class="table-wrap"><table><thead><tr><th>记录的时间段</th><th>人工记录的实际动作</th><th>同期观察到的 MLC 结果</th><th>接下来做什么</th></tr></thead><tbody><tr><td>10～20 秒</td><td>持续步行</td><td>4 / WALKING</td><td>两份记录一致，继续检查原始数据是否完整</td></tr><tr><td>20～30 秒</td><td>持续步行</td><td>8 / RUNNING</td><td>找出这段重新检查：佩戴有变化吗，动作记录或时间对应有误吗，还是参考树判错了</td></tr><tr><td>30 秒附近</td><td>从步行变为静止</td><td>可能暂时还是 4</td><td>单独标记动作过渡，等待分类更新</td></tr></tbody></table></div>
+<p class="sources">上表是记录方法示例，数值不是本机实测。MLC 的一个计算窗口长 2 秒，还可能等待连续几次判断；某次读取的时间，不能直接当作动作开始或结束的时间。</p>
+<h3>用它做三件具体的事</h3>
+<ol><li><strong>快速找到待查看的片段。</strong>长记录里出现连续的 WALKING，可以从相应时间段开始检查，再由人工确认能否标成步行。</li><li><strong>优先检查意见不同的片段。</strong>人明明在走，MLC 却报跑步，这段值得保留并复核；它能帮助发现参考树容易混淆的动作，也能提醒下一次补采。</li><li><strong>给后来训练的模型做比较。</strong>拿一份单独保留的测试记录，以人工确认的动作作依据，分别检查参考树和新模型的走、跑判断。这样才能知道新模型在哪些地方变好了。</li></ol>
+<p>人工标签和机器预测分别保存。若人记录的是骑行，MLC 给出 OTHER，就继续保留“骑行”这个具体标签。若人工尚未确认，只能先保留机器提供的候选判断。</p>
+<div class="widget" id="mlc-label-lab"><h3>练习：换一种组合，看看该怎样记录</h3><p>选一项机器结果，再选一项人工记录。这里仅演示记录的解释，不运行模型。</p><div class="controls"><label>MLC 结果 <select name="mlc"><option value="1">1 · OTHER</option><option value="4" selected>4 · WALKING</option><option value="8">8 · RUNNING</option><option value="255">255 · UNKNOWN</option></select></label><label>人工记录 <select name="human"><option value="pending">尚未确认</option><option value="still">静止</option><option value="walk" selected>步行</option><option value="run">跑步</option><option value="cycle">骑行</option></select></label></div><output class="result" aria-live="polite"></output></div>
+<h3>把实验接回项目</h3>
+<p>仓库的 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/main.c" target="_blank" rel="noopener">main.c</a> 在启动时加载树，在运行中每隔约两秒读取一次，将类别保存在 <code>g_mlc_activity</code>。原始 IMU 和 PPG 的批量读取继续按前篇流程执行。等学到 RTOS 后，再回看 Sensor_Task 如何安排这些调用。</p>
+<p>当前代码尚未把 g_mlc_activity 连同原始数据导出为训练记录。要做采集工具，可以在原有数据旁增加“读取时间、MLC 结果、人工动作”三项，并保留动作变化的时间说明。当前接口提供类别，没有提供判断正确的概率。</p>
+<p><strong>练习：</strong>按“静放 → 步行 → 停下 → 跑步”的顺序做一次实验，分别记下动作切换时刻和读取的编号。找一个输出较晚或判断不同的片段，用 2 秒窗口和实际动作记录解释它。随后到 <a href="../../branches/ai-st.html">AI 数据与训练支线</a>继续学习怎样整理数据、训练和评估；项目的 <a href="../../branches/proto.html">proto 后训练</a>则更新 STM32 上的类别原型，具体方法在那里展开。</p>
+<div class="callout"><strong>把本篇串起来</strong>一段加速度 → 计算描述这段数据的特征 → 按训练好的树判断 → 类别存入结果寄存器 → STM32 选组后读取。训练好的规则先由电脑生成配置清单，再经 IIC 装入传感器。原始数据和分类结果各自保留，后者可以帮助人工整理前者。</div>
+</section>
+
+<section id="sources"><h2>手册、模型与项目源码</h2><ul class="sources"><li><a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf" target="_blank" rel="noopener">ST LSM6DSOX DS12814 Rev.4</a>：§2.4 介绍 MLC；FUNC_CFG_ACCESS、PAGE_VALUE、MLC0_SRC 对应本篇的选组、配置写入与结果读取。</li><li><a href="https://www.st.com/resource/en/application_note/an5259-lsm6dsox-machine-learning-core-stmicroelectronics.pdf" target="_blank" rel="noopener">ST AN5259</a>：特征、决策树、窗口与输入处理率。</li><li><a href="https://github.com/STMicroelectronics/st-mems-machine-learning-core/tree/de192e99620b7b818cd7cca0f840893098dc4a93/examples/activity_recognition_for_wrist/lsm6dsox" target="_blank" rel="noopener">固定版本的官方腕戴参考树</a>；<a href="https://github.com/STMicroelectronics/st-mems-machine-learning-core/tree/de192e99620b7b818cd7cca0f840893098dc4a93/tutorials" target="_blank" rel="noopener">官方训练教程</a>。</li><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Inc/mlc/README.md" target="_blank" rel="noopener">项目模型说明</a>包含来源、完整配置的许可和适配条件；<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/LSM6DSOX.c" target="_blank" rel="noopener">LSM6DSOX.c</a>包含现有加载与读取函数。</li></ul></section>
+<nav class="chapter-end" aria-label="章节切换"><a href="03-sampling.html">← 联合采集与重采样：从 104 Hz 到 100 Hz</a><button class="action" id="mark-done" type="button">标记本篇完成</button><a href="../09-adc-dac.html">继续主线：ADC →</a></nav><footer>SmartWatch 学习手册 · 2026-10-24 更新<br>图解和交互用于理解流程，不代表设备实测。代码片段按各段条件阅读；源码与数据手册使用明确链接。正文可离线阅读，外部资料需要联网。</footer></article></main></div></body></html>

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="裸机逻辑综合：把手表各部分接起来，从具体问题、图解到项目源码。"><title>裸机逻辑综合：把手表各部分接起来 · SmartWatch 学习手册</title><link rel="stylesheet" href="../assets/book.css?v=chapter-nav1"><script src="../assets/book.js?v=4" defer></script><link rel="stylesheet" href="../assets/lvgl-course.css?v=1"><link rel="stylesheet" href="../assets/sensor-course.css?v=1"><link rel="stylesheet" href="../assets/sensor-course.css?v=1"></head>
+<body class="sensor-course" data-lesson="12-baremetal"><a class="skip" href="#content" style="position:absolute;left:-9999px" onfocus="this.style.left='10px'" onblur="this.style.left='-9999px'">跳到正文</a><header class="top"><button class="plain" id="menu-toggle" type="button" aria-label="展开章节导航" aria-expanded="false">目录</button><a class="brand" href="../index.html">SMARTWATCH <em>学习手册</em></a><span class="edition">有 C 基础 · 嵌入式从零开始</span><div class="tools"><button class="plain" id="theme-toggle" type="button" aria-label="切换深浅主题">明 / 暗</button><button class="plain" type="button" onclick="window.print()">打印</button></div></header><div class="layout"><aside aria-label="课程导航"><label for="search" class="eyebrow">查找章节</label><input id="search" type="search" placeholder="GPIO、UART、麦克风、无线…"><div class="progress"><span id="progress-value">0 / 40 节已完成</span><progress id="progress-bar" max="40" value="0" aria-label="课程完成进度"></progress></div><div class="nav-title">第一章：裸机开发</div><a class="lesson-link" data-id="00-start" data-keywords=" 起点：让电路、代码与工具对上号" href="00-start.html">起点：让电路、代码与工具对上号</a><a class="lesson-link" data-id="01-gpio" data-keywords=" GPIO：从点亮一盏灯到读懂按钮" href="01-gpio.html">GPIO：从点亮一盏灯到读懂按钮</a><a class="lesson-link" data-id="02-uart" data-keywords=" UART：从高低电平到一次完整收发" href="02-uart.html">UART：从高低电平到一次完整收发</a><a class="lesson-link" data-id="03-interrupt" data-keywords=" 中断：从一次按钮事件到优先级与向量表" href="03-interrupt.html">中断：从一次按钮事件到优先级与向量表</a><a class="lesson-link" data-id="05-spi" data-keywords=" SPI：先读时序，再驱动一块屏幕" href="05-spi.html">SPI：先读时序，再驱动一块屏幕</a><details class="nav-branch" id="i2c-nav"><summary>I²C / 总线与传感器驱动</summary><div class="branch-lessons"><a class="lesson-link" data-id="06-i2c" data-keywords="IIC I2C I²C IIC I2C I²C  I²C：从共用线路到传感器驱动" href="06-i2c.html">基础 · 总线、寄存器与 MPU6050</a><a class="lesson-link branch-child" data-id="i2c-lsm6dsox" data-keywords="IIC I2C I²C 传感器 LSM6DSOX IMU FIFO 加速度 陀螺仪 LSM6DSOX：从六轴读数到 FIFO" href="i2c/01-lsm6dsox.html">01 · LSM6DSOX：从六轴读数到 FIFO</a><a class="lesson-link branch-child" data-id="i2c-max30102" data-keywords="IIC I2C I²C 传感器 MAX30102 PPG FIFO 光学 红光 红外 MAX30102：从光学原始数据到批量采样" href="i2c/02-max30102.html">02 · MAX30102：从光学原始数据到批量采样</a><a class="lesson-link branch-child" data-id="i2c-sampling" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MAX30102 IMU PPG 联合采集 重采样 降采样 104 100 线性插值 联合采集与重采样：从 104 Hz 到 100 Hz" href="i2c/03-sampling.html">03 · 联合采集与重采样：从 104 Hz 到 100 Hz</a><a class="lesson-link branch-child" data-id="i2c-mlc" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MLC 决策树 AI 训练 标注 原型 复核 扩展：片内决策树与 AI 训练数据" href="i2c/04-mlc.html">04 · 扩展：片内决策树与 AI 训练数据</a></div></details><details class="nav-branch" id="adc-nav"><summary>ADC / 电压采集与项目麦克风</summary><div class="branch-lessons"><a class="lesson-link" data-id="09-adc-dac" data-keywords="ADC 模数转换 采样 量化 参考电压 电池 DAC" href="09-adc-dac.html">基础 · ADC 原理、转换与电池电压</a><a class="lesson-link branch-child" data-id="adc-microphone" data-keywords="ADC 麦克风 SPU0410 声音 DMA 缓冲 直流偏置" href="adc/01-microphone.html">项目 · 如何实现麦克风驱动</a></div></details><details class="nav-branch" id="wireless-nav"><summary>无线通信 / 基础、协议与项目实现</summary><div class="branch-lessons"><a class="lesson-link" data-id="13-wireless" data-keywords=" 无线通信：把串口消息送到手机 无线通信：让手机和手表交换数据" href="13-wireless.html">基础 · 无线连接与字节收发</a><a class="lesson-link branch-child" data-id="04-protocol" data-keywords=" 手写应用协议：从字节流得到可靠消息 手写协议：从字节流认出一条消息" href="04-protocol.html">01 · 手写应用协议</a><a class="lesson-link branch-child" data-id="wireless-project" data-keywords="无线 BLE 蓝牙 串口 手机 CH582M 协议 项目实现 项目实现：一条消息怎样走完三端" href="wireless/02-project.html">02 · 项目中怎样实现</a></div></details><a class="lesson-link" data-id="10-dma" data-keywords=" DMA 与双缓冲：数据在谁手里？ DMA：数据怎样自动搬进数组？" href="10-dma.html">DMA：数据怎样自动搬进数组？</a><details class="nav-branch" id="embedded-extra-nav"><summary>嵌入式拓展 / 时钟、TIM 与看门狗</summary><div class="branch-lessons"><a class="lesson-link" data-id="07-clock" data-keywords=" 时钟：把所有“每秒多少次”算清楚 时钟：这些“每秒多少次”从哪里来？" href="07-clock.html">时钟 · 节奏从哪里来</a><a class="lesson-link branch-child" data-id="08-timer-pwm" data-keywords=" TIM 与 PWM：让硬件负责时间 定时器：让硬件计数、定时和输出脉冲" href="08-timer-pwm.html">TIM · 计数、定时与脉冲</a><a class="lesson-link branch-child" data-id="11-system" data-keywords=" RTC、看门狗、Flash 与低功耗 系统运行：看门狗、实时时钟、保存与低功耗" href="11-system.html">看门狗、日历、保存与低功耗</a></div></details><a class="lesson-link current" data-id="12-baremetal" data-keywords=" 裸机综合：把实验组织成一个系统 裸机逻辑综合：把手表各部分接起来" href="12-baremetal.html" aria-current="page">裸机逻辑综合：把手表各部分接起来</a><div class="nav-title">第二章：FreeRTOS</div><a class="lesson-link" data-id="rtos-foundations" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 前置 · 函数指针与多任务" href="freertos/00-foundations.html">前置 · 函数指针与多任务</a><a class="lesson-link" data-id="14-freertos" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 1 · 创建并运行任务" href="freertos/00-foundations.html">1 · 创建并运行任务</a><a class="lesson-link" data-id="rtos-scheduling" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 2 · 等待、调度与优先级" href="freertos/02-scheduling.html">2 · 等待、调度与优先级</a><a class="lesson-link" data-id="rtos-semaphore" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 3 · 中断怎样唤醒任务" href="freertos/03-semaphore.html">3 · 中断怎样唤醒任务</a><a class="lesson-link" data-id="15-sync" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 4 · 用队列交付数据" href="15-sync.html">4 · 用队列交付数据</a><a class="lesson-link" data-id="rtos-resources" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 5 · 共享资源与互斥" href="freertos/05-resources.html">5 · 共享资源与互斥</a><a class="lesson-link" data-id="rtos-audio" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 6 · 声音帧与多个使用者" href="freertos/06-audio.html">6 · 声音帧与多个使用者</a><a class="lesson-link" data-id="rtos-memory" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 7 · 栈、堆与故障排查" href="freertos/07-memory.html">7 · 栈、堆与故障排查</a><a class="lesson-link" data-id="rtos-project" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 8 · 接回完整手表" href="freertos/08-project.html">8 · 接回完整手表</a><details class="nav-branch" id="lvgl-nav"><summary>支线一 / 显示驱动与 LVGL</summary><div class="branch-lessons"><a href="../branches/lvgl.html">支线一学习路线 · 7 篇</a><a class="lesson-link branch-child" data-id="05-display" data-keywords="LVGL UI 屏幕 控件 01 · 先驱动手表彩屏：GC9A01 与 RGB565" href="../branches/lvgl/01-display.html">01 · 先驱动手表彩屏：GC9A01 与 RGB565</a><a class="lesson-link branch-child" data-id="lvgl-port" data-keywords="LVGL UI 屏幕 控件 02 · 把 LVGL 接到屏幕：缓冲、刷新与时间" href="../branches/lvgl/02-port.html">02 · 把 LVGL 接到屏幕：缓冲、刷新与时间</a><a class="lesson-link branch-child" data-id="lvgl-widgets" data-keywords="LVGL UI 屏幕 控件 03 · 第一个界面：对象、标签与常用控件" href="../branches/lvgl/03-widgets.html">03 · 第一个界面：对象、标签与常用控件</a><a class="lesson-link branch-child" data-id="lvgl-layout" data-keywords="LVGL UI 屏幕 控件 04 · 把界面排整齐：布局、样式与显示资源" href="../branches/lvgl/04-layout.html">04 · 把界面排整齐：布局、样式与显示资源</a><a class="lesson-link branch-child" data-id="lvgl-events" data-keywords="LVGL UI 屏幕 控件 05 · 让界面响应：事件、输入与页面切换" href="../branches/lvgl/05-events.html">05 · 让界面响应：事件、输入与页面切换</a><a class="lesson-link branch-child" data-id="lvgl-data" data-keywords="LVGL UI 屏幕 控件 06 · 让界面持续正确：数据、定时器与生命周期" href="../branches/lvgl/06-data.html">06 · 让界面持续正确：数据、定时器与生命周期</a><a class="lesson-link branch-child" data-id="lvgl-performance" data-keywords="LVGL UI 屏幕 控件 07 · 把刷新做稳：性能、DMA 改造与排错" href="../branches/lvgl/07-performance.html">07 · 把刷新做稳：性能、DMA 改造与排错</a></div></details><div class="nav-title">其他支线 / App、AI 与升级</div><a class="lesson-link" data-id="flutter" data-keywords=" 支线二：从上位机到 Flutter App" href="../branches/flutter.html">支线二：从上位机到 Flutter App</a><a class="lesson-link" data-id="ai-st" data-keywords=" 支线三：AI 数据、训练与 ST.AI 接入" href="../branches/ai-st.html">支线三：AI 数据、训练与 ST.AI 接入</a><a class="lesson-link" data-id="proto" data-keywords=" 支线四 A：原型网络与真机后训练" href="../branches/proto.html">支线四 A：原型网络与真机后训练</a><a class="lesson-link" data-id="ota" data-keywords=" 支线四 B：无线固件升级的完整设计" href="../branches/ota.html">支线四 B：无线固件升级的完整设计</a><p id="search-empty" class="search-empty" hidden>未找到章节，试试 UART、麦克风、无线等关键词。</p><div class="nav-title">查阅</div><a href="../references.html">资料来源与版本说明</a><a href="https://github.com/Cody-ic/SmartWatch/blob/main/README.md" target="_blank" rel="noopener">项目 README</a></aside><main id="content"><article><div class="eyebrow">裸机部分 / 逻辑综合与收束</div>
+<h1>裸机逻辑综合：把手表各部分接起来</h1>
+<p class="lead">驱动分别能运行以后，真正的问题变成：按着按钮时能不能继续采集？无线消息会不会堵住屏幕？声音计算时哪块数组还能被改写？这一篇把现有知识放进一个反复执行的主循环，最后说明它怎样过渡到任务调度。</p>
+<div class="meta"><span class="pill">前置：外设、无线与协议、DMA</span><span class="pill">拓展知识可以按需回看</span><span class="pill">本篇结束裸机部分</span></div>
+<nav class="toc" id="lesson-outline" aria-label="本篇目录"><a href="#s1">1 · 先列清楚每件事什么时候做</a><a href="#s2">2 · 按键和周期检查怎样共存</a><a href="#s3">3 · 中断通知主循环读取传感器</a><a href="#s4">4 · 无线收发接到同一条循环</a><a href="#s5">5 · 麦克风怎样交出稳定的一帧</a><a href="#s6">6 · 结束裸机部分，准备任务调度</a></nav>
+
+<section id="s1"><h2>第 1 节 · 一个主循环怎样照顾这么多事情？</h2>
+<p><strong>裸机</strong>在这里指没有实时操作系统为多个任务安排执行：程序初始化后，主要靠一个 while(1) 不断巡查，各种中断在需要时打断它。中断仍然存在，DMA 也仍能搬运；“裸机”不等于把所有工作都用阻塞轮询来做。</p>
+<p>当前仓库完整固件已经使用 FreeRTOS。本篇建立一份独立裸机教学流程：保留已学寄存器驱动与协议方法，主循环安排处理，回调短小地交接数据。仓库中带任务通知的麦克风部分，在第 5 节展示如何先简化成一个使用者。</p>
+<div class="table-wrap"><table><thead><tr><th>工作</th><th>什么时候处理</th><th>本轮完成什么</th></tr></thead><tbody><tr><td>按钮</td><td>每轮查看，等待电平稳定</td><td>识别一次按下，改变显示状态</td></tr><tr><td>无线接收</td><td>每轮处理已有字节</td><td>恢复并分发完整命令</td></tr><tr><td>两颗传感器</td><td>水位中断发出通知</td><td>取出一批，保留实际数量</td></tr><tr><td>麦克风</td><td>完整帧就绪</td><td>读取稳定帧，计算后归还</td></tr><tr><td>电池与上报</td><td>例如每五秒一次</td><td>测电压并发送一条消息</td></tr><tr><td>屏幕</td><td>状态改变或需要刷新时</td><td>只提交本轮所需更新</td></tr></tbody></table></div>
+<p>每轮做完能做的事，就继续下一轮。不要在按钮分支里一直等松手，也不要在没有声音帧时原地等待；否则其他工作都轮不到。这里先用具体变量和现有函数接起来，等出现重复或复杂状态，再决定是否提取函数或分文件。</p>
+<figure class="figure" id="baremetal-loop"><svg viewBox="0 0 900 540" role="img" aria-labelledby="baremetal-loop-title baremetal-loop-desc" xmlns="http://www.w3.org/2000/svg"><title id="baremetal-loop-title">裸机主循环的六项具体工作</title><desc id="baremetal-loop-desc">主循环依次检查按键、处理无线字节、读取已通知的传感器、处理声音帧、检查周期上报和更新显示。中断与DMA提供事件，循环继续下一轮。</desc><defs><marker id="baremetal-loop-arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M0 0 L10 5 L0 10 Z" fill="#276e64"/></marker></defs><rect x="1" y="1" width="898" height="538" rx="16" fill="#f5f8f5" stroke="#b5c8c0"/><g font-family="Microsoft YaHei, sans-serif"><text x="30" y="45" font-size="28" fill="#183c36" text-anchor="start" font-weight="bold">主循环每轮巡查：有事就处理，暂时无事就继续</text><rect x="35" y="110" width="230" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="150" y="152" font-size="27" fill="#183c36" text-anchor="middle" font-weight="bold">检查按键</text><text x="150" y="191" font-size="21" fill="#183c36" text-anchor="middle">只确认稳定的状态变化</text><rect x="335" y="110" width="230" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="450" y="152" font-size="27" fill="#183c36" text-anchor="middle" font-weight="bold">处理无线字节</text><text x="450" y="191" font-size="21" fill="#183c36" text-anchor="middle">组帧并执行完整命令</text><rect x="635" y="110" width="230" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="750" y="152" font-size="27" fill="#183c36" text-anchor="middle" font-weight="bold">读取传感器</text><text x="750" y="191" font-size="21" fill="#183c36" text-anchor="middle">收到水位通知才读一批</text><rect x="635" y="300" width="230" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="750" y="342" font-size="27" fill="#183c36" text-anchor="middle" font-weight="bold">处理声音帧</text><text x="750" y="381" font-size="21" fill="#183c36" text-anchor="middle">只计算已经稳定的帧</text><rect x="335" y="300" width="230" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="450" y="342" font-size="27" fill="#183c36" text-anchor="middle" font-weight="bold">检查周期上报</text><text x="450" y="381" font-size="21" fill="#183c36" text-anchor="middle">到期才测电池并发送</text><rect x="35" y="300" width="230" height="105" rx="10" fill="#e0ece6" stroke="#276e64"/><text x="150" y="342" font-size="27" fill="#183c36" text-anchor="middle" font-weight="bold">更新显示状态</text><text x="150" y="381" font-size="21" fill="#183c36" text-anchor="middle">按需要提交屏幕变化</text><path d="M 275 163 H 325" fill="none" stroke="#276e64" stroke-width="3" marker-end="url(#baremetal-loop-arrow)"/><path d="M 575 163 H 625" fill="none" stroke="#276e64" stroke-width="3" marker-end="url(#baremetal-loop-arrow)"/><path d="M 750 225 V 289" fill="none" stroke="#276e64" stroke-width="3" marker-end="url(#baremetal-loop-arrow)"/><path d="M 625 353 H 575" fill="none" stroke="#276e64" stroke-width="3" marker-end="url(#baremetal-loop-arrow)"/><path d="M 325 353 H 275" fill="none" stroke="#276e64" stroke-width="3" marker-end="url(#baremetal-loop-arrow)"/><path d="M 150 416 V 458 H 16 V 163 H 25" fill="none" stroke="#276e64" stroke-width="3" marker-end="url(#baremetal-loop-arrow)"/><text x="450" y="505" font-size="25" fill="#183c36" text-anchor="middle">中断和 DMA 在需要时通知；主循环避免原地长时间等待。</text></g></svg><figcaption>图中的框表示实际工作顺序，不要求先创建一套框架或六个陌生的包装函数。</figcaption></figure>
+</section>
+
+<section id="s2"><h2>第 2 节 · 不用 delay，也能等按钮稳定</h2>
+<p>按键接点可能在切换时短暂抖动。GPIO 篇已经认识这个现象，现在通过“变化后过了多久”判断，而不是把整个主循环停住。先在主循环外准备这些变量，PC0 对应本项目的一路按键，按下为低：</p>
+<pre><code>GPIO_PinState last_level = GPIO_PIN_SET;
+GPIO_PinState stable_level = GPIO_PIN_SET;
+uint32_t changed_at = 0;
+uint8_t display_on = 1;</code></pre>
+<p>每一轮先取 <code>now = HAL_GetTick()</code>，单位毫秒。发现新电平变化就重新计时；稳定超过 20 毫秒且与上次确认状态不同，才承认一次状态变化。20 毫秒是教学参数，可根据实际按键调整。</p>
+<pre><code>GPIO_PinState level = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_0);
+if (level != last_level) {
+    last_level = level;
+    changed_at = now;
+}
+if (level != stable_level &amp;&amp; (uint32_t)(now - changed_at) &gt;= 20) {
+    stable_level = level;
+    if (stable_level == GPIO_PIN_RESET) {
+        display_on = !display_on;
+        GC9A01_SetBacklight(display_on);
+    }
+}</code></pre>
+<p><code>GC9A01_SetBacklight(on)</code> 接收 0 或非零，关闭或开启背光，不返回结果。按住按钮时，稳定状态不再变化，不会每轮重复翻转；主循环还能继续做下面的事情。这里操作背光，避免为解释调度先引入一整套页面框架。</p>
+<p>周期检查也是同一个思路。在循环外记录上次执行时刻，在循环里用无符号差值判断到期。无符号毫秒计数会回绕，这种相减写法能处理通常的回绕情况；周期应远小于整个计数范围，也需要保证程序持续检查。</p>
+</section>
+
+<section id="s3"><h2>第 3 节 · 水位中断只通知，主循环再去读取</h2>
+<p>两颗传感器按联合采集篇的配置启动：运动传感器积累一批后，INT1 让 PB4 出现上升沿。裸机教学工程不释放任务信号量，先用一个标志告诉主循环“有一批需要处理”。在主循环外声明：</p>
+<pre><code>static volatile uint8_t sensor_ready = 0;
+static int16_t acceleration[26 * 3], gyroscope[26 * 3];
+static uint32_t red[32], infrared[32];</code></pre>
+<p>把独立裸机工程的对应 GPIO 回调写成下面这样。STM32U5 使用上升沿回调名称；原工程中已有的同名回调应替换为这份教学实现，不能在同一工程保留两份定义。</p>
+<pre><code>void HAL_GPIO_EXTI_Rising_Callback(uint16_t pin)
+{
+    if (pin == GPIO_PIN_4) sensor_ready = 1;
+}</code></pre>
+<p>主循环读取并清除标志时，中断也可能写它。用很短的一段临界区完成交接：先保存原来的中断屏蔽状态，暂时禁止中断，取走标志，再恢复原状态。读取传感器不放在禁止中断的范围里。</p>
+<pre><code>uint32_t saved = __get_PRIMASK();
+__disable_irq();
+uint8_t need_read = sensor_ready;
+sensor_ready = 0;
+__set_PRIMASK(saved);</code></pre>
+<p>随后在正常主循环里调用已经学过的批量读取接口。两颗器件先前各自初始化成功才进入这段流程：</p>
+<pre><code>if (need_read) {
+    uint8_t motion_count = LSM6DSOX_GetFifoBatch(
+        acceleration, gyroscope, NULL, 26);
+    uint8_t optical_count = MAX30102_GetFifoBatch(red, infrared, 32);
+    /* 两个返回值分别表示本次实际读到多少组。 */
+}</code></pre>
+<p>接下来按 <a href="i2c/03-sampling.html">联合采集篇</a> 已解释的方法整理运动数据的采样时刻，再交给需要完整窗口的计算。每批读取数量不总刚好是名义值，不能把未写入的数组位置当作新数据。布尔通知也不能累计任意多个历史事件：处理长期不及时，仍需检查队列积压与溢出。</p>
+</section>
+
+<section id="s4"><h2>第 4 节 · 把无线解析和周期上报接进来</h2>
+<p>串口中断负责存字节，主循环每轮调用 <code>ble_uart_process()</code> 解析并分发。它没有参数；接收队列为空时很快返回。当前实现会尽量处理已有队列，负载变大以后还要测量这一段耗时。</p>
+<pre><code>ble_uart_process();</code></pre>
+<p>电池上报不需要每轮都做。循环外准备 <code>uint32_t last_battery = HAL_GetTick();</code>，每五秒读取一次。<code>battery_read_pct()</code> 会再次触发电池读取，所以这里对已经取得的毫伏值按当前项目的粗略区间换算，避免为了同一条消息连测两次：</p>
+<pre><code>if ((uint32_t)(now - last_battery) &gt;= 5000) {
+    last_battery = now;
+    uint16_t mv = battery_read_mv();
+    if (mv != 0) {
+        uint8_t percent = mv &lt;= 3700 ? 0 :
+                          mv &gt;= 4200 ? 100 : (mv - 3700) / 5;
+        int sent = ble_uart_send_battery(mv, percent);
+        /* sent 为 0 表示本次串口发送成功。 */
+    }
+}</code></pre>
+<p>last_battery 直接设成 now，表示晚处理时跳过错过的上报时刻，下次从本次重新计时。这样不会恢复后突然补发一大串旧电池消息。对需要连续采样的数据，则应依靠传感器队列和实际样本数量，不能使用相同的跳过办法。</p>
+<p>上报仍使用当前阻塞串口接口，电池转换也要等结果，屏幕提交同样可能花时间。把它们放进不同分支，不会自动让函数变成异步；总执行时间必须短到足以满足麦克风缓冲和无线接收的处理期限。</p>
+</section>
+
+<section id="s5"><h2>第 5 节 · 麦克风先给一个使用者交出完整帧</h2>
+<p>仓库麦克风同时服务声音判断与关键词识别，包含任务通知和两份独立状态。裸机教学先只保留一个使用者：DMA 写工作数组，回调复制到一份稳定帧，主循环算完再释放。这样可以把“数据正在写”与“数据可以计算”分清楚，再迁移到原驱动。</p>
+<p>在独立工程中准备两个持续有效的数组，以及两个状态。声音转换、DMA 配置和启动方法沿用 ADC 与麦克风篇；这一教学实现代替带实时操作系统通知的 spu0410.c 回调。</p>
+<pre><code>static uint16_t capture[256], audio_frame[256];
+static volatile uint8_t audio_ready = 0;
+static uint8_t first_half_copied = 0;</code></pre>
+<p>前半完成时，如果主循环已经拿着上一帧计算，就先保留它；否则复制新前半并记下来。memcpy 来自 string.h，最后一个参数单位是字节。</p>
+<pre><code>void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef *adc)
+{
+    if (adc->Instance != ADC1 || audio_ready) return;
+    memcpy(audio_frame, capture, 128 * sizeof(uint16_t));
+    first_half_copied = 1;
+}</code></pre>
+<p>后半完成时，只有本轮前半也已经复制，才接上后半并报告整帧完成。__DMB 是内存屏障，让前面的数据写入先完成，再发布就绪标志。</p>
+<pre><code>void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *adc)
+{
+    if (adc->Instance != ADC1 || audio_ready || !first_half_copied) return;
+    memcpy(audio_frame + 128, capture + 128, 128 * sizeof(uint16_t));
+    first_half_copied = 0;
+    __DMB();
+    audio_ready = 1;
+}</code></pre>
+<p>初始化后，以 <code>HAL_ADC_Start_DMA(&amp;hadc1, (uint32_t*)capture, 256)</code> 启动，先检查返回 HAL_OK。主循环发现 audio_ready 后，audio_frame 在本次计算期间不会被回调改写；算完才清除标志。先用一帧均值去掉偏置，再求平均平方量：</p>
+<pre><code>if (audio_ready) {
+    float mean = 0, energy = 0;
+    for (int i = 0; i &lt; 256; i++) mean += audio_frame[i];
+    mean /= 256.0f;
+    for (int i = 0; i &lt; 256; i++) {
+        float v = (float)audio_frame[i] - mean;
+        energy += v * v;
+    }
+    energy /= 256.0f;
+    __DMB();
+    audio_ready = 0;
+    /* 使用 energy 更新声音强弱显示或后续判断。 */
+}</code></pre>
+<p>这一简化策略会在处理旧帧时跳过新帧，所以适合先理解单次声音强弱更新，不能直接声称连续音频无丢样。关键词识别需要连续窗口时，要进一步保证处理速度和连续性，再回看现有驱动怎样分别服务两个使用者。这些增加的管理都来自具体需求。</p>
+</section>
+
+<section id="s6"><h2>第 6 节 · 这些部分怎样组成主循环？</h2>
+<p>初始化阶段先完成时钟与 GPIO、串口、总线、屏幕、ADC 和 DMA，再初始化器件、配置电池注入通道、准备声音数组，最后开始连续采集与串口接收。每个初始化结果检查成功后才使用对应器件。</p>
+<p>主循环按“取当前时间 → 看按键 → 处理已有串口 → 取走传感器通知并读取 → 处理已就绪的声音帧 → 检查电池上报期限”的顺序，把前面各段直接接进去。屏幕状态变化时更新需要的区域；已经学过的显示驱动或 LVGL 移植可以在这里接入，不用每轮都全屏重画。</p>
+<h3>先验证一起运行，再决定怎样拆任务</h3>
+<p>持续按住按钮时，传感器和无线应该继续工作；临时断开传感器后，有限超时应让读取结束，按钮和串口仍能继续。故意减慢声音计算，观察确实会跳帧，再对照 DMA 的覆盖期限解释原因。这样才能知道系统哪一段占时间，而不是只看到单个驱动各自能运行。</p>
+<p>如果已经学习看门狗拓展，只有关键路径确实完成一轮工作后再安排喂狗，不能因为任意中断仍在发生就无条件刷新。看门狗用于从故障中恢复，不能代替解决长期处理不及时的问题。</p>
+<div class="callout" id="baremetal-end"><strong>裸机部分到这里结束。</strong><p>已经能解释数据从器件进入、暂存、计算、显示和发送的完整过程，也能用中断与主循环完成协作。下一阶段进入 <a href="freertos/00-foundations.html">FreeRTOS</a>：把这些不同等待条件和处理期限的工作交给任务调度，继续处理共享资源、通知和执行顺序。</p></div>
+<p>实时操作系统不会自动修复过慢的算法、错误的缓冲规则或没有上限的等待。它改变工作怎样被安排；这一篇已经明确的数据路径和时间要求，在任务版里仍然成立。</p>
+</section>
+<section id="sources"><h2>对照项目</h2><ul class="sources"><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/main.c" target="_blank" rel="noopener">main.c</a>：实际任务启动、传感器通知和联合采集；本篇采用独立裸机教学安排。</li><li><a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/spu0410.c" target="_blank" rel="noopener">spu0410.c</a>、<a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/ble_uart.c" target="_blank" rel="noopener">ble_uart.c</a> 与 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/app.c" target="_blank" rel="noopener">app.c</a>：分别对应声音帧、无线协议及应用逻辑。</li></ul></section>
+<nav class="chapter-end" aria-label="章节切换"><a href="11-system.html">← 嵌入式拓展</a><button class="action" id="mark-done" type="button">标记本篇完成</button><a href="freertos/00-foundations.html">进入第二章：从函数调用到多任务 →</a></nav><footer>SmartWatch 学习手册 · 2026-10-25 更新<br>图解与代码用于解释流程，不代表设备实测。按相邻条件阅读代码，现有固件源码通过 GitHub 对照；外部资料需要联网。</footer></article></main></div></body></html>

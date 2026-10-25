@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="description" content="IIC 项目实战：联合采集与重采样：从 104 Hz 到 100 Hz"><title>联合采集与重采样：从 104 Hz 到 100 Hz · SmartWatch 学习手册</title><link rel="stylesheet" href="../../assets/book.css?v=chapter-nav1"><script src="../../assets/book.js?v=4" defer></script><link rel="stylesheet" href="../../assets/sensor-course.css?v=1"><script src="../../assets/sensor-course.js?v=1" defer></script></head><body class="sensor-course" data-lesson="i2c-sampling"><a class="skip" href="#content">跳到正文</a><header class="top"><button class="plain" id="menu-toggle" type="button" aria-label="展开章节导航" aria-expanded="false">目录</button><a class="brand" href="../../index.html">SMARTWATCH <em>学习手册</em></a><span class="edition">有 C 基础 · 嵌入式从零开始</span><div class="tools"><button class="plain" id="theme-toggle" type="button" aria-label="切换深浅主题">明 / 暗</button><button class="plain" type="button" onclick="window.print()">打印</button></div></header><div class="layout"><aside aria-label="课程导航"><label for="search" class="eyebrow">查找章节</label><input id="search" type="search" placeholder="GPIO、UART、麦克风、无线…"><div class="progress"><span id="progress-value">0 / 40 节已完成</span><progress id="progress-bar" max="40" value="0" aria-label="课程完成进度"></progress></div><div class="nav-title">第一章：裸机开发</div><a class="lesson-link" data-id="00-start" data-keywords=" 起点：让电路、代码与工具对上号" href="../00-start.html">起点：让电路、代码与工具对上号</a><a class="lesson-link" data-id="01-gpio" data-keywords=" GPIO：从点亮一盏灯到读懂按钮" href="../01-gpio.html">GPIO：从点亮一盏灯到读懂按钮</a><a class="lesson-link" data-id="02-uart" data-keywords=" UART：从高低电平到一次完整收发" href="../02-uart.html">UART：从高低电平到一次完整收发</a><a class="lesson-link" data-id="03-interrupt" data-keywords=" 中断：从一次按钮事件到优先级与向量表" href="../03-interrupt.html">中断：从一次按钮事件到优先级与向量表</a><a class="lesson-link" data-id="05-spi" data-keywords=" SPI：先读时序，再驱动一块屏幕" href="../05-spi.html">SPI：先读时序，再驱动一块屏幕</a><details class="nav-branch" id="i2c-nav"><summary>I²C / 总线与传感器驱动</summary><div class="branch-lessons"><a class="lesson-link" data-id="06-i2c" data-keywords="IIC I2C I²C IIC I2C I²C  I²C：从共用线路到传感器驱动" href="../06-i2c.html">基础 · 总线、寄存器与 MPU6050</a><a class="lesson-link branch-child" data-id="i2c-lsm6dsox" data-keywords="IIC I2C I²C 传感器 LSM6DSOX IMU FIFO 加速度 陀螺仪 LSM6DSOX：从六轴读数到 FIFO" href="01-lsm6dsox.html">01 · LSM6DSOX：从六轴读数到 FIFO</a><a class="lesson-link branch-child" data-id="i2c-max30102" data-keywords="IIC I2C I²C 传感器 MAX30102 PPG FIFO 光学 红光 红外 MAX30102：从光学原始数据到批量采样" href="02-max30102.html">02 · MAX30102：从光学原始数据到批量采样</a><a class="lesson-link branch-child" data-id="i2c-sampling" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MAX30102 IMU PPG 联合采集 重采样 降采样 104 100 线性插值 联合采集与重采样：从 104 Hz 到 100 Hz" href="03-sampling.html">03 · 联合采集与重采样：从 104 Hz 到 100 Hz</a><a class="lesson-link branch-child" data-id="i2c-mlc" data-keywords="IIC I2C I²C 传感器 LSM6DSOX MLC 决策树 AI 训练 标注 原型 复核 扩展：片内决策树与 AI 训练数据" href="04-mlc.html">04 · 扩展：片内决策树与 AI 训练数据</a></div></details><details class="nav-branch" id="adc-nav"><summary>ADC / 电压采集与项目麦克风</summary><div class="branch-lessons"><a class="lesson-link" data-id="09-adc-dac" data-keywords="ADC 模数转换 采样 量化 参考电压 电池 DAC" href="../09-adc-dac.html">基础 · ADC 原理、转换与电池电压</a><a class="lesson-link branch-child" data-id="adc-microphone" data-keywords="ADC 麦克风 SPU0410 声音 DMA 缓冲 直流偏置" href="../adc/01-microphone.html">项目 · 如何实现麦克风驱动</a></div></details><details class="nav-branch" id="wireless-nav"><summary>无线通信 / 基础、协议与项目实现</summary><div class="branch-lessons"><a class="lesson-link" data-id="13-wireless" data-keywords=" 无线通信：把串口消息送到手机 无线通信：让手机和手表交换数据" href="../13-wireless.html">基础 · 无线连接与字节收发</a><a class="lesson-link branch-child" data-id="04-protocol" data-keywords=" 手写应用协议：从字节流得到可靠消息 手写协议：从字节流认出一条消息" href="../04-protocol.html">01 · 手写应用协议</a><a class="lesson-link branch-child" data-id="wireless-project" data-keywords="无线 BLE 蓝牙 串口 手机 CH582M 协议 项目实现 项目实现：一条消息怎样走完三端" href="../wireless/02-project.html">02 · 项目中怎样实现</a></div></details><a class="lesson-link" data-id="10-dma" data-keywords=" DMA 与双缓冲：数据在谁手里？ DMA：数据怎样自动搬进数组？" href="../10-dma.html">DMA：数据怎样自动搬进数组？</a><details class="nav-branch" id="embedded-extra-nav"><summary>嵌入式拓展 / 时钟、TIM 与看门狗</summary><div class="branch-lessons"><a class="lesson-link" data-id="07-clock" data-keywords=" 时钟：把所有“每秒多少次”算清楚 时钟：这些“每秒多少次”从哪里来？" href="../07-clock.html">时钟 · 节奏从哪里来</a><a class="lesson-link branch-child" data-id="08-timer-pwm" data-keywords=" TIM 与 PWM：让硬件负责时间 定时器：让硬件计数、定时和输出脉冲" href="../08-timer-pwm.html">TIM · 计数、定时与脉冲</a><a class="lesson-link branch-child" data-id="11-system" data-keywords=" RTC、看门狗、Flash 与低功耗 系统运行：看门狗、实时时钟、保存与低功耗" href="../11-system.html">看门狗、日历、保存与低功耗</a></div></details><a class="lesson-link" data-id="12-baremetal" data-keywords=" 裸机综合：把实验组织成一个系统 裸机逻辑综合：把手表各部分接起来" href="../12-baremetal.html">裸机逻辑综合：把手表各部分接起来</a><div class="nav-title">第二章：FreeRTOS</div><a class="lesson-link" data-id="rtos-foundations" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 前置 · 函数指针与多任务" href="../freertos/00-foundations.html">前置 · 函数指针与多任务</a><a class="lesson-link" data-id="14-freertos" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 1 · 创建并运行任务" href="../14-freertos.html">1 · 创建并运行任务</a><a class="lesson-link" data-id="rtos-scheduling" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 2 · 等待、调度与优先级" href="../freertos/02-scheduling.html">2 · 等待、调度与优先级</a><a class="lesson-link" data-id="rtos-semaphore" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 3 · 中断怎样唤醒任务" href="../freertos/03-semaphore.html">3 · 中断怎样唤醒任务</a><a class="lesson-link" data-id="15-sync" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 4 · 用队列交付数据" href="../15-sync.html">4 · 用队列交付数据</a><a class="lesson-link" data-id="rtos-resources" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 5 · 共享资源与互斥" href="../freertos/05-resources.html">5 · 共享资源与互斥</a><a class="lesson-link" data-id="rtos-audio" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 6 · 声音帧与多个使用者" href="../freertos/06-audio.html">6 · 声音帧与多个使用者</a><a class="lesson-link" data-id="rtos-memory" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 7 · 栈、堆与故障排查" href="../freertos/07-memory.html">7 · 栈、堆与故障排查</a><a class="lesson-link" data-id="rtos-project" data-keywords="FreeRTOS 任务 多线程 函数指针 调度 阻塞 同步 8 · 接回完整手表" href="../freertos/08-project.html">8 · 接回完整手表</a><details class="nav-branch" id="lvgl-nav"><summary>支线一 / 显示驱动与 LVGL</summary><div class="branch-lessons"><a href="../../branches/lvgl.html">支线一学习路线 · 7 篇</a><a class="lesson-link branch-child" data-id="05-display" data-keywords="LVGL UI 屏幕 控件 01 · 先驱动手表彩屏：GC9A01 与 RGB565" href="../../branches/lvgl/01-display.html">01 · 先驱动手表彩屏：GC9A01 与 RGB565</a><a class="lesson-link branch-child" data-id="lvgl-port" data-keywords="LVGL UI 屏幕 控件 02 · 把 LVGL 接到屏幕：缓冲、刷新与时间" href="../../branches/lvgl/02-port.html">02 · 把 LVGL 接到屏幕：缓冲、刷新与时间</a><a class="lesson-link branch-child" data-id="lvgl-widgets" data-keywords="LVGL UI 屏幕 控件 03 · 第一个界面：对象、标签与常用控件" href="../../branches/lvgl/03-widgets.html">03 · 第一个界面：对象、标签与常用控件</a><a class="lesson-link branch-child" data-id="lvgl-layout" data-keywords="LVGL UI 屏幕 控件 04 · 把界面排整齐：布局、样式与显示资源" href="../../branches/lvgl/04-layout.html">04 · 把界面排整齐：布局、样式与显示资源</a><a class="lesson-link branch-child" data-id="lvgl-events" data-keywords="LVGL UI 屏幕 控件 05 · 让界面响应：事件、输入与页面切换" href="../../branches/lvgl/05-events.html">05 · 让界面响应：事件、输入与页面切换</a><a class="lesson-link branch-child" data-id="lvgl-data" data-keywords="LVGL UI 屏幕 控件 06 · 让界面持续正确：数据、定时器与生命周期" href="../../branches/lvgl/06-data.html">06 · 让界面持续正确：数据、定时器与生命周期</a><a class="lesson-link branch-child" data-id="lvgl-performance" data-keywords="LVGL UI 屏幕 控件 07 · 把刷新做稳：性能、DMA 改造与排错" href="../../branches/lvgl/07-performance.html">07 · 把刷新做稳：性能、DMA 改造与排错</a></div></details><div class="nav-title">其他支线 / App、AI 与升级</div><a class="lesson-link" data-id="flutter" data-keywords=" 支线二：从上位机到 Flutter App" href="../../branches/flutter.html">支线二：从上位机到 Flutter App</a><a class="lesson-link" data-id="ai-st" data-keywords=" 支线三：AI 数据、训练与 ST.AI 接入" href="../../branches/ai-st.html">支线三：AI 数据、训练与 ST.AI 接入</a><a class="lesson-link" data-id="proto" data-keywords=" 支线四 A：原型网络与真机后训练" href="../../branches/proto.html">支线四 A：原型网络与真机后训练</a><a class="lesson-link" data-id="ota" data-keywords=" 支线四 B：无线固件升级的完整设计" href="../../branches/ota.html">支线四 B：无线固件升级的完整设计</a><p id="search-empty" class="search-empty" hidden>未找到章节，试试 UART、麦克风、无线等关键词。</p><div class="nav-title">查阅</div><a href="../../references.html">资料来源与版本说明</a><a href="https://github.com/Cody-ic/SmartWatch/blob/main/README.md" target="_blank" rel="noopener">项目 README</a></aside><main id="content"><article><div class="eyebrow">双线通信项目实战 / 03</div><h1>联合采集与重采样：从 104 Hz 到 100 Hz</h1><p class="lead">LSM6DSOX 每秒产生 104 对加速度和角速度数据，MAX30102 每秒产生 100 组红光和红外数据。由于两颗芯片的可选档位不同，这是以每秒 100 次为目标时最接近的一组配置。下面先由运动传感器的队列水位安排取数，再把 26 对六轴数据重采样为 25 对。</p><div class="meta"><span class="pill">前置：双线通信基础与上一篇实战</span><span class="pill">数据手册与仓库原有驱动</span><span class="pill">先独立实验，再对应项目</span></div><div class="callout"><strong>本篇完成后</strong>已经能组织两颗传感器采集。可以继续阅读片内决策树扩展，也可先去 <a href="../07-clock.html">时钟主线</a>，以后再回来部署片内模型。</div><p class="sources">基础查阅：<a href="../00-start.html#stdint-types">uint8_t、uint32_t 与整数范围</a> · <a href="01-lsm6dsox.html#queue-basics">队列、入队出队与循环下标</a>。下面沿用前两篇已经讲过的传感器缓存队列。</p><nav class="toc" aria-label="本篇目录"><a href="#s1">1 · 采样率与水位通知</a><a href="#s2">2 · 为什么只用运动传感器通知，为什么不用定时器？</a><a href="#s3">3 · 线性插值：估计目标采样时刻的数值</a><a href="#s4">4 · 对照仓库，把一个轴的方法用于六个轴</a></nav>
+
+
+<section id="s1"><h2>1 · 先确定采样率，再由队列水位通知取数</h2>
+<div id="rate-choice">
+<p>先明确两颗器件分别产生什么、多久产生一份：</p>
+<ul><li><strong>LSM6DSOX 运动传感器：</strong>加速度计和陀螺仪都设为每秒 104 次，每秒得到 104 对加速度和角速度数据。</li><li><strong>MAX30102 光学传感器：</strong>设为每秒 100 次，每秒得到 100 组红光和红外数据。</li></ul>
+<h3 id="sampling-rate-options">为什么没有把它们都设成每秒 100 次？</h3>
+<p>项目希望两路数据最终都按每秒 100 次处理，但采样率只能从芯片规定的档位中选择。两颗芯片在这个目标附近提供的档位并不相同：</p>
+<div class="table-wrap"><table><thead><tr><th>传感器</th><th>目标附近的可选档位<br>单位：次/秒</th><th>本项目选择</th></tr></thead><tbody><tr><td>LSM6DSOX</td><td>52、104、208</td><td>104 次/秒</td></tr><tr><td>MAX30102</td><td>50、100、200</td><td>100 次/秒</td></tr></tbody></table></div>
+<p>光学传感器可以直接选每秒 100 次，运动传感器却没有这一档，只能选择最接近的每秒 104 次。因此，<strong>围绕每秒 100 次这个目标，104 与 100 已经是最接近的一组可用配置</strong>。这个差别来自芯片的档位限制，后面再通过重采样处理两者每秒相差的 4 次。</p>
+<p class="sources">可选档位见 <a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf#page=54" target="_blank" rel="noopener">LSM6DSOX 数据手册的加速度、角速度采样率表，第 54～55 页</a>和 <a href="https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf#page=19" target="_blank" rel="noopener">MAX30102 数据手册的采样率表，第 19 页</a>。</p>
+</div>
+<p>前两篇已经能分别读取两颗传感器。把它们放进同一个程序后，首先要决定：<strong>什么时候来取这一批数据？</strong>项目让 LSM6DSOX 的缓存队列负责发出这个通知，STM32 收到后，在同一轮处理里依次读取两颗器件。</p>
+<p>两颗传感器各自把新数据放进芯片内部的缓存队列。STM32 通过共用的第 1 路双线通信总线依次读取；两颗器件的地址分别为 0x6A、0x57，沿用前篇的驱动即可。</p>
+<h3>① 先规定：运动传感器累积多少数据时提醒？</h3>
+<p>在缓存队列里预先设置一个数量，未读记录达到这个数量就产生通知。这个数量叫<strong>水位</strong>，英文为 watermark，也常叫“水印”。水位可以低于缓存队列的总容量，目的是提前来取，给后续读取留出时间。</p>
+<p>本项目希望每批有 <strong>26 对六轴数据</strong>。这里一对包括一组三轴加速度和一组三轴角速度；它们在运动传感器的缓存队列中分别占一条记录，所以水位寄存器应写：</p>
+<pre><code>26 对六轴 × 每对 2 条记录 = 52 条队列记录
+FIFO_WATERMARK = 52</code></pre>
+<p>说“等够 26 对”是在数六轴数据，写寄存器时则是在数缓存队列记录。若直接把寄存器水位写成 26，这个配置下只积累约 13 对就会通知，读取会提前一半。</p>
+<h3>② 到水位后，是哪根线发生变化？</h3>
+<p>LSM6DSOX 有一个专门输出事件通知的引脚，叫 <strong>INT1</strong>。驱动把缓存队列水位事件接到这个引脚，并配置为高电平有效：缓存队列未到水位时为低，积累到 52 条记录时变高。</p>
+<p>电路把 <strong>运动传感器的 INT1 接到 STM32 的 PB4</strong>。STM32 将 PB4 配置为上升沿外部中断：检测到这根线从低电平变为高电平，就进入第 4 路外部中断的处理函数。数据线和时钟线负责后面的双线通信数据传输，INT1 负责提醒 STM32 来读取。</p>
+<figure class="figure" id="sampling-irq-flow"><img src="../../assets/figures/sampling-watermark-irq.svg?v=terms1" width="720" height="2010" style="display:block;width:100%;height:auto" alt="两颗传感器各自采样；运动传感器积累26对即52条记录时，INT1从低变高，使STM32 PB4触发第 4 路外部中断中断；中断设置标志，主循环依次读取两个缓存队列，之后才重采样"><figcaption>先由缓存队列数量触发通知，再由程序取数，最后处理采样率的差别。图中用主循环展示裸机流程。</figcaption></figure>
+<p>这些设置已经由前篇的初始化完成，可以对照下面四处看整个连接关系：</p>
+<div class="table-wrap"><table><thead><tr><th>位置</th><th>当前设置</th><th>起什么作用</th></tr></thead><tbody><tr><td>运动传感器的队列水位寄存器（0x07、0x08）</td><td>水位 52</td><td>规定多少条未读记录才通知</td></tr><tr><td>运动传感器的中断输出控制寄存器（0x0D）</td><td>0x08，位 3 置 1</td><td>把缓存队列水位事件输出到 INT1</td></tr><tr><td>板上连线</td><td>INT1 → PB4</td><td>把传感器输出的电平送到 STM32 输入脚</td></tr><tr><td>STM32 的引脚与中断配置</td><td>PB4 上升沿；使能第 4 路外部中断</td><td>线变高时执行中断处理</td></tr></tbody></table></div>
+<p class="sources">水位单位与输出规则可对照 <a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf#page=48" target="_blank" rel="noopener">LSM6DSOX 手册队列水位寄存器（0x07、0x08），第 48 页</a>、<a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf#page=52" target="_blank" rel="noopener">中断输出控制寄存器（0x0D），第 52 页</a>。项目设置见 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/LSM6DSOX.c" target="_blank" rel="noopener">LSM6DSOX.c</a> 和 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/gpio.c" target="_blank" rel="noopener">gpio.c</a>。</p>
+<h3>③ 中断先记下通知，主循环再读取两个缓存队列</h3>
+<p>沿用中断章的办法，留一个全局标志 <code>sensor_ready</code>，初值为 0。STM32U5 的驱动库上升沿回调是 <code>HAL_GPIO_EXTI_Rising_Callback()</code>，参数 GPIO_Pin 表示哪一条引脚线触发。这次收到 PB4 的通知，就将标志设为 1：</p>
+<p class="snippet-label">裸机实验 · 放在全局变量区和用户函数区</p>
+<pre><code>volatile uint8_t sensor_ready = 0;
+
+void HAL_GPIO_EXTI_Rising_Callback(uint16_t GPIO_Pin)
+{
+    if (GPIO_Pin == GPIO_PIN_4) sensor_ready = 1;
+}</code></pre>
+<p>主循环发现标志为 1，先把它清为 0，再开始这一轮读取：先调用 <code>LSM6DSOX_GetFifoBatch()</code> 取得 26 对；确认取得完整一批后，再调用 <code>MAX30102_GetFifoBatch()</code> 读取最多 25 组红光、红外。两函数的参数和返回数量沿用前两篇，<a href="#s4">第 4 节会把具体调用串起来</a>。中断回调本身只设标志，双线通信传输放在主循环里进行。</p>
+<p>读走运动传感器的记录后，缓存队列未读数量降到水位以下，INT1 就回到低电平。后来又累积到水位，才会再次出现低到高的变化。<strong>若一直没把数量读到水位以下，INT1 可能持续为高，也就没有新的上升沿。</strong>因此读取后还要查看剩余数量，不能只清 STM32 的中断标志就等待下一次通知。水位状态见<a href="https://www.st.com/resource/en/datasheet/lsm6dsox.pdf#page=74" target="_blank" rel="noopener">手册队列状态寄存器（0x3B），第 74 页</a>。</p>
+<h3>④ 运动传感器攒够这一批时，光学传感器为什么对应 25 组？</h3>
+<p>运动传感器按 104 Hz 产生数据，积累 26 对对应的名义时间是 <code>26 ÷ 104 = 0.25 秒</code>，也就是 250 毫秒。在同样的时间里，光学传感器按 100 Hz 采样，得到 <code>100 × 0.25 = 25 组</code>：</p>
+<div class="table-wrap"><table><thead><tr><th>从一次取数到下一次取数</th><th>运动传感器：104 对/秒</th><th>光学传感器：100 组/秒</th></tr></thead><tbody><tr><td>约 250 毫秒</td><td>26 对六轴，即 52 条记录</td><td>25 组红光＋红外</td></tr><tr><td>四个这样的批次，约 1 秒</td><td>104 对原始六轴</td><td>100 组光学数据</td></tr></tbody></table></div>
+<p>这就是“一次运动传感器通知，取两个缓存队列”的数量依据。以上按名义采样率计算；器件启动先后、时钟偏差和 STM32 读取延迟会影响实际积压数量，所以每轮仍以两个读取函数的返回值为准。后面先解释为什么选择这种通知方式，再处理 26 与 25 的差别。</p>
+</section>
+
+<section id="s2"><h2>2 · 为什么只开一路通知、选择运动传感器、没有用定时器？</h2>
+<h3 id="single-notification">为什么只开一路采集通知？</h3>
+<p>现在一次通知已经会让程序读取两个缓存队列。如果两颗器件各自都通知，而每次通知都启动完整的一轮读取，就可能围绕同一批数据唤醒两次：第一次已经取走了，第二次来时下一批还没积累够，还得另外判断、合并两路通知。</p>
+<p>本项目把这件事统一为：<strong>运动传感器通知一次，程序依次取两路数据。</strong>因此 MAX30102 的本次采样就绪、缓存队列将满等采集通知不启用。关闭这些通知后，光学传感器仍持续采样、保存缓存队列，也仍能响应双线通信读取。两颗器件照常工作，只是由一处负责提醒 STM32。</p>
+<p>“只开一路”指两颗传感器中只有一颗负责通知取数。传感器通知“有数据可读”，与通信外设通知“一次传输完成”，是两件事。</p>
+<h3 id="why-lsm">为什么偏偏让运动传感器来通知？光学传感器不行吗？</h3>
+<p>这一轮运动数据处理需要完整的 26 对六轴。使用运动传感器的水位通知，可以直接知道<strong>所需的加速度和角速度数据数量已经达到</strong>；板子上它的 INT1 也已经接到 PB4，沿用这条连接就能驱动整轮读取。根据前面的 250 毫秒计算，再到光学传感器取出相应的一批。</p>
+<p>光学传感器也可以担任通知源。它同样有可配置的缓存队列通知，可以设置成积累 25 组时提醒；这时程序再查询运动传感器是否已经有 26 对。这里选运动传感器，是把整轮处理建立在“运动数据已够一批”这个事件上。光学传感器的阈值设置可以对照<a href="https://www.analog.com/media/en/technical-documentation/data-sheets/MAX30102.pdf#page=17" target="_blank" rel="noopener">数据手册队列将满阈值，第 17 页</a>。</p>
+<h3 id="why-not-tim">为什么不用定时器每隔 250 毫秒来读？</h3>
+<p>STM32 内部有定时器。可以让它每隔 250 毫秒发出中断，再由程序读取两个缓存队列；这也是一种可用方案。但定时器到时，只说明 <strong>STM32 计的 250 毫秒已经过去</strong>，还需要查询缓存队列，确认传感器实际积累了多少数据。</p>
+<p>运动传感器的水位通知直接说明<strong>缓存队列里已经有这一批数据</strong>。本项目已有这个事件，就用它安排取数，省去再用定时器单独计一个读取周期。两者的区别是“到时间后检查数量”和“数量达到后通知”。后面的定时器章节会讲怎样设置定时周期。</p>
+<p>无论用运动传感器、光学传感器还是定时器提醒，通知都只是决定 STM32 何时来取数。运动传感器的 INT1 接到的是 STM32 PB4，光学传感器仍按自己的内部时钟采样；换成定时器也不会自动让两个采样时钟变成同一个。</p>
+<h3 id="why-resample">两路数据取出来之后，才遇到 26 与 25 的差别</h3>
+<p>现在一轮已经拿到 26 对加速度和角速度数据，以及名义上 25 组红光和红外数据。项目的<strong>活动识别模型</strong>要求六轴输入按 <strong>100 Hz</strong> 排列，也就是相邻两点相隔 10 毫秒。运动传感器原始数据为 104 Hz，相邻两点实际约隔 9.615 毫秒，直接交过去会让模型对时间长度的理解发生变化。</p>
+<p>所以，要把同样约 250 毫秒内的 <strong>26 对原始六轴数据，转换为按 100 Hz 排列的 25 对</strong>。输入与输出采样率不同，称为<strong>重采样</strong>；这次输出率更低，也属于<strong>降采样</strong>。项目采用线性插值，下一节从一个轴、两个相邻点开始讲它怎么算。红光和红外数据已经按 100 Hz 采集，保留原来的数据。</p>
+<p>原始加速度还供睡眠特征使用，仍按 104 Hz 保存在 <code>acBuf</code>；活动识别模型使用转换后的 100 Hz 六轴数据。具体输入要求见 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/AI/README.md" target="_blank" rel="noopener">算法输入说明</a>和 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/sleep_features.c" target="_blank" rel="noopener">sleep_features.c</a> 的两路输入采样率设置。</p>
+<figure class="figure"><svg viewBox="0 0 860 310" role="img" aria-labelledby="sampling-flow-title sampling-flow-desc"><title id="sampling-flow-title">原始六轴数据与重采样数据分别进入不同算法</title><desc id="sampling-flow-desc">104 Hz 加速度原始数据进入睡眠特征，104 Hz 六轴数据经26到25线性插值变成100 Hz进入活动识别，100 Hz 红光和红外数据直接进入心率血氧和睡眠特征。</desc><rect width="860" height="310" rx="12" fill="#fffefb"/><g fill="#182a30" font-size="19"><rect x="24" y="35" width="215" height="66" rx="9" fill="#e6f2eb" stroke="#007b68"/><text x="131" y="63" text-anchor="middle">加速度和角速度</text><text x="131" y="87" text-anchor="middle" font-size="15">104 Hz · 每批 26 对</text><rect x="316" y="35" width="235" height="66" rx="9" fill="#e6f2eb" stroke="#007b68"/><text x="433" y="63" text-anchor="middle">线性插值：26 → 25</text><text x="433" y="87" text-anchor="middle" font-size="15">输出 100 Hz 六轴</text><rect x="627" y="35" width="209" height="66" rx="9" fill="#e6f2eb" stroke="#007b68"/><text x="731" y="76" text-anchor="middle">活动识别</text><rect x="627" y="141" width="209" height="58" rx="9" fill="#f6ecd9" stroke="#aa6d16"/><text x="731" y="177" text-anchor="middle">睡眠特征</text><rect x="24" y="227" width="215" height="59" rx="9" fill="#e6f2eb" stroke="#007b68"/><text x="131" y="264" text-anchor="middle">红光和红外 100 Hz</text><rect x="627" y="227" width="209" height="59" rx="9" fill="#e6f2eb" stroke="#007b68"/><text x="731" y="264" text-anchor="middle">心率、血氧处理</text><text x="347" y="160" font-size="16">原始加速度保持 104 Hz</text><text x="289" y="278" font-size="16">红光、红外保留原始采样率</text></g><g fill="none" stroke="#007b68" stroke-width="3"><path d="M239 68H302m-9-6 9 6-9 6M551 68H613m-9-6 9 6-9 6"/><path d="M265 68V174H613m-9-6 9 6-9 6"/><path d="M239 256H613m-9-6 9 6-9 6M575 256V184H613m-9-6 9 6-9 6"/></g></svg><figcaption>同一份原始数据可以服务于不同处理链。每条链都要清楚自己接收的采样率与数据排列。</figcaption></figure>
+</section>
+
+<section id="s3"><h2>3 · 线性插值：估计目标采样时刻的数值</h2>
+<p>先只看加速度 X 轴，用 <code>x[0]、x[1]、x[2]…</code> 表示原始数值。为了便于画图，把这一批第一个点的时刻定为 0。原始点每隔 <code>1/104</code> 秒出现一次，新序列则需要每隔 <code>1/100</code> 秒出现一个点：</p>
+<figure class="figure"><svg viewBox="0 0 860 320" role="img" aria-labelledby="sampling-time-title sampling-time-desc"><title id="sampling-time-title">104 Hz 原始时刻与100 Hz目标时刻</title><desc id="sampling-time-desc">第一个原始点和目标点均在零时刻。第二个目标点在10毫秒，落在9.615毫秒的原始点1与19.231毫秒的原始点2之间，位置为1.04。</desc><rect width="860" height="320" rx="12" fill="#fffefb"/><g fill="#182a30" font-size="18"><text x="25" y="40">放大这一批开头：横轴代表时间</text><text x="25" y="105">原始 104 Hz</text><text x="25" y="214">目标 100 Hz</text></g><g stroke="#879b96" stroke-width="2"><path d="M212 98H819M212 207H819"/></g><g fill="#007b68"><circle cx="225" cy="98" r="7"/><circle cx="407" cy="98" r="7"/><circle cx="589" cy="98" r="7"/><circle cx="771" cy="98" r="7"/></g><g fill="#a1580b"><circle cx="225" cy="207" r="7"/><circle cx="414" cy="207" r="8"/><circle cx="603" cy="207" r="7"/><circle cx="792" cy="207" r="7"/></g><g fill="#182a30" font-size="15" text-anchor="middle"><text x="225" y="76">x[0]</text><text x="407" y="76">x[1]</text><text x="589" y="76">x[2]</text><text x="771" y="76">x[3]</text><text x="225" y="128">0 毫秒</text><text x="407" y="128">9.615 毫秒</text><text x="589" y="128">19.231 毫秒</text><text x="771" y="128">28.846 毫秒</text><text x="225" y="239">0 毫秒</text><text x="414" y="239">10 毫秒</text><text x="603" y="239">20 毫秒</text><text x="792" y="239">30 毫秒</text></g><path d="M414 197V144" stroke="#a1580b" stroke-width="2" stroke-dasharray="5 4"/><text x="240" y="286" fill="#a1580b" font-size="18">目标 y[1] 落在 x[1] 与 x[2] 之间，更靠近 x[1]</text></svg><figcaption>图中画的是数据对应的采样时刻。STM32 稍后批量读取这些点，不会改变它们原本的先后间隔。</figcaption></figure>
+<p>目标第 1 点在 10 毫秒，原始第 1 点在约 9.615 毫秒。它们很接近，但不完全重合。最简单的估计办法是：把相邻两个原始点连成一条直线，在目标时刻读出这条线的高度。这就是<strong>线性插值</strong>。离前一点近，就多参考前一点；离后一点近，就多参考后一点。</p>
+<p>目标点编号为 <code>i</code>，它的时刻是 <code>i/100</code> 秒。将这个时刻乘以原始采样率 104，就得到它在原始数组中的位置：</p>
+<pre><code>pos = (i / 100) * 104
+    = i * 26 / 25
+    = 1.04 * i</code></pre>
+<p><code>pos</code> 可以有小数。整数部分告诉我们左边是哪一个原始点，小数部分告诉我们向右走了多少。例如 <code>pos=1.04</code>，就是从 <code>x[1]</code> 向 <code>x[2]</code> 走了 4%。于是：</p>
+<pre><code>y[1] = x[1] * 0.96 + x[2] * 0.04</code></pre>
+<p>比如实际读到 <code>x[1]=1000</code>、<code>x[2]=1500</code>，直线总共上升 500，走过其中 4%，高度就上升 20，所以估计结果为 1020。这个数仍然使用原始加速度的计数单位；插值只改变数据对应的时间位置，没有把加速度变成角速度，也没有改变量程换算系数。稍后将计数换算成 g 时，仍使用前一篇确定的灵敏度。</p>
+<p>一般情况下，记左侧下标为 <code>k</code>，向右的比例为 <code>alpha</code>，就有 <code>y = x[k] × (1-alpha) + x[k+1] × alpha</code>。两项权重相加始终为 1。本项目的 <code>i</code> 只从 0 到 24，因此 <code>pos=i+0.04i</code> 的整数部分恰好一直是 <code>i</code>，可以直接使用 <code>x[i]</code> 和 <code>x[i+1]</code>。这项简化仅适用于当前比例与下标范围。</p>
+<div class="table-wrap"><table><thead><tr><th>目标下标 i</th><th>目标时刻</th><th>原始位置 pos</th><th>插值方式</th></tr></thead><tbody><tr><td>0</td><td>0 毫秒</td><td>0</td><td>1 × x[0] + 0 × x[1]</td></tr><tr><td>1</td><td>10 毫秒</td><td>1.04</td><td>0.96 × x[1] + 0.04 × x[2]</td></tr><tr><td>12</td><td>120 毫秒</td><td>12.48</td><td>0.52 × x[12] + 0.48 × x[13]</td></tr><tr><td>24</td><td>240 毫秒</td><td>24.96</td><td>0.04 × x[24] + 0.96 × x[25]</td></tr></tbody></table></div>
+<p>直接丢掉第 26 个点，会留下间隔仍约为 9.615 毫秒的 25 个点。若每批都这样拼接，批次交界处又出现较大的时间间隔。插值的目的，是按新的均匀时间网格取得 25 个数，保留波形随时间变化的含义。</p>
+<p>也不要为了让首尾两个输入点都原样保留，把位置写成 <code>i*25/24</code>。那样会把 25 个输出点铺在原始第 0 点到第 25 点之间，得到的间隔约为 10.016 毫秒；它是一种“首尾位置固定”的重新分配，与这里需要的 10 毫秒时间间隔不同。先确定输出点应该出现的时刻，再推导数组位置，比例就不会只凭点数猜出来。</p>
+</section>
+
+<section id="s4"><h2>4 · 对照仓库，把一个轴的方法用于六个轴</h2>
+<p>打开 <a href="https://github.com/Cody-ic/SmartWatch/blob/main/firmware/stm32/Core/Src/main.c" target="_blank" rel="noopener">main.c 的 DownSampleFrom26To25()</a>。先看四个参数：<code>acc_in</code> 是 26 组三轴加速度，<code>gyr_in</code> 是 26 组三轴角速度；<code>acc_out</code> 与 <code>gyr_out</code> 分别存放转换后的 25 组三轴数据。输入每个数组需要 78 个 <code>int16_t</code>，输出每个需要 75 个。输入与输出使用不同数组，避免写出的结果覆盖后面还要读取的原始点。</p>
+<p>每组三轴按 <code>X、Y、Z</code> 连续存放。所以第 <code>i</code> 组的起点是 <code>i*3</code>；组内轴编号 <code>j</code> 从 0 到 2，实际下标就是 <code>i*3+j</code>。有了这个排列规则，再读函数就能把数组下标与前面的插值公式对应起来：</p>
+<pre><code>static void DownSampleFrom26To25(int16_t *acc_in, int16_t *gyr_in,
+                                 int16_t *acc_out, int16_t *gyr_out)
+{
+    for (uint8_t i = 0; i &lt; 25; i++)
+    {
+        float pos = i * 26.0f / 25.0f;
+        float weight = pos - (float)i;
+
+        for (uint8_t j = 0; j &lt; 3; j++)
+        {
+            int16_t v0 = acc_in[i * 3 + j];
+            int16_t v1 = acc_in[(i + 1) * 3 + j];
+            acc_out[i * 3 + j] =
+                (int16_t)(v0 * (1.0f - weight) + v1 * weight);
+        }
+        for (uint8_t j = 0; j &lt; 3; j++)
+        {
+            int16_t v0 = gyr_in[i * 3 + j];
+            int16_t v1 = gyr_in[(i + 1) * 3 + j];
+            gyr_out[i * 3 + j] =
+                (int16_t)(v0 * (1.0f - weight) + v1 * weight);
+        }
+    }
+}</code></pre>
+<p><code>26.0f</code>、<code>25.0f</code> 让计算保留小数；<code>weight</code> 就是前面说的向右比例。两个内层循环分别处理三轴加速度和三轴角速度，所有轴共享相同的目标时刻。最后转回 <code>int16_t</code> 时会舍去小数部分，所以手算与实际整数输出可能相差一个计数左右。</p>
+<p>仓库把输出数组命名为 <code>MovingAverage_ac</code>、<code>MovingAverage_gy</code>。读代码时要根据运算判断：这里没有滑动窗口求平均，实际执行的是线性插值重采样。变量名是现有代码的命名，不应据此把这个函数理解成移动平均滤波。</p>
+<h3>只有完整的输入，才能运行这次转换</h3>
+<p><code>LSM6DSOX_GetFifoBatch()</code> 的返回值表示实际读到多少对六轴，最后一个参数是本次最多读取多少对。<code>MAX30102_GetFifoBatch()</code> 同样返回实际读到多少组红光、红外。下面省略后续算法，只保留仓库中与采集和转换有关的顺序：</p>
+<p>先在主循环外准备好这些数组。sensor_ready 使用第 1 节的全局标志，由 PB4 上升沿中断设为 1。</p>
+<pre><code>int16_t acBuf[26 * 3], gyBuf[26 * 3], tempBuf;
+int16_t MovingAverage_ac[25 * 3], MovingAverage_gy[25 * 3];
+uint32_t PPG_red_buf[25], PPG_ir_buf[25];</code></pre>
+<p>主循环中的一轮处理如下：先确认收到通知并清除软件标志，再依次读取六轴数据、红光和红外数据，最后转换六轴数据。到这里才调用刚讲完的重采样函数：</p>
+<pre><code>if (sensor_ready) {
+    sensor_ready = 0;
+    uint8_t imu_count = LSM6DSOX_GetFifoBatch(acBuf, gyBuf, &amp;tempBuf, 26);
+    if (imu_count == 26) {
+        uint8_t ppg_count = MAX30102_GetFifoBatch(PPG_red_buf, PPG_ir_buf, 25);
+        DownSampleFrom26To25(acBuf, gyBuf, MovingAverage_ac, MovingAverage_gy);
+        /* 六轴输出有 25 对；红光和红外仅使用 ppg_count 组。 */
+    }
+}</code></pre>
+<p>这一段展示正常一批的处理顺序。若主循环忙了一段时间，缓存队列可能已经积压多于一批；读后要检查剩余数量，若运动传感器仍在水位以上，就继续读取积压，等它回到水位以下，才能等到下一次上升沿。当前仓库把“中断设标志、主循环取数”对应为“中断发出通知、Sensor_Task 取数”，信号量的写法留到实时操作系统章节。</p>
+<p>假如加速度和角速度数据只读到 18 对，数组后面仍可能残留上一次的内容，此时不能运行需要 26 对的转换。红光和红外数据只返回 20 组，就只处理这 20 组；不能因为数组容量是 25，便继续处理后面 5 组旧数。<strong>数组容量说明能装多少，返回数量说明这一次实际取得多少。</strong>这也是驱动函数完成后，调用者仍然需要判断返回值的原因。</p>
+<p>当前项目遇到不完整的六轴数据批次，会跳过这轮后续处理。这个策略能避免直接使用残留数值，但也意味着数据流出现缺口。连续窗口算法需要知道缺口，不能把随后收到的点假装接在完整等间隔序列后面；更完整的缺失窗口处理会在算法章节继续展开。</p>
+<p>红光和红外两路数据还有一个配对要求：同一个下标的红光和红外来自同一组缓存队列数据。若只取得 20 组，就同时把这两路的有效范围限制为前 20 组。不要为凑满 25，用后一次读取的红光去配前一次残留的红外。读到多少组、是否丢过数据、属于哪一段时间，都应在交给上层处理之前确定。</p>
+</section>
+
+<nav class="chapter-end" aria-label="章节切换"><a href="02-max30102.html">← MAX30102：从光学原始数据到批量采样</a><button class="action" id="mark-done" type="button">标记本篇完成</button><a href="04-mlc.html">扩展：片内决策树与人工智能训练数据 →</a></nav><footer>SmartWatch 学习手册 · 2026-10-24 更新<br>图解和交互用于理解流程，不代表设备实测。代码片段按各段条件阅读；源码与数据手册使用明确链接。正文可离线阅读，外部资料需要联网。</footer></article></main></div></body></html>
